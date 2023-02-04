@@ -27,7 +27,7 @@ jobs:
         with: 
             distribution: 'zulu'
             java-version: "17"
-            token: ${{secrets.RELEASE_TOKEN}}
+            token: ${{secrets.GITHUB_TOKEN}}
 
       - name: Flutter action
         uses: subosito/flutter-action@v2.7.1
@@ -58,4 +58,4 @@ jobs:
         uses: ncipollo/release-action@v1.10.0
         with:
             artifacts: "build/app/outputs/flutter-apk/app-*.apk,*.AppImage"
-            token: ${{secrets.RELEASE_TOKEN}}
+            token: ${{secrets.GITHUB_TOKEN}}
