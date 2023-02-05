@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/video_reply_api.dart';
 import 'package:bili_you/common/models/reply/reply.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 import 'package:flutter/material.dart';
