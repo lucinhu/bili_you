@@ -96,19 +96,61 @@ class ReplyItemModel {
 }
 
 @jsonSerializable
+@Json(valueDecorators: Content.valueDecorators)
 class Content {
-  Content({
-    required this.message,
-    required this.members,
-    required this.maxLine,
-  });
+  static Map<Type, ValueDecoratorFunction> valueDecorators() => {
+        typeOf<Map<String, Emote>>(): (value) => value.cast<String, Emote>(),
+      };
+  Content(
+      {required this.message,
+      required this.members,
+      required this.maxLine,
+      required this.emoteMap});
 
   @JsonProperty(defaultValue: "")
   final String message;
   @JsonProperty(defaultValue: [])
   final List<dynamic> members;
-  @JsonProperty(defaultValue: 0)
+  @JsonProperty(name: "max_line", defaultValue: 0)
   final int maxLine;
+  @JsonProperty(name: 'emote', defaultValue: {})
+  final Map<String, Emote> emoteMap; //匹配名与表情对象表
+}
+
+@jsonSerializable
+class Emote {
+  Emote({
+    // required this.id,
+    // required this.packageId,
+    // required this.state,
+    // required this.type,
+    // required this.attr,
+    required this.text,
+    required this.url,
+    required this.size,
+    // required this.mtime,
+    // required this.jumpTitle,
+  });
+  // @JsonProperty(defaultValue: 0)
+  // final int id;
+  // @JsonProperty(name: "package_id", defaultValue: 0)
+  // final int packageId;
+  // @JsonProperty(defaultValue: 0)
+  // final int state;
+  // @JsonProperty(defaultValue: 0)
+  // final int type;
+  // @JsonProperty(defaultValue: 0)
+  // final int attr;
+  @JsonProperty(defaultValue: "[]")
+  final String text; //表情匹配名
+  @JsonProperty(defaultValue: "")
+  final String url; //表情url
+  @JsonProperty(name: "meta/size", defaultValue: 0)
+  final int size; //1小,2大
+  // @JsonProperty(defaultValue: 0)
+  // final int mtime;
+  // @JsonProperty(name: "jump_title", defaultValue: 0)
+  // final String jumpTitle;
 }
 
 @jsonSerializable
