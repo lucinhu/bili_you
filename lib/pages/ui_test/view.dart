@@ -8,7 +8,7 @@ class UiTestPage extends GetView<UiTestController> {
 
   Widget _buildView(BuildContext context) {
     return ListView(
-      children: const [],
+      children: controller.listTiles,
     );
   }
 
