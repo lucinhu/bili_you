@@ -10,7 +10,7 @@ class UiTestController extends GetxController {
   //测试名称,页面对应表
   final Map<String, Widget> _testPages = {
     "评论测试": ReplyPage(
-      bvid: 170001.toString(),
+      bvid: "170001",
     )
   };
 

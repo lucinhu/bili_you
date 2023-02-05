@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bili_you/common/models/reply/reply_item.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
@@ -10,7 +12,7 @@ class ReplyItemWidget extends StatelessWidget {
       {super.key,
       required this.face,
       required this.name,
-      required this.message,
+      required this.content,
       required this.location,
       required this.like,
       required this.timeStamp,
@@ -20,7 +22,7 @@ class ReplyItemWidget extends StatelessWidget {
       this.cardLabels = const []});
   final String face;
   final String name;
-  final String message;
+  final Content content;
   final String location;
   final int like;
   final int timeStamp;
@@ -28,6 +30,37 @@ class ReplyItemWidget extends StatelessWidget {
   final bool isTop; //是否是置顶
   final bool isUp; //是否是up主
   final List<CardLabel> cardLabels;
+
+  Widget _buildReplyItemContent(Content content) {
+    List<InlineSpan> spans = [];
+    content.message.splitMapJoin(RegExp(r"\[.*?\]"), onMatch: (match) {
+      //匹配到是[]的位置时,有可能是表情
+      String matched = match[0]!;
+      //判断是不是有这个表情
+      if (content.emoteMap.containsKey(matched)) {
+        spans.add(
+          WidgetSpan(
+              child: SizedBox(
+                  width: 20.0 * content.emoteMap[matched]!.size,
+                  height: 20.0 * content.emoteMap[matched]!.size,
+                  child: CachedNetworkImage(
+                    cacheKey: matched,
+                    cacheManager: CacheManager(Config(CacheKeys.emoteKey)),
+                    imageUrl: content.emoteMap[matched]!.url,
+                  ))),
+        );
+      } else {
+        spans.add(TextSpan(text: matched));
+      }
+      return matched;
+    }, onNonMatch: (noMatch) {
+      //匹配到不是[]的位置时,不是表情
+      spans.add(TextSpan(text: noMatch));
+      return noMatch;
+    });
+
+    return Text.rich(TextSpan(children: spans));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,9 +179,7 @@ class ReplyItemWidget extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Text(
-                        message,
-                      ),
+                      child: _buildReplyItemContent(content),
                     ),
                     Row(
                       children: [

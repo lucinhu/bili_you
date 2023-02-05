@@ -38,7 +38,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
         _rootReply = ReplyItemWidget(
           face: data.data.root.member.avatar,
           name: data.data.root.member.uname,
-          message: data.data.root.content.message,
+          content: data.data.root.content,
           timeStamp: data.data.root.ctime,
           like: data.data.root.like,
           location: data.data.root.replyControl.location,
@@ -63,7 +63,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
           _replyReplies.add(ReplyItemWidget(
             face: i.member.avatar,
             name: i.member.uname,
-            message: i.content.message,
+            content: i.content,
             timeStamp: i.ctime,
             like: i.like,
             location: i.replyControl.location,

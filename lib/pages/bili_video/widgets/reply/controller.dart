@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/video_reply_api.dart';
 import 'package:bili_you/common/models/reply/reply.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 import 'package:flutter/material.dart';
@@ -80,7 +81,7 @@ class ReplyController extends GetxController {
     list.add(ReplyItemWidget(
       face: i.member.avatar,
       name: i.member.uname,
-      message: i.content.message,
+      content: i.content,
       like: i.like,
       timeStamp: i.ctime,
       bottomWidget: subReplies,
