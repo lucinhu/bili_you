@@ -56,6 +56,8 @@ dependencies:
   fanjiao_danmu: ^0.2.0
   protobuf: ^2.1.0
   easy_refresh: ^3.3.0+1
+  package_info_plus: ^3.0.2
+  url_launcher: ^6.1.8
   
 
 dev_dependencies:
