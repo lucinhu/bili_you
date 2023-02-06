@@ -11,6 +11,13 @@ class UiTestController extends GetxController {
   final Map<String, Widget> _testPages = {
     "评论测试": const ReplyPage(
       bvid: "170001",
+    ),
+    "许可": const LicensePage(
+      applicationIcon: ImageIcon(
+        AssetImage("assets/icon/bili.png"),
+        size: 200,
+      ),
+      applicationName: "Bili You",
     )
   };
 
