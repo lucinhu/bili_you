@@ -22,7 +22,6 @@ class ReplyController extends GetxController {
   int pageNum = 1;
 
   _initData() {
-    onReplyRefresh();
     update(["reply"]);
   }
 
@@ -40,19 +39,20 @@ class ReplyController extends GetxController {
       List<Widget> preSubReplies = []; //预显示在外的楼中楼
       for (var j in i.replies) {
         //添加预显示在外楼中楼评论条目
-        preSubReplies.add(
-          Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        preSubReplies.add(Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text.rich(
+              TextSpan(
                 children: [
-                  Text("${j.member.uname}: "),
-                  Expanded(
-                    child: Text(j.content.message),
-                  )
+                  TextSpan(
+                    text: "${j.member.uname}: ",
+                  ),
+                  ReplyItemWidget.buildReplyItemContent(j.content)
                 ],
-              )),
-        );
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            )));
       }
       //预显示在外楼中楼控件
       subReplies = Container(
