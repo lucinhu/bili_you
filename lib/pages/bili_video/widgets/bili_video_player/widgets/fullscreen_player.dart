@@ -58,42 +58,42 @@ class _BiliVideoPlayerFullScreenPageState
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Center(
-          child: AspectRatio(
-            aspectRatio:
-                widget.controller.videoPlayerController!.value.aspectRatio,
-            child: VideoPlayer(widget.controller.videoPlayerController!),
+    return Scaffold(
+      body: Stack(
+        children: [
+          Center(
+            child: AspectRatio(
+              aspectRatio:
+                  widget.controller.videoPlayerController!.value.aspectRatio,
+              child: VideoPlayer(widget.controller.videoPlayerController!),
+            ),
           ),
-        ),
-        Builder(
-          builder: (context) {
-            Size size;
-            if (widget.controller.videoPlayerController!.value.aspectRatio >=
-                1) {
-              if (MediaQuery.of(context).size.aspectRatio >= 1) {
-                size = MediaQuery.of(context).size;
+          Builder(
+            builder: (context) {
+              Size size;
+              if (widget.controller.videoPlayerController!.value.aspectRatio >=
+                  1) {
+                if (MediaQuery.of(context).size.aspectRatio >= 1) {
+                  size = MediaQuery.of(context).size;
+                } else {
+                  size = MediaQuery.of(context).size.flipped;
+                }
               } else {
-                size = MediaQuery.of(context).size.flipped;
+                if (MediaQuery.of(context).size.aspectRatio < 1) {
+                  size = MediaQuery.of(context).size;
+                } else {
+                  size = MediaQuery.of(context).size.flipped;
+                }
               }
-            } else {
-              if (MediaQuery.of(context).size.aspectRatio < 1) {
-                size = MediaQuery.of(context).size;
-              } else {
-                size = MediaQuery.of(context).size.flipped;
-              }
-            }
-            return DanmuWidget(
-                size: size, danmuController: _fanjiaoDanmuController);
-          },
-        ),
-        SafeArea(
-            child: Scaffold(
-          backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-          body: VideoControllPannel(controller: widget.controller),
-        ))
-      ],
+              return DanmuWidget(
+                  size: size, danmuController: _fanjiaoDanmuController);
+            },
+          ),
+          SafeArea(
+            child: VideoControllPannel(controller: widget.controller),
+          )
+        ],
+      ),
     );
   }
 

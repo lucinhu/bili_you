@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'index.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:get/get.dart';
+
+import 'index.dart';
 
 class IntroductionPage extends StatefulWidget {
   const IntroductionPage({
@@ -252,46 +253,6 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
                                           ],
                                         ),
                                       ));
-                              // Scaffold.of(context).showBottomSheet(
-                              //     clipBehavior: Clip.antiAlias,
-                              //     (context) => SafeArea(
-                              //           child: SizedBox(
-                              //             height: context.height / 2 + 50,
-                              //             child: Column(
-                              //               children: [
-                              //                 Divider(
-                              //                   thickness: 5,
-                              //                   indent: context.width / 3,
-                              //                   endIndent: context.width / 3,
-                              //                   height: 50,
-                              //                 ),
-                              //                 BottomSheet(
-                              //                   backgroundColor:
-                              //                       Theme.of(Get.context!)
-                              //                           .cardColor,
-                              //                   onClosing: () {},
-                              //                   builder: (context) => SizedBox(
-                              //                     height: context.height / 2,
-                              //                     child: ListView(
-                              //                       padding:
-                              //                           const EdgeInsets.only(
-                              //                               left: 10,
-                              //                               right: 10),
-                              //                       children: [
-                              //                         Wrap(
-                              //                           alignment: WrapAlignment
-                              //                               .spaceBetween,
-                              //                           children: controller
-                              //                               .partButtons,
-                              //                         )
-                              //                       ],
-                              //                     ),
-                              //                   ),
-                              //                 ),
-                              //               ],
-                              //             ),
-                              //           ),
-                              //         ));
                             },
                             child: const Icon(Icons.more_vert_rounded)),
                       ),

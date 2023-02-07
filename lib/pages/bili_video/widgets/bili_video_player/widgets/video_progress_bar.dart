@@ -26,20 +26,22 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
   //是否已按下
   bool isClickDown = false;
 
+  videoPlayerListenerCallback() {
+    //没有按下或拖动的时候才按视频进度进行更新
+    if (!isClickDown) {
+      sliderPosition = widget.videoController.value.position;
+      if (widget.videoController.value.buffered.isNotEmpty) {
+        buffered = widget.videoController.value.buffered.last;
+      }
+    } else {
+      buffered = DurationRange(Duration.zero, Duration.zero);
+    }
+  }
+
   @override
   void initState() {
     //监听视频位置变化
-    widget.videoController.addListener(() {
-      //没有按下或拖动的时候才按视频进度进行更新
-      if (!isClickDown) {
-        sliderPosition = widget.videoController.value.position;
-        if (widget.videoController.value.buffered.isNotEmpty) {
-          buffered = widget.videoController.value.buffered.last;
-        }
-      } else {
-        buffered = DurationRange(Duration.zero, Duration.zero);
-      }
-    });
+    widget.videoController.addListener(videoPlayerListenerCallback);
     super.initState();
     //初始加载,解决初始有值的情况没有更新到(比如暂停然后切换到全屏的时候)
     max = widget.videoController.value.duration.inMilliseconds.toDouble();
@@ -48,6 +50,12 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
     if (widget.videoController.value.buffered.isNotEmpty) {
       buffered = widget.videoController.value.buffered.last;
     }
+  }
+
+  @override
+  void dispose() {
+    widget.videoController.removeListener(videoPlayerListenerCallback);
+    super.dispose();
   }
 
   @override

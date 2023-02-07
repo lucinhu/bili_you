@@ -66,7 +66,8 @@ class SearchResultController extends GetxController {
               log("加载cid失败,${e.toString()}");
               return false;
             }
-            Get.to(BiliVideoPage(bvid: i.bvid, cid: videoParts.data.first.cid));
+            Get.to(() =>
+                BiliVideoPage(bvid: i.bvid, cid: videoParts.data.first.cid));
           },
         ));
         currentPage += 1;

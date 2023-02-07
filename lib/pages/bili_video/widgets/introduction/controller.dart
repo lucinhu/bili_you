@@ -45,10 +45,11 @@ class IntroductionController extends GetxController {
       _loadPartButtons();
       //构造相关视频
       _loadRelatedVideos();
+      return;
     } catch (e) {
       log(e.toString());
+      return;
     }
-    return;
   }
 
   _initData() {

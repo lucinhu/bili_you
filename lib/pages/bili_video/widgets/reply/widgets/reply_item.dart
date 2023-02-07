@@ -29,7 +29,7 @@ class ReplyItemWidget extends StatelessWidget {
   final bool isUp; //是否是up主
   final List<CardLabel> cardLabels;
 
-  Widget _buildReplyItemContent(Content content) {
+  static TextSpan buildReplyItemContent(Content content) {
     List<InlineSpan> spans = [];
     content.message.splitMapJoin(RegExp(r"\[.*?\]"), onMatch: (match) {
       //匹配到是[]的位置时,有可能是表情
@@ -57,7 +57,7 @@ class ReplyItemWidget extends StatelessWidget {
       return noMatch;
     });
 
-    return Text.rich(TextSpan(children: spans));
+    return TextSpan(children: spans);
   }
 
   @override
@@ -177,7 +177,7 @@ class ReplyItemWidget extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
-                      child: _buildReplyItemContent(content),
+                      child: Text.rich(buildReplyItemContent(content)),
                     ),
                     Row(
                       children: [
