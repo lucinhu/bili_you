@@ -1,34 +1,33 @@
-//进入全屏显示
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 
-enterFullScreen() async {
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  await SystemChrome.setSystemUIChangeCallback(
-      (systemOverlaysAreVisible) async => {
-            if (systemOverlaysAreVisible)
-              {
-                //为了防止状态栏出来就回不去了
-                //使状态栏在全屏时确实是暂时显示的
-                await SystemChrome.setEnabledSystemUIMode(
-                    SystemUiMode.immersiveSticky)
-              }
-          });
+//进入全屏显示
+Future<void> enterFullScreen() async {
+  await SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.immersiveSticky,
+  );
 }
 
 //退出全屏显示
-exitFullScreen() async {
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  await SystemChrome.setSystemUIChangeCallback(null);
+Future<void> exitFullScreen() async {
+  late SystemUiMode mode;
+  if ((await DeviceInfoPlugin().androidInfo).version.sdkInt >= 29) {
+    mode = SystemUiMode.edgeToEdge;
+  } else {
+    mode = SystemUiMode.manual;
+  }
+  await SystemChrome.setEnabledSystemUIMode(mode,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
 }
 
 //横屏
-landScape() async {
+Future<void> landScape() async {
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
 }
 
 //竖屏
-portraitUp() async {
+Future<void> portraitUp() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
