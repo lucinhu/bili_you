@@ -39,8 +39,8 @@ dependencies:
   get: ^4.6.5
   dynamic_color: ^1.5.4
   cached_network_image: ^3.2.3
-  dio: ^4.0.6
-  dio_cookie_manager: ^2.0.0
+  dio: ^5.0.0
+  dio_cookie_manager: ^2.1.0
   path_provider: ^2.0.11
   cookie_jar: ^3.0.1
   gt3_flutter_plugin: ^0.0.8
@@ -52,13 +52,12 @@ dependencies:
   wakelock: ^0.6.2
   path: ^1.8.2
   dart_json_mapper: ^2.2.7+1
-  dio_flutter_transformer2: ^4.0.1
-  fanjiao_danmu: ^0.2.0
   protobuf: ^2.1.0
   easy_refresh: ^3.3.0+1
   package_info_plus: ^3.0.2
   url_launcher: ^6.1.8
   device_info_plus: ^8.0.0
+  quiver: ^3.2.1
   
 
 dev_dependencies:
