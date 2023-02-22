@@ -1,25 +1,38 @@
-import 'package:bili_you/pages/bili_video/widgets/bili_video_player/view.dart';
+import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
+import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player_panel.dart';
 import 'package:get/get.dart';
 
 class BiliVideoController extends GetxController {
-  BiliVideoController({required this.bvid, required this.cid}) {
-    biliVideoPlayerPage = BiliVideoPlayerPage(bvid: bvid, cid: cid);
-  }
+  BiliVideoController({required this.bvid, required this.cid});
   final String bvid;
   int cid;
-  late BiliVideoPlayerPage biliVideoPlayerPage;
+  late BiliVideoPlayer biliVideoPlayerPage;
+  late BiliVideoPlayerController biliVideoPageController;
 
   changeVideoPart(int cid) {
     this.cid = cid;
-    biliVideoPlayerPage.controller.disposeAllControllers();
-    biliVideoPlayerPage.controller.changePart(cid);
+    biliVideoPageController.changeCid(cid);
   }
 
-  _initData() async {
+  _initData() {
     update(["bili_video_play"]);
   }
 
   void onTap() {}
+  @override
+  void onInit() {
+    biliVideoPageController = BiliVideoPlayerController(
+      bvid: bvid,
+      cid: cid,
+    );
+    biliVideoPlayerPage = BiliVideoPlayer(biliVideoPageController,
+        buildControllPanel: (context, biliVideoPlayerController) {
+      return BiliVideoPlayerPanel(
+        BiliVideoPlayerPanelController(biliVideoPlayerController),
+      );
+    });
+    super.onInit();
+  }
 
   @override
   void onReady() {

@@ -11,12 +11,12 @@ class IntroductionPage extends StatefulWidget {
   const IntroductionPage({
     super.key,
     required this.changePartCallback,
-    required this.stopVideo,
+    required this.pauseVideoCallback,
     required this.bvid,
   });
   final String bvid;
   final Function(int cid) changePartCallback;
-  final Function() stopVideo;
+  final Function() pauseVideoCallback;
 
   @override
   State<IntroductionPage> createState() => _IntroductionPageState();
@@ -31,7 +31,7 @@ class _IntroductionPageState extends State<IntroductionPage>
     return _IntroductionViewGetX(
       changePartCallback: widget.changePartCallback,
       bvid: widget.bvid,
-      stopVideo: widget.stopVideo,
+      stopVideo: widget.pauseVideoCallback,
       tag: tag,
     );
   }
@@ -157,7 +157,7 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 10),
-          child: //TODO copyrights info
+          child: //copyrights info
               Row(
             children: [
               Text(
