@@ -33,6 +33,11 @@ class VideoPlayApi {
     return ret;
   }
 
+  static Map<String, String> videoPlayerHttpHeaders = {
+    'user-agent': ApiConstants.userAgent,
+    'referer': ApiConstants.bilibiliBase
+  };
+
   // static Future<String> requestVideoPlayUrlInDurl(
   //     {required String bvid, required int cid}) async {
   //   var data = await requestVideoPlay(bvid: bvid, cid: cid, qn: 116);
