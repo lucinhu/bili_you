@@ -42,9 +42,10 @@ class VideoAudioController {
   VideoPlayerController? get audioPlayerController => _audioPlayerController;
   final List<Function(VideoAudioPlayerValue)> _stateChangedListeners = [];
   final List<VoidCallback> _listeners = [];
+  final List<Function(Duration position)> _seekToListeners = [];
   late Timer timer;
   Future<Duration> get position async =>
-      await _videoPlayerController?.position ?? Duration.zero;
+      await _audioPlayerController?.position ?? Duration.zero;
   bool get hasError {
     if ((_videoPlayerController?.value.hasError ?? false) ||
         (_audioPlayerController?.value.hasError ?? false)) {
@@ -61,6 +62,7 @@ class VideoAudioController {
   bool _toPause = false;
 
   void _videoPlayerControllerCallback() {
+    //检查是否播放到结尾了
     if (_videoPlayerController!.value.position ==
         _videoPlayerController!.value.duration) {
       value.isPlaying = false;
@@ -72,7 +74,10 @@ class VideoAudioController {
       }
       value.isEnd = true;
     } else {
-      value.isEnd = false;
+      if (value.isEnd) {
+        _callSeekToListeners(Duration.zero);
+        value.isEnd = false;
+      }
     }
     value.buffered = _videoPlayerController!.value.buffered;
   }
@@ -113,9 +118,9 @@ class VideoAudioController {
             _isPlayPauseLocked = true;
             if (_toPlay) {
               if (value.isEnd) {
+                value.isEnd = false;
                 await _videoPlayerController!.seekTo(Duration.zero);
                 await _audioPlayerController!.seekTo(Duration.zero);
-                value.isEnd = false;
               } else {
                 await _videoPlayerController!.play();
                 await _audioPlayerController!.play();
@@ -203,21 +208,6 @@ class VideoAudioController {
                 await _audioPlayerController!.pause();
                 value.isBuffering = false;
               }
-              // //检测是否播放到结尾了
-              // if (videoPos != videoDuration && audioPos != audioDuration) {
-              //   //没到结尾
-              //   value.isEnd = false;
-              // } else if (videoPos == videoDuration ||
-              //     audioPos == audioDuration) {
-              //   //到结尾了
-              //   value.isEnd = true;
-              //   value.isPlaying = false;
-              //   value.isBuffering = false;
-              //   await _videoPlayerController.seekTo(Duration.zero);
-              //   await _audioPlayerController.seekTo(Duration.zero);
-              //   await _videoPlayerController.pause();
-              //   await _audioPlayerController.pause();
-              // }
             }
             //检测状态变化并调用相应的监听器回调
             if (value.isBuffering != _lastValue.isBuffering) {
@@ -253,6 +243,20 @@ class VideoAudioController {
   void removeStateChangedListener(
       Function(VideoAudioPlayerValue value) listener) {
     _stateChangedListeners.remove(listener);
+  }
+
+  void addSeekToListener(Function(Duration position) listener) {
+    _seekToListeners.add(listener);
+  }
+
+  void removeSeekToListener(Function(Duration position) listener) {
+    _seekToListeners.remove(listener);
+  }
+
+  void _callSeekToListeners(Duration position) {
+    for (var i in _seekToListeners) {
+      i(position);
+    }
   }
 
   void _callStateChangedListeners() {
@@ -321,6 +325,7 @@ class VideoAudioController {
     await _videoPlayerController?.seekTo(position);
     await _audioPlayerController?.seekTo(position);
     value.position = position;
+    _callSeekToListeners(position);
   }
 
   Future<void> setPlayBackSpeed(double speed) async {

@@ -5,7 +5,6 @@ import 'package:bili_you/common/utils/fullscreen.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
-import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player_full_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,6 +16,7 @@ class BiliVideoPlayerPanel extends StatefulWidget {
 }
 
 class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
+  GlobalKey danmakuCheckBoxKey = GlobalKey();
   GlobalKey playButtonKey = GlobalKey();
   GlobalKey sliderKey = GlobalKey();
   GlobalKey durationTextKey = GlobalKey();
@@ -45,6 +45,35 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
     durationTextKey.currentState?.setState(() {});
   }
 
+  void toggleFullScreen() {
+    if (widget.controller.isFullScreen) {
+      widget.controller.isFullScreen = false;
+      portraitUp().then((value) =>
+          widget.controller.biliVideoPlayerController.aspectRatio = 16 / 9);
+      exitFullScreen();
+    } else {
+      widget.controller.isFullScreen = true;
+      if (widget.controller._biliVideoPlayerController.videoAspectRatio >= 1) {
+        landScape().then((value) => widget.controller.biliVideoPlayerController
+            .aspectRatio = MediaQuery.of(context).size.flipped.aspectRatio);
+      } else {
+        portraitUp().then((value) => widget.controller.biliVideoPlayerController
+            .aspectRatio = MediaQuery.of(context).size.aspectRatio);
+      }
+      enterFullScreen();
+    }
+  }
+
+  void toggleDanmaku() {
+    bool opened = !widget.controller._danmakuOpened;
+    // log("toggleDanmaku:$opened");
+    widget.controller._biliVideoPlayerController.biliDanmakuController!
+        .visible = opened;
+    danmakuCheckBoxKey.currentState!.setState(() {
+      widget.controller._danmakuOpened = opened;
+    });
+  }
+
   @override
   void initState() {
     widget.controller._isPlayerPlaying =
@@ -52,7 +81,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
     widget.controller._duration =
         widget.controller._biliVideoPlayerController.duration;
     widget.controller.asepectRatio =
-        widget.controller._biliVideoPlayerController.aspectRatio;
+        widget.controller._biliVideoPlayerController.videoAspectRatio;
     widget.controller._biliVideoPlayerController
         .addStateChangedListener(playStateChangedCallback);
     widget.controller._biliVideoPlayerController
@@ -71,334 +100,326 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        //手势识别层
-        GestureDetector(
-          onTap: () {
-            //点击显示面板
-            setState(() {
-              widget.controller._show = !(widget.controller._show);
-            });
-          },
-          onDoubleTap: () {
-            //双击暂停/播放
-            if (widget.controller._isPlayerPlaying) {
-              widget.controller._biliVideoPlayerController.pause();
-            } else {
-              widget.controller._biliVideoPlayerController.play();
-            }
-          },
-          onLongPress: () {
-            widget.controller._selectingSpeed =
-                widget.controller._biliVideoPlayerController.speed;
-            //长按2倍速度
-            widget.controller._biliVideoPlayerController.setPlayBackSpeed(
-                math.max(widget.controller._selectingSpeed, 2));
-            //振动
-            HapticFeedback.selectionClick();
-          },
-          onLongPressEnd: (details) {
-            //长按结束时恢复本来的速度
-            widget.controller._biliVideoPlayerController
-                .setPlayBackSpeed(widget.controller._selectingSpeed);
-          },
-        ),
-        //面板层
-        Visibility(
-          visible: widget.controller._show,
-          child: Column(
-            children: [
-              //上面板(返回,菜单...)
-              Container(
-                decoration: panelDecoration,
-                child: SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: Row(
-                    children: [
-                      BackButton(
-                        color: iconColor,
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      const Spacer(),
-                      PopupMenuButton(
-                        icon: const Icon(
-                          Icons.more_vert_rounded,
-                          color: iconColor,
-                        ),
-                        itemBuilder: (context) {
-                          return <PopupMenuEntry<String>>[
-                            PopupMenuItem(
-                              padding: EdgeInsets.zero,
-                              value: "弹幕",
-                              child: Row(
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.all(12),
-                                    child: Icon(
-                                      Icons.format_list_bulleted,
-                                      size: 24,
-                                    ),
-                                  ),
-                                  const Text("弹幕"),
-                                  const Spacer(),
-                                  StatefulBuilder(
-                                    builder: (context, setState) {
-                                      return Checkbox(
-                                        value: widget.controller._danmakuOpened,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            widget.controller._danmakuOpened =
-                                                value ??
-                                                    widget.controller
-                                                        ._danmakuOpened;
-                                          });
-                                        },
-                                      );
-                                    },
-                                  )
-                                ],
-                              ),
-                            ),
-                            PopupMenuItem(
-                              padding: EdgeInsets.zero,
-                              value: "播放速度",
-                              child: Row(
-                                children: const [
-                                  Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Icon(
-                                        Icons.speed_rounded,
-                                        size: 24,
-                                      )),
-                                  Text("播放速度")
-                                ],
-                              ),
-                            )
-                          ];
-                        },
-                        onSelected: (value) {
-                          switch (value) {
-                            case "弹幕":
-                              widget.controller._danmakuOpened =
-                                  !widget.controller._danmakuOpened;
-                              break;
-                            case "播放速度":
-                              showDialog(
-                                context: context,
-                                builder: (context) => StatefulBuilder(
-                                    builder: (context, setState) {
-                                  return AlertDialog(
-                                    title: const Text("播放速度"),
-                                    content: IntrinsicHeight(
-                                      child: Slider(
-                                        min: 0.25,
-                                        max: 2.50,
-                                        divisions: 9,
-                                        label:
-                                            "${widget.controller._selectingSpeed}X",
-                                        value:
-                                            widget.controller._selectingSpeed,
-                                        onChanged: (value) {
-                                          setState(
-                                            () {
-                                              widget.controller
-                                                  ._selectingSpeed = value;
-                                            },
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            widget.controller._selectingSpeed =
-                                                widget
-                                                    .controller
-                                                    ._biliVideoPlayerController
-                                                    .speed;
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            "取消",
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .hintColor),
-                                          )),
-                                      TextButton(
-                                          onPressed: () {
-                                            widget.controller
-                                                ._biliVideoPlayerController
-                                                .setPlayBackSpeed(widget
-                                                    .controller
-                                                    ._selectingSpeed);
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("确定")),
-                                    ],
-                                  );
-                                }),
-                              );
-
-                              break;
-                            default:
-                              log(value);
-                          }
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              //中间留空
-              const Spacer(),
-              //下面板(播放按钮,进度条...)
-              Container(
+    return WillPopScope(
+      onWillPop: () async {
+        if (widget.controller.isFullScreen) {
+          toggleFullScreen();
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          //手势识别层
+          GestureDetector(
+            onTap: () {
+              //点击显示面板
+              setState(() {
+                widget.controller._show = !(widget.controller._show);
+              });
+            },
+            onDoubleTap: () {
+              //双击暂停/播放
+              if (widget.controller._isPlayerPlaying) {
+                widget.controller._biliVideoPlayerController.pause();
+              } else {
+                widget.controller._biliVideoPlayerController.play();
+              }
+            },
+            onLongPress: () {
+              widget.controller._selectingSpeed =
+                  widget.controller._biliVideoPlayerController.speed;
+              //长按2倍速度
+              widget.controller._biliVideoPlayerController.setPlayBackSpeed(
+                  math.max(widget.controller._selectingSpeed, 2));
+              //振动
+              HapticFeedback.selectionClick();
+            },
+            onLongPressEnd: (details) {
+              //长按结束时恢复本来的速度
+              widget.controller._biliVideoPlayerController
+                  .setPlayBackSpeed(widget.controller._selectingSpeed);
+            },
+          ),
+          //面板层
+          Visibility(
+            visible: widget.controller._show,
+            child: Column(
+              children: [
+                //上面板(返回,菜单...)
+                Container(
                   decoration: panelDecoration,
                   child: SafeArea(
                     top: false,
                     bottom: false,
-                    child: Row(children: [
-                      StatefulBuilder(
-                        key: playButtonKey,
-                        builder: (context, setState) {
-                          late final IconData iconData;
-                          if (widget.controller._isPlayerEnd) {
-                            iconData = Icons.refresh_rounded;
-                          } else if (widget.controller._isPlayerPlaying) {
-                            iconData = Icons.pause_rounded;
-                          } else {
-                            iconData = Icons.play_arrow_rounded;
-                          }
-                          return //播放按钮
-                              IconButton(
-                                  color: iconColor,
-                                  onPressed: () {
-                                    setState(
-                                      () {
-                                        if (widget
-                                            .controller._isPlayerPlaying) {
-                                          widget.controller
-                                              ._biliVideoPlayerController
-                                              .pause();
-                                        } else {
-                                          if (widget
-                                              .controller
-                                              ._biliVideoPlayerController
-                                              .hasError) {
-                                            //如果是出错状态, 重新加载
-                                            widget.controller
-                                                ._biliVideoPlayerController
-                                                .reloadWidget();
-                                          } else {
-                                            //不是出错状态, 就继续播放
-                                            widget.controller
-                                                ._biliVideoPlayerController
-                                                .play();
-                                          }
-                                        }
-                                        widget.controller._isPlayerPlaying =
-                                            !widget.controller._isPlayerPlaying;
+                    child: Row(
+                      children: [
+                        const BackButton(
+                          color: Colors.white,
+                        ),
+                        const Spacer(),
+                        PopupMenuButton(
+                          icon: const Icon(
+                            Icons.more_vert_rounded,
+                            color: iconColor,
+                          ),
+                          itemBuilder: (context) {
+                            return <PopupMenuEntry<String>>[
+                              PopupMenuItem(
+                                padding: EdgeInsets.zero,
+                                value: "弹幕",
+                                child: Row(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.all(12),
+                                      child: Icon(
+                                        Icons.format_list_bulleted,
+                                        size: 24,
+                                      ),
+                                    ),
+                                    const Text("弹幕"),
+                                    const Spacer(),
+                                    StatefulBuilder(
+                                      key: danmakuCheckBoxKey,
+                                      builder: (context, setState) {
+                                        return Checkbox(
+                                          value:
+                                              widget.controller._danmakuOpened,
+                                          onChanged: (value) {
+                                            if (value != null &&
+                                                value !=
+                                                    widget.controller
+                                                        ._danmakuOpened) {
+                                              toggleDanmaku();
+                                            }
+                                          },
+                                        );
                                       },
+                                    )
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                padding: EdgeInsets.zero,
+                                value: "播放速度",
+                                child: Row(
+                                  children: const [
+                                    Padding(
+                                        padding: EdgeInsets.all(12),
+                                        child: Icon(
+                                          Icons.speed_rounded,
+                                          size: 24,
+                                        )),
+                                    Text("播放速度")
+                                  ],
+                                ),
+                              )
+                            ];
+                          },
+                          onSelected: (value) {
+                            switch (value) {
+                              case "弹幕":
+                                toggleDanmaku();
+                                break;
+                              case "播放速度":
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => StatefulBuilder(
+                                      builder: (context, setState) {
+                                    return AlertDialog(
+                                      title: const Text("播放速度"),
+                                      content: IntrinsicHeight(
+                                        child: Slider(
+                                          min: 0.25,
+                                          max: 2.50,
+                                          divisions: 9,
+                                          label:
+                                              "${widget.controller._selectingSpeed}X",
+                                          value:
+                                              widget.controller._selectingSpeed,
+                                          onChanged: (value) {
+                                            setState(
+                                              () {
+                                                widget.controller
+                                                    ._selectingSpeed = value;
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              widget.controller
+                                                      ._selectingSpeed =
+                                                  widget
+                                                      .controller
+                                                      ._biliVideoPlayerController
+                                                      .speed;
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              "取消",
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .hintColor),
+                                            )),
+                                        TextButton(
+                                            onPressed: () {
+                                              widget.controller
+                                                  ._biliVideoPlayerController
+                                                  .setPlayBackSpeed(widget
+                                                      .controller
+                                                      ._selectingSpeed);
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("确定")),
+                                      ],
                                     );
-                                  },
-                                  icon: Icon(iconData));
-                        },
-                      ),
-                      //进度条
-                      Expanded(
-                        child: StatefulBuilder(
-                            key: sliderKey,
-                            builder: (context, setState) {
-                              return Slider(
-                                min: 0,
-                                max: widget.controller._duration.inMilliseconds
-                                    .toDouble(),
-                                value: widget
-                                    .controller._position.inMilliseconds
-                                    .toDouble(),
-                                secondaryTrackValue: widget
-                                    .controller._fartherestBuffed.inMilliseconds
-                                    .toDouble(),
-                                onChanged: (value) {
-                                  if (widget.controller._isSliderDraging) {
-                                    widget.controller._position =
-                                        Duration(milliseconds: value.toInt());
-                                  } else {
-                                    widget.controller._biliVideoPlayerController
-                                        .seekTo(Duration(
-                                            milliseconds: value.toInt()));
-                                  }
-                                },
-                                onChangeStart: (value) {
-                                  widget.controller._isSliderDraging = true;
-                                },
-                                onChangeEnd: (value) {
-                                  if (widget.controller._isSliderDraging) {
-                                    widget.controller._biliVideoPlayerController
-                                        .seekTo(Duration(
-                                            milliseconds: value.toInt()));
-                                    widget.controller._isSliderDraging = false;
-                                  }
-                                },
-                              );
-                            }),
-                      ),
-                      //时长
-                      StatefulBuilder(
-                        key: durationTextKey,
-                        builder: (context, setState) {
-                          return Text(
-                            "${StringFormatUtils.timeLengthFormat(widget.controller._position.inSeconds)}/${StringFormatUtils.timeLengthFormat(widget.controller._duration.inSeconds)}",
-                            style: const TextStyle(color: textColor),
-                          );
-                        },
-                      ),
-                      // 全屏按钮
-                      IconButton(
-                          onPressed: () {
-                            if (widget.controller.isFullScreen) {
-                              Navigator.of(context).pop();
-                            } else {
-                              widget.controller.isFullScreen = true;
-                              Future(
-                                () async {
-                                  if (widget
-                                          .controller
-                                          ._biliVideoPlayerController
-                                          .aspectRatio >=
-                                      1) {
-                                    await landScape();
-                                  } else {
-                                    await portraitUp();
-                                  }
-                                  await enterFullScreen();
-                                },
-                              ).then((value) => Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return BiliVideoPlayerFullScreen(
-                                        biliVideoPlayerController: widget
-                                            .controller
-                                            ._biliVideoPlayerController,
-                                        biliVideoPlayerPanelController:
-                                            widget.controller);
-                                  })));
+                                  }),
+                                );
+
+                                break;
+                              default:
+                                log(value);
                             }
                           },
-                          icon: const Icon(
-                            Icons.fullscreen_rounded,
-                            color: iconColor,
-                          ))
-                    ]),
-                  ))
-            ],
-          ),
-        )
-      ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                //中间留空
+                const Spacer(),
+                //下面板(播放按钮,进度条...)
+                Container(
+                    decoration: panelDecoration,
+                    child: SafeArea(
+                      top: false,
+                      bottom: false,
+                      child: Row(children: [
+                        StatefulBuilder(
+                          key: playButtonKey,
+                          builder: (context, setState) {
+                            late final IconData iconData;
+                            if (widget.controller._isPlayerEnd) {
+                              iconData = Icons.refresh_rounded;
+                            } else if (widget.controller._isPlayerPlaying) {
+                              iconData = Icons.pause_rounded;
+                            } else {
+                              iconData = Icons.play_arrow_rounded;
+                            }
+                            return //播放按钮
+                                IconButton(
+                                    color: iconColor,
+                                    onPressed: () {
+                                      setState(
+                                        () {
+                                          if (widget
+                                              .controller._isPlayerPlaying) {
+                                            widget.controller
+                                                ._biliVideoPlayerController
+                                                .pause();
+                                          } else {
+                                            if (widget
+                                                .controller
+                                                ._biliVideoPlayerController
+                                                .hasError) {
+                                              //如果是出错状态, 重新加载
+                                              widget.controller
+                                                  ._biliVideoPlayerController
+                                                  .reloadWidget();
+                                            } else {
+                                              //不是出错状态, 就继续播放
+                                              widget.controller
+                                                  ._biliVideoPlayerController
+                                                  .play();
+                                            }
+                                          }
+                                          widget.controller._isPlayerPlaying =
+                                              !widget
+                                                  .controller._isPlayerPlaying;
+                                        },
+                                      );
+                                    },
+                                    icon: Icon(iconData));
+                          },
+                        ),
+                        //进度条
+                        Expanded(
+                          child: StatefulBuilder(
+                              key: sliderKey,
+                              builder: (context, setState) {
+                                return Slider(
+                                  min: 0,
+                                  max: widget
+                                      .controller._duration.inMilliseconds
+                                      .toDouble(),
+                                  value: (math.min(
+                                          widget.controller._position
+                                              .inMilliseconds,
+                                          widget.controller._duration
+                                              .inMilliseconds))
+                                      .toDouble(),
+                                  secondaryTrackValue: widget.controller
+                                      ._fartherestBuffed.inMilliseconds
+                                      .toDouble(),
+                                  onChanged: (value) {
+                                    if (widget.controller._isSliderDraging) {
+                                      widget.controller._position =
+                                          Duration(milliseconds: value.toInt());
+                                    } else {
+                                      widget
+                                          .controller._biliVideoPlayerController
+                                          .seekTo(Duration(
+                                              milliseconds: value.toInt()));
+                                    }
+                                  },
+                                  onChangeStart: (value) {
+                                    widget.controller._isSliderDraging = true;
+                                  },
+                                  onChangeEnd: (value) {
+                                    if (widget.controller._isSliderDraging) {
+                                      widget
+                                          .controller._biliVideoPlayerController
+                                          .seekTo(Duration(
+                                              milliseconds: value.toInt()));
+                                      widget.controller._isSliderDraging =
+                                          false;
+                                    }
+                                  },
+                                );
+                              }),
+                        ),
+                        //时长
+                        StatefulBuilder(
+                          key: durationTextKey,
+                          builder: (context, setState) {
+                            return Text(
+                              "${StringFormatUtils.timeLengthFormat(widget.controller._position.inSeconds)}/${StringFormatUtils.timeLengthFormat(widget.controller._duration.inSeconds)}",
+                              style: const TextStyle(color: textColor),
+                            );
+                          },
+                        ),
+                        // 全屏按钮
+                        IconButton(
+                            onPressed: () {
+                              // log("full:${widget.controller.isFullScreen}");
+                              toggleFullScreen();
+                            },
+                            icon: const Icon(
+                              Icons.fullscreen_rounded,
+                              color: iconColor,
+                            ))
+                      ]),
+                    ))
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

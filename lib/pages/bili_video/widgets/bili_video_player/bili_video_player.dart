@@ -3,31 +3,33 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/video_play_api.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
+import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
 import 'package:flutter/material.dart';
 
 class BiliVideoPlayer extends StatefulWidget {
   const BiliVideoPlayer(
     this.controller, {
     super.key,
-    this.autoDispose = true,
     this.buildDanmaku,
     this.buildControllPanel,
   });
   final BiliVideoPlayerController controller;
-  final Widget Function(BuildContext context,
+  final BiliDanmaku Function(BuildContext context,
       BiliVideoPlayerController biliVideoPlayerController)? buildDanmaku;
   final Widget Function(BuildContext context,
       BiliVideoPlayerController biliVideoPlayerController)? buildControllPanel;
-  final bool autoDispose;
 
   @override
   State<BiliVideoPlayer> createState() => _BiliVideoPlayerState();
 }
 
 class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
+  GlobalKey aspectRatioKey = GlobalKey();
+  BiliDanmaku? danmaku;
+  Widget? controllPanel;
   Future<bool> loadVideo(String bvid, int cid) async {
     if (widget.controller._videoAudioController != null) {
-      log("not null");
+      // log("not null");
       return true;
     }
     try {
@@ -52,69 +54,86 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
   }
 
   updateWidget() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
+
+  void init() {}
 
   @override
   void initState() {
-    widget.controller.updateWidget = updateWidget;
+    danmaku = widget.buildDanmaku?.call(context, widget.controller);
+    controllPanel = widget.buildControllPanel?.call(context, widget.controller);
+    widget.controller._updateAsepectRatioWidget = () {
+      if (aspectRatioKey.currentState?.mounted ?? false) {
+        aspectRatioKey.currentState!.setState(() {});
+      }
+    };
+    widget.controller.biliDanmakuController = danmaku?.controller;
     super.initState();
   }
 
   @override
   void dispose() {
-    if (widget.autoDispose) {
-      widget.controller._videoAudioController?.dispose();
-    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    widget.controller.updateWidget = updateWidget;
     return FutureBuilder(
-      future: loadVideo(widget.controller.bvid, widget.controller.cid),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data == true) {
-            return Stack(children: [
-              Center(
-                child: AspectRatio(
-                  aspectRatio: widget
-                      .controller._videoAudioController!.value.aspectRatio,
-                  child: VideoAudioPlayer(
-                      widget.controller._videoAudioController!),
-                ),
-              ),
-              Center(
-                child: widget.buildDanmaku?.call(context, widget.controller) ??
-                    Container(),
-              ),
-              Center(
-                child: widget.buildControllPanel
-                        ?.call(context, widget.controller) ??
-                    Container(),
-              ),
-            ]);
-          } else {
-            //加载失败,重试按钮
-            return Center(
-              child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      widget.controller._videoAudioController?.dispose();
-                      widget.controller._videoAudioController = null;
-                    });
-                  },
-                  icon: const Icon(Icons.refresh_rounded)),
-            );
-          }
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
+        future: loadVideo(widget.controller.bvid, widget.controller.cid),
+        builder: (context, snapshot) {
+          return StatefulBuilder(
+              key: aspectRatioKey,
+              builder: (context, builder) {
+                return AspectRatio(
+                    aspectRatio: widget.controller._aspectRatio,
+                    child: Builder(
+                      builder: (context) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.data == true) {
+                            return Stack(children: [
+                              Center(
+                                child: AspectRatio(
+                                  aspectRatio: widget.controller
+                                      ._videoAudioController!.value.aspectRatio,
+                                  child: VideoAudioPlayer(
+                                      widget.controller._videoAudioController!),
+                                ),
+                              ),
+                              Center(
+                                child: danmaku,
+                              ),
+                              Center(
+                                child: controllPanel,
+                              ),
+                            ]);
+                          } else {
+                            //加载失败,重试按钮
+                            return Center(
+                              child: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      widget.controller._videoAudioController
+                                          ?.dispose();
+                                      widget.controller._videoAudioController =
+                                          null;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.refresh_rounded)),
+                            );
+                          }
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ));
+              });
+        });
   }
 }
 
@@ -127,7 +146,17 @@ class BiliVideoPlayerController {
   int cid;
 
   late Function() updateWidget;
+  late Function() _updateAsepectRatioWidget;
   VideoAudioController? _videoAudioController;
+  BiliDanmakuController? biliDanmakuController;
+
+  double _aspectRatio = 16 / 9;
+
+  double get aspectRatio => _aspectRatio;
+  set aspectRatio(double asepectRatio) {
+    _aspectRatio = asepectRatio;
+    _updateAsepectRatioWidget();
+  }
 
   void reloadWidget() {
     _videoAudioController?.dispose();
@@ -157,6 +186,18 @@ class BiliVideoPlayerController {
     _videoAudioController?.removeStateChangedListener(listener);
   }
 
+  void addSeekToListener(Function(Duration position) listener) {
+    _videoAudioController?.addSeekToListener(listener);
+  }
+
+  void removeSeekToListener(Function(Duration position) listener) {
+    _videoAudioController?.addSeekToListener(listener);
+  }
+
+  void dispose() {
+    _videoAudioController?.dispose();
+  }
+
   Future<Duration> get position async {
     return await _videoAudioController?.position ?? Duration.zero;
   }
@@ -167,7 +208,7 @@ class BiliVideoPlayerController {
 
   double get speed => _videoAudioController?.value.speed ?? 1;
 
-  double get aspectRatio => _videoAudioController?.value.aspectRatio ?? 1;
+  double get videoAspectRatio => _videoAudioController?.value.aspectRatio ?? 1;
 
   bool get isPlaying {
     return _videoAudioController?.value.isPlaying ?? false;

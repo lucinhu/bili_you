@@ -47,10 +47,7 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
 
   // 主视图
   Widget _player() {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: controller.biliVideoPlayerPage,
-    );
+    return controller.biliVideoPlayer;
   }
 
   Widget _buildView(context) {
@@ -69,7 +66,7 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
               IntroductionPage(
                 bvid: bvid,
                 changePartCallback: controller.changeVideoPart,
-                pauseVideoCallback: controller.biliVideoPageController.pause,
+                pauseVideoCallback: controller.biliVideoPlayerController.pause,
               ),
               ReplyPage(
                 bvid: bvid,
