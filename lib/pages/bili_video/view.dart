@@ -88,12 +88,7 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
         return Scaffold(
             body: Column(
           children: [
-            SafeArea(
-              left: false,
-              right: false,
-              bottom: false,
-              child: _player(),
-            ),
+            _player(),
             Expanded(child: _buildView(context)),
           ],
         ));

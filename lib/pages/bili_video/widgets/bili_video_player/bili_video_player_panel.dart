@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:math' as math;
 
-import 'package:bili_you/common/utils/fullscreen.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
@@ -46,22 +45,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
   }
 
   void toggleFullScreen() {
-    if (widget.controller.isFullScreen) {
-      widget.controller.isFullScreen = false;
-      portraitUp().then((value) =>
-          widget.controller.biliVideoPlayerController.aspectRatio = 16 / 9);
-      exitFullScreen();
-    } else {
-      widget.controller.isFullScreen = true;
-      if (widget.controller._biliVideoPlayerController.videoAspectRatio >= 1) {
-        landScape().then((value) => widget.controller.biliVideoPlayerController
-            .aspectRatio = MediaQuery.of(context).size.flipped.aspectRatio);
-      } else {
-        portraitUp().then((value) => widget.controller.biliVideoPlayerController
-            .aspectRatio = MediaQuery.of(context).size.aspectRatio);
-      }
-      enterFullScreen();
-    }
+    widget.controller._biliVideoPlayerController.toggleFullScreen();
   }
 
   void toggleDanmaku() {
@@ -102,7 +86,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (widget.controller.isFullScreen) {
+        if (widget.controller._biliVideoPlayerController.isFullScreen) {
           toggleFullScreen();
           return false;
         } else {
@@ -145,160 +129,156 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
           ),
           //面板层
           Visibility(
-            visible: widget.controller._show,
-            child: Column(
-              children: [
-                //上面板(返回,菜单...)
-                Container(
-                  decoration: panelDecoration,
-                  child: SafeArea(
-                    top: false,
-                    bottom: false,
-                    child: Row(
-                      children: [
-                        const BackButton(
-                          color: Colors.white,
-                        ),
-                        const Spacer(),
-                        PopupMenuButton(
-                          icon: const Icon(
-                            Icons.more_vert_rounded,
-                            color: iconColor,
+              visible: widget.controller._show,
+              child: SafeArea(
+                top: false,
+                bottom: false,
+                child: Column(
+                  children: [
+                    //上面板(返回,菜单...)
+                    Container(
+                      decoration: panelDecoration,
+                      child: Row(
+                        children: [
+                          const BackButton(
+                            color: Colors.white,
                           ),
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry<String>>[
-                              PopupMenuItem(
-                                padding: EdgeInsets.zero,
-                                value: "弹幕",
-                                child: Row(
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Icon(
-                                        Icons.format_list_bulleted,
-                                        size: 24,
-                                      ),
-                                    ),
-                                    const Text("弹幕"),
-                                    const Spacer(),
-                                    StatefulBuilder(
-                                      key: danmakuCheckBoxKey,
-                                      builder: (context, setState) {
-                                        return Checkbox(
-                                          value:
-                                              widget.controller._danmakuOpened,
-                                          onChanged: (value) {
-                                            if (value != null &&
-                                                value !=
-                                                    widget.controller
-                                                        ._danmakuOpened) {
-                                              toggleDanmaku();
-                                            }
-                                          },
-                                        );
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ),
-                              PopupMenuItem(
-                                padding: EdgeInsets.zero,
-                                value: "播放速度",
-                                child: Row(
-                                  children: const [
-                                    Padding(
+                          const Spacer(),
+                          PopupMenuButton(
+                            icon: const Icon(
+                              Icons.more_vert_rounded,
+                              color: iconColor,
+                            ),
+                            itemBuilder: (context) {
+                              return <PopupMenuEntry<String>>[
+                                PopupMenuItem(
+                                  padding: EdgeInsets.zero,
+                                  value: "弹幕",
+                                  child: Row(
+                                    children: [
+                                      const Padding(
                                         padding: EdgeInsets.all(12),
                                         child: Icon(
-                                          Icons.speed_rounded,
+                                          Icons.format_list_bulleted,
                                           size: 24,
-                                        )),
-                                    Text("播放速度")
-                                  ],
-                                ),
-                              )
-                            ];
-                          },
-                          onSelected: (value) {
-                            switch (value) {
-                              case "弹幕":
-                                toggleDanmaku();
-                                break;
-                              case "播放速度":
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => StatefulBuilder(
-                                      builder: (context, setState) {
-                                    return AlertDialog(
-                                      title: const Text("播放速度"),
-                                      content: IntrinsicHeight(
-                                        child: Slider(
-                                          min: 0.25,
-                                          max: 2.50,
-                                          divisions: 9,
-                                          label:
-                                              "${widget.controller._selectingSpeed}X",
-                                          value:
-                                              widget.controller._selectingSpeed,
-                                          onChanged: (value) {
-                                            setState(
-                                              () {
-                                                widget.controller
-                                                    ._selectingSpeed = value;
-                                              },
-                                            );
-                                          },
                                         ),
                                       ),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () {
-                                              widget.controller
-                                                      ._selectingSpeed =
-                                                  widget
-                                                      .controller
-                                                      ._biliVideoPlayerController
-                                                      .speed;
-                                              Navigator.pop(context);
+                                      const Text("弹幕"),
+                                      const Spacer(),
+                                      StatefulBuilder(
+                                        key: danmakuCheckBoxKey,
+                                        builder: (context, setState) {
+                                          return Checkbox(
+                                            value: widget
+                                                .controller._danmakuOpened,
+                                            onChanged: (value) {
+                                              if (value != null &&
+                                                  value !=
+                                                      widget.controller
+                                                          ._danmakuOpened) {
+                                                toggleDanmaku();
+                                              }
                                             },
-                                            child: Text(
-                                              "取消",
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .hintColor),
-                                            )),
-                                        TextButton(
-                                            onPressed: () {
-                                              widget.controller
-                                                  ._biliVideoPlayerController
-                                                  .setPlayBackSpeed(widget
-                                                      .controller
-                                                      ._selectingSpeed);
-                                              Navigator.pop(context);
+                                          );
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  padding: EdgeInsets.zero,
+                                  value: "播放速度",
+                                  child: Row(
+                                    children: const [
+                                      Padding(
+                                          padding: EdgeInsets.all(12),
+                                          child: Icon(
+                                            Icons.speed_rounded,
+                                            size: 24,
+                                          )),
+                                      Text("播放速度")
+                                    ],
+                                  ),
+                                )
+                              ];
+                            },
+                            onSelected: (value) {
+                              switch (value) {
+                                case "弹幕":
+                                  toggleDanmaku();
+                                  break;
+                                case "播放速度":
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => StatefulBuilder(
+                                        builder: (context, setState) {
+                                      return AlertDialog(
+                                        title: const Text("播放速度"),
+                                        content: IntrinsicHeight(
+                                          child: Slider(
+                                            min: 0.25,
+                                            max: 2.50,
+                                            divisions: 9,
+                                            label:
+                                                "${widget.controller._selectingSpeed}X",
+                                            value: widget
+                                                .controller._selectingSpeed,
+                                            onChanged: (value) {
+                                              setState(
+                                                () {
+                                                  widget.controller
+                                                      ._selectingSpeed = value;
+                                                },
+                                              );
                                             },
-                                            child: const Text("确定")),
-                                      ],
-                                    );
-                                  }),
-                                );
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                widget.controller
+                                                        ._selectingSpeed =
+                                                    widget
+                                                        .controller
+                                                        ._biliVideoPlayerController
+                                                        .speed;
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                "取消",
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .hintColor),
+                                              )),
+                                          TextButton(
+                                              onPressed: () {
+                                                widget.controller
+                                                    ._biliVideoPlayerController
+                                                    .setPlayBackSpeed(widget
+                                                        .controller
+                                                        ._selectingSpeed);
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text("确定")),
+                                        ],
+                                      );
+                                    }),
+                                  );
 
-                                break;
-                              default:
-                                log(value);
-                            }
-                          },
-                        )
-                      ],
+                                  break;
+                                default:
+                                  log(value);
+                              }
+                            },
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-                //中间留空
-                const Spacer(),
-                //下面板(播放按钮,进度条...)
-                Container(
-                    decoration: panelDecoration,
-                    child: SafeArea(
-                      top: false,
-                      bottom: false,
+                    //中间留空
+                    const Spacer(),
+                    //下面板(播放按钮,进度条...)
+                    Container(
+                      decoration: panelDecoration,
                       child: Row(children: [
                         StatefulBuilder(
                           key: playButtonKey,
@@ -414,10 +394,10 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                               color: iconColor,
                             ))
                       ]),
-                    ))
-              ],
-            ),
-          )
+                    )
+                  ],
+                ),
+              ))
         ],
       ),
     );
@@ -432,7 +412,7 @@ class BiliVideoPlayerPanelController {
   bool _isPlayerEnd = false;
   bool _isPlayerBuffering = false;
   bool _isSliderDraging = false;
-  bool isFullScreen = false;
+  // bool isFullScreen = false;
   double asepectRatio = 1;
   double _selectingSpeed = 1;
   late Duration _duration;
