@@ -17,10 +17,6 @@ class BiliVideoController extends GetxController {
     biliVideoPlayerController.changeCid(cid);
   }
 
-  _initData() {
-    update(["bili_video_play"]);
-  }
-
   void onTap() {}
   @override
   void onInit() {
@@ -49,10 +45,8 @@ class BiliVideoController extends GetxController {
     super.onClose();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-
-    _initData();
-  }
+  // @override
+  // void onReady() {
+  //   super.onReady();
+  // }
 }

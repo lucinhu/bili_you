@@ -29,7 +29,7 @@ class UiTestController extends GetxController {
   }
 
   _initData() {
-    update(["ui_test"]);
+    // update(["ui_test"]);
   }
 
   void onTap() {}
@@ -74,8 +74,9 @@ class UiTestController extends GetxController {
     _initData();
   }
 
-  // @override
-  // void onClose() {
-  //   super.onClose();
-  // }
+  @override
+  void onClose() {
+    biliVideoPlayerController.dispose();
+    super.onClose();
+  }
 }

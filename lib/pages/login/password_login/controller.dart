@@ -68,7 +68,7 @@ class PasswordLoginController extends GetxController {
   }
 
   _initData() {
-    update(["password_login"]);
+    // update(["password_login"]);
   }
 
   void onTap() {}

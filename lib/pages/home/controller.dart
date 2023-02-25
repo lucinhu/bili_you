@@ -5,11 +5,11 @@ import 'package:bili_you/common/api/search_api.dart';
 import 'package:bili_you/common/api/user_api.dart';
 import 'package:bili_you/common/models/search/default_search_word.dart';
 import 'package:bili_you/common/models/user/user_info.dart';
+import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeController extends GetxController {
   HomeController();
@@ -20,7 +20,6 @@ class HomeController extends GetxController {
   RxString defaultSearchWord = "搜索".obs;
 
   _initData() async {
-    update(["home"]);
     refreshDefaultSearchWord();
   }
 
@@ -59,8 +58,8 @@ class HomeController extends GetxController {
   }
 
   Future<void> loadOldFace() async {
-    var pref = (await SharedPreferences.getInstance());
-    faceUrl.value = pref.getString("userFace") ?? ApiConstants.noface;
+    var box = BiliYouStorage.user;
+    faceUrl.value = box.get("userFace") ?? ApiConstants.noface;
   }
 
   // @override

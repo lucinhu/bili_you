@@ -1,8 +1,10 @@
+import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/pages/about/about_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bili_you/pages/login/sms_login/view.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'index.dart';
 
 class UserMenuPage extends GetView<UserMenuController> {
@@ -27,29 +29,28 @@ class UserMenuPage extends GetView<UserMenuController> {
                       future: controller.loadOldFace(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
-                          return Obx(() => CachedNetworkImage(
+                          return ValueListenableBuilder(
+                            valueListenable: BiliYouStorage.user
+                                .listenable(keys: [UserStorageKeys.userFace]),
+                            builder: (context, value, child) {
+                              return CachedNetworkImage(
                                 //头像
                                 cacheManager: controller.cacheManager,
                                 width: 80,
                                 height: 80,
-                                imageUrl: controller.faceUrl.value,
+                                imageUrl: value.get(UserStorageKeys.userFace,
+                                    defaultValue: controller.faceUrl.value),
                                 placeholder: (context, url) => const SizedBox(
                                   width: 80,
                                   height: 80,
                                 ),
-                              ));
+                              );
+                            },
+                          );
                         } else {
-                          return Obx(() => CachedNetworkImage(
-                                //头像
-                                cacheManager: controller.cacheManager,
-                                width: 80,
-                                height: 80,
-                                imageUrl: controller.faceUrl.value,
-                                placeholder: (context, url) => const SizedBox(
-                                  width: 80,
-                                  height: 80,
-                                ),
-                              ));
+                          return Container(
+                            color: Theme.of(context).colorScheme.primary,
+                          );
                         }
                       },
                     ),

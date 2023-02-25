@@ -22,6 +22,8 @@ class IntroductionController extends GetxController {
   late RelatedVideoModel? relatedVideoModel;
   final Function(int cid) changePartCallback;
   final Function() stopVideo;
+  final CacheManager cacheManager =
+      CacheManager(Config(CacheKeys.relatedVideosItemCoverKey));
 
   final List<Widget> partButtons = []; //分p按钮列表
   final List<Widget> relatedVideos = []; //相关视频列表
@@ -37,7 +39,7 @@ class IntroductionController extends GetxController {
   }
 
 //加载视频信息
-  Future<void> loadVideoInfo() async {
+  Future<bool> loadVideoInfo() async {
     try {
       await _loadRelatedVideo(); //加载相关视频
       videoInfo = await VideoInfoApi.requestVideoInfo(bvid: bvid);
@@ -45,16 +47,16 @@ class IntroductionController extends GetxController {
       _loadPartButtons();
       //构造相关视频
       _loadRelatedVideos();
-      return;
+      return true;
     } catch (e) {
       log(e.toString());
-      return;
+      return false;
     }
   }
 
-  _initData() {
-    update(["introduction"]);
-  }
+  // _initData() {
+  //   update(["introduction"]);
+  // }
 
   _loadPartButtons() {
     //构造分p按钮列表
@@ -97,8 +99,7 @@ class IntroductionController extends GetxController {
           duration: StringFormatUtils.timeLengthFormat(i.duration),
           playNum: i.stat.view,
           pubDate: i.pubdate,
-          cacheManager:
-              CacheManager(Config(CacheKeys.relatedVideosItemCoverKey)),
+          cacheManager: cacheManager,
           onTap: (context) {
             stopVideo();
             Get.to(() => BiliVideoPage(bvid: i.bvid, cid: i.cid),
@@ -116,14 +117,15 @@ class IntroductionController extends GetxController {
   //   super.onInit();
   // }
 
-  @override
-  void onReady() {
-    super.onReady();
-    _initData();
-  }
-
   // @override
-  // void onClose() {
-  //   super.onClose();
+  // void onReady() {
+  //   super.onReady();
+  //   // _initData();
   // }
+
+  @override
+  void onClose() {
+    cacheManager.emptyCache();
+    super.onClose();
+  }
 }

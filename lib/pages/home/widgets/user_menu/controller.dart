@@ -4,12 +4,12 @@ import 'package:bili_you/common/api/api_constants.dart';
 import 'package:bili_you/common/api/user_api.dart';
 import 'package:bili_you/common/models/user/user_info.dart';
 import 'package:bili_you/common/models/user/user_stat.dart';
+import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/utils/my_dio.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserMenuController extends GetxController {
   UserMenuController();
@@ -52,8 +52,8 @@ class UserMenuController extends GetxController {
 
   // }
   Future<void> loadOldFace() async {
-    var pref = (await SharedPreferences.getInstance());
-    faceUrl.value = pref.getString("userFace") ?? ApiConstants.noface;
+    var box = BiliYouStorage.user;
+    faceUrl.value = box.get("userFace") ?? ApiConstants.noface;
     return;
   }
 
@@ -77,12 +77,13 @@ class UserMenuController extends GetxController {
   onLogout() async {
     MyDio.cookieManager.cookieJar.deleteAll();
     resetRX();
-    (await SharedPreferences.getInstance()).setBool('hasLogin', false);
+    var box = BiliYouStorage.user;
+    box.put('hasLogin', false);
     cacheManager.emptyCache();
   }
 
   Future<bool> hasLogin() async {
-    return (await SharedPreferences.getInstance()).getBool("hasLogin") ?? false;
+    return BiliYouStorage.user.get("hasLogin") ?? false;
   }
 
   // @override

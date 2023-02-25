@@ -25,7 +25,7 @@ class SearchResultController extends GetxController {
   late String keyWord;
 
   _initData() {
-    update(["search_result"]);
+    // update(["search_result"]);
   }
 
   Future<bool> loadSearchItemWidgtLists() async {
@@ -50,7 +50,10 @@ class SearchResultController extends GetxController {
           bvid: i.bvid,
           title: StringFormatUtils.keyWordTitleToRawTitle(i.title),
           upName: i.author,
-          duration: i.duration,
+          duration: StringFormatUtils.timeLengthFormat(Duration(
+                  minutes: int.parse(i.duration.split(':').first),
+                  seconds: int.parse(i.duration.split(':').last))
+              .inSeconds),
           playNum: i.playNum,
           pubDate: i.pubdate,
           cacheManager: cacheManager,

@@ -69,7 +69,7 @@ class RecommendController extends GetxController {
   }
 
   _initData() {
-    update(["recommend"]);
+    // update(["recommend"]);
   }
 
   void onTap() {}

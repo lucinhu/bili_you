@@ -21,10 +21,6 @@ class ReplyController extends GetxController {
   List<Widget> replyList = <Widget>[];
   int pageNum = 1;
 
-  _initData() {
-    update(["reply"]);
-  }
-
 //添加评论条目到控件列表
   addReplyItemWidget(List<Widget> list, ReplyItemModel i,
       {bool isTop = false}) {
@@ -160,12 +156,6 @@ class ReplyController extends GetxController {
   // void onInit() {
   //   super.onInit();
   // }
-
-  @override
-  void onReady() {
-    super.onReady();
-    _initData();
-  }
 
   // @override
   // void onClose() {

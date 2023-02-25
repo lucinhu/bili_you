@@ -47,13 +47,19 @@ class VideoTileItem extends StatelessWidget {
                     BoxDecoration(borderRadius: BorderRadius.circular(5)),
                 child: Stack(
                   children: [
-                    CachedNetworkImage(
-                      filterQuality: FilterQuality.none,
-                      width: 160,
-                      height: 90,
-                      fit: BoxFit.cover,
-                      imageUrl: picUrl,
-                      cacheManager: cacheManager,
+                    Hero(
+                      tag: "BiliVideoPlayer:$bvid",
+                      child: CachedNetworkImage(
+                        filterQuality: FilterQuality.none,
+                        width: 160,
+                        height: 90,
+                        fit: BoxFit.cover,
+                        imageUrl: picUrl,
+                        cacheManager: cacheManager,
+                        placeholder: (context, url) => Container(
+                          color: Theme.of(context).colorScheme.surfaceVariant,
+                        ),
+                      ),
                     ),
                     Container(
                       alignment: Alignment.bottomRight,
@@ -61,8 +67,13 @@ class VideoTileItem extends StatelessWidget {
                         duration,
                         style: const TextStyle(
                             color: Colors.white,
-                            backgroundColor: Colors.black45,
-                            fontSize: 10),
+                            fontSize: 10,
+                            shadows: [
+                              BoxShadow(
+                                  color: Colors.black87,
+                                  blurRadius: 10,
+                                  spreadRadius: 10)
+                            ]),
                       ),
                     )
                   ],
@@ -76,7 +87,6 @@ class VideoTileItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        //由于搜索结果的title带有搜索匹配标签,比较难处理,所以直接用他的原标题
                         title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

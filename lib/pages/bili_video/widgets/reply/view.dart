@@ -16,7 +16,8 @@ class _ReplyPageState extends State<ReplyPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final tag = UniqueKey().toString();
+  static int tagId = 0;
+  final tag = "ReplyPage:${tagId++}";
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +26,12 @@ class _ReplyPageState extends State<ReplyPage>
       bvid: widget.bvid,
       tag: tag,
     );
+  }
+
+  @override
+  void dispose() {
+    tagId--;
+    super.dispose();
   }
 }
 

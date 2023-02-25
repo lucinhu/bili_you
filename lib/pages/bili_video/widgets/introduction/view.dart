@@ -24,7 +24,8 @@ class IntroductionPage extends StatefulWidget {
 
 class _IntroductionPageState extends State<IntroductionPage>
     with AutomaticKeepAliveClientMixin {
-  final String tag = UniqueKey().toString();
+  static int tagId = 0;
+  String tag = "IntroductionPage:${tagId++}";
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -34,6 +35,12 @@ class _IntroductionPageState extends State<IntroductionPage>
       stopVideo: widget.pauseVideoCallback,
       tag: tag,
     );
+  }
+
+  @override
+  void dispose() {
+    tagId--;
+    super.dispose();
   }
 
   @override
@@ -115,7 +122,7 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 10),
-          child: Text(
+          child: SelectableText(
             controller.videoInfo.title,
             style: const TextStyle(fontSize: 16),
           ),
@@ -171,7 +178,7 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
           ),
         ),
 
-        Text(
+        SelectableText(
           controller.videoInfo.desc,
           style: TextStyle(
             fontSize: 12,
@@ -296,7 +303,18 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
               future: controller.loadVideoInfo(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return _buildView(context);
+                  if (snapshot.data == true) {
+                    return _buildView(context);
+                  } else {
+                    return Center(
+                      child: IconButton(
+                        icon: const Icon(Icons.refresh),
+                        onPressed: () {
+                          controller.update(["introduction"]);
+                        },
+                      ),
+                    );
+                  }
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),

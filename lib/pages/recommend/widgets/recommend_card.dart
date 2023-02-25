@@ -34,42 +34,67 @@ class RecommendCard extends StatelessWidget {
   final String bvid;
   final int cid;
 
+  final playInfoTextStyle = const TextStyle(
+    color: Colors.white,
+    fontSize: 12,
+  );
+
+  void onTap() {
+    Get.to(
+      () => BiliVideoPage(
+        bvid: bvid,
+        cid: cid,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: () {
-            Get.to(
-              () => BiliVideoPage(
-                bvid: bvid,
-                cid: cid,
-              ),
-            );
-          },
+          onTap: onTap,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Stack(
-                alignment: Alignment.bottomLeft,
-                children: [
-                  AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: CachedNetworkImage(
-                      cacheManager: cacheManager,
-                      fit: BoxFit.cover,
-                      imageUrl: imageUrl,
-                      placeholder: (_, __) => const SizedBox(),
-                      errorWidget: (_, __, ___) => const Center(
-                        child: Icon(Icons.error),
+              Container(
+                clipBehavior: Clip.antiAlias,
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(12)),
+                child: Stack(
+                  alignment: Alignment.bottomLeft,
+                  children: [
+                    Hero(
+                      tag: "BiliVideoPlayer:$bvid",
+                      child: AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: CachedNetworkImage(
+                          cacheManager: cacheManager,
+                          fit: BoxFit.cover,
+                          imageUrl: imageUrl,
+                          placeholder: (_, __) => Container(
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                          ),
+                          errorWidget: (_, __, ___) => const Center(
+                            child: Icon(Icons.error),
+                          ),
+                          filterQuality: FilterQuality.none,
+                        ),
                       ),
-                      filterQuality: FilterQuality.none,
                     ),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.only(right: 5, left: 5),
-                      color: const Color.fromARGB(98, 0, 0, 0),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Colors.black38,
+                              blurRadius: 12,
+                              spreadRadius: 10,
+                              offset: Offset(0, 12)),
+                        ],
+                      ),
+                      padding:
+                          const EdgeInsets.only(left: 6, right: 6, bottom: 3),
                       child: Row(
                         children: [
                           const Icon(
@@ -79,8 +104,7 @@ class RecommendCard extends StatelessWidget {
                           ),
                           Text(
                             " $playNum  ",
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 11),
+                            style: playInfoTextStyle,
                           ),
                           const Icon(
                             Icons.format_list_bulleted_rounded,
@@ -89,18 +113,18 @@ class RecommendCard extends StatelessWidget {
                           ),
                           Text(
                             " $danmakuNum",
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 11),
+                            style: playInfoTextStyle,
                           ),
                           const Spacer(),
                           Text(
                             timeLength,
-                            style: const TextStyle(
-                                fontSize: 11, color: Colors.white),
+                            style: playInfoTextStyle,
                           )
                         ],
-                      )),
-                ],
+                      ),
+                    )
+                  ],
+                ),
               ),
               Padding(
                   padding: const EdgeInsets.only(
@@ -109,7 +133,7 @@ class RecommendCard extends StatelessWidget {
                     title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    // style: const TextStyle(fontWeight: FontWeight.bold),
                   )),
               const Spacer(),
               Padding(
@@ -123,26 +147,5 @@ class RecommendCard extends StatelessWidget {
             ],
           ),
         ));
-    //    OutlinedButton(
-    //   clipBehavior: Clip.antiAlias,
-    //   // padding: const EdgeInsets.all(0),
-    //   // elevation: 0,
-    //   // color: Theme.of(context).colorScheme.secondaryContainer,
-    //   style: const ButtonStyle(
-    //       padding: MaterialStatePropertyAll(EdgeInsets.all(0)),
-    //       shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-    //           borderRadius: BorderRadius.all(Radius.circular(20))))),
-    //   // shape:  const RoundedRectangleBorder(
-    //   //     borderRadius: BorderRadius.all(Radius.circular(20))),
-    //   onPressed: () {
-    //     Get.to(
-    //       () => BiliVideoPage(
-    //         bvid: bvid,
-    //         cid: cid,
-    //       ),
-    //     );
-    //   },
-    //   child: ,
-    // );
   }
 }

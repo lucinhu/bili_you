@@ -79,6 +79,9 @@ class ReplyItemWidget extends StatelessWidget {
                     fit: BoxFit.cover,
                     filterQuality: FilterQuality.none,
                     cacheManager: CacheManager(Config(CacheKeys.othersFaceKey)),
+                    placeholder: (context, url) => Container(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -93,33 +96,6 @@ class ReplyItemWidget extends StatelessWidget {
                             color: Theme.of(context).colorScheme.primary,
                             fontSize: 15,
                             fontWeight: FontWeight.bold),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
-                Builder(
-                  builder: (context) {
-                    List<Widget> list = [];
-                    if (cardLabels.isNotEmpty) {
-                      for (var i in cardLabels) {
-                        list.add(
-                          SizedBox(
-                              width: 45,
-                              child: Text(
-                                i.textContent, //标签,如热评,up觉得很赞
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                        );
-                      }
-                      return Column(
-                        children: list,
                       );
                     } else {
                       return Container();
@@ -177,7 +153,9 @@ class ReplyItemWidget extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Text.rich(buildReplyItemContent(content)),
+                      child:
+                          //评论内容
+                          SelectableText.rich(buildReplyItemContent(content)),
                     ),
                     Row(
                       children: [
@@ -200,7 +178,35 @@ class ReplyItemWidget extends StatelessWidget {
                                 Text(StringFormatUtils.numFormat(like))
                               ],
                             )),
-                        const Spacer(),
+                        Expanded(
+                          child: Builder(
+                            builder: (context) {
+                              List<Widget> list = [];
+                              if (cardLabels.isNotEmpty) {
+                                for (var i in cardLabels) {
+                                  list.add(
+                                    Text(
+                                      i.textContent, //标签,如热评,up觉得很赞
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        overflow: TextOverflow.ellipsis,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Row(
+                                  children: list,
+                                );
+                              } else {
+                                return Container();
+                              }
+                            },
+                          ),
+                        ),
                         Text(
                           StringFormatUtils.timeStampToAgoDate(timeStamp),
                           style: TextStyle(

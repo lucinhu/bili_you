@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bili_you/pages/bili_video/widgets/introduction/view.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/view.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +43,8 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
   final String bvid;
   final int cid;
   final TabController tabController;
-  final _tag = UniqueKey().toString();
+  static int _tagId = 0;
+  final _tag = "BiliVideoPage:${_tagId++}";
   @override
   String? get tag => _tag;
 
@@ -53,12 +56,15 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
   Widget _buildView(context) {
     return Column(
       children: [
-        TabBar(controller: tabController, tabs: const [
-          Tab(
-            text: "简介",
-          ),
-          Tab(text: "评论")
-        ]),
+        TabBar(
+            controller: tabController,
+            splashFactory: NoSplash.splashFactory,
+            tabs: const [
+              Tab(
+                text: "简介",
+              ),
+              Tab(text: "评论")
+            ]),
         Expanded(
           child: TabBarView(
             controller: tabController,
@@ -81,6 +87,10 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<BiliVideoController>(
+      dispose: (state) {
+        _tagId--;
+        log(_tagId.toString());
+      },
       tag: tag,
       init: BiliVideoController(bvid: bvid, cid: cid),
       id: "bili_video_play",

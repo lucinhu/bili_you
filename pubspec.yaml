@@ -45,7 +45,6 @@ dependencies:
   cookie_jar: ^3.0.1
   gt3_flutter_plugin: ^0.0.8
   encrypt: ^5.0.1
-  shared_preferences: ^2.0.15
   reflectable: ^4.0.3
   video_player: ^2.4.9
   flutter_cache_manager: ^3.3.0
@@ -60,6 +59,8 @@ dependencies:
   ns_danmaku:
     git: 
       url: https://github.com/xiaoyaocz/flutter_ns_danmaku.git
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
   
 
 dev_dependencies:

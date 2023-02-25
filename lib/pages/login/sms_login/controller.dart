@@ -21,7 +21,7 @@ class PhoneLoginController extends GetxController {
   SmsRequestResultModel? smsRequestResult;
 
   _initData() {
-    update(["phone_login"]);
+    // update(["phone_login"]);
   }
 
   void onTap() {}

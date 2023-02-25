@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 class DynamicController extends GetxController {
   DynamicController();
 
-  _initData() {
-    update(["dynamic"]);
-  }
+  // _initData() {
+  //   update(["dynamic"]);
+  // }
 
   void onTap() {}
 
@@ -14,11 +14,11 @@ class DynamicController extends GetxController {
   //   super.onInit();
   // }
 
-  @override
-  void onReady() {
-    super.onReady();
-    _initData();
-  }
+  // @override
+  // void onReady() {
+  //   super.onReady();
+  //   _initData();
+  // }
 
   // @override
   // void onClose() {

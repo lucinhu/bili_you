@@ -4,7 +4,7 @@ class SplashController extends GetxController {
   SplashController();
 
   _initData() {
-    update(["splash"]);
+    // update(["splash"]);
   }
 
   void onTap() {}

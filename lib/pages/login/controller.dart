@@ -1,5 +1,6 @@
 import 'package:bili_you/common/models/user/user_info.dart';
 import 'package:bili_you/common/models/user/user_stat.dart';
+import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/pages/home/index.dart';
 
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:gt3_flutter_plugin/gt3_flutter_plugin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/api/login_api.dart';
 import '../../common/models/login/captcha_result.dart';
@@ -60,16 +60,16 @@ startCaptcha(
 ///清除头像缓存
 Future<void> onLoginSuccess(
     UserInfoModel userInfo, UserStatModel userStat) async {
-  var pref = await SharedPreferences.getInstance();
+  var pref = BiliYouStorage.user;
   await CacheManager(Config(CacheKeys.userFaceKey)).emptyCache();
-  await pref.setBool("hasLogin", true);
-  await pref.setString("userFace", userInfo.face);
-  await pref.setString("userName", userInfo.userName);
-  await pref.setInt("userLevel", userInfo.levelInfo.currentLevel);
-  await pref.setInt("userCurrentExp", userInfo.levelInfo.currentExp);
-  await pref.setInt("userNextExp", userInfo.levelInfo.nextExp);
-  await pref.setInt("userDynamicCount", userStat.dynamicCount);
-  await pref.setInt("userfollowerCount", userStat.followerCount);
-  await pref.setInt("userFollowingCount", userStat.followingCount);
+  await pref.put("hasLogin", true);
+  await pref.put("userFace", userInfo.face);
+  await pref.put("userName", userInfo.userName);
+  await pref.put("userLevel", userInfo.levelInfo.currentLevel);
+  await pref.put("userCurrentExp", userInfo.levelInfo.currentExp);
+  await pref.put("userNextExp", userInfo.levelInfo.nextExp);
+  await pref.put("userDynamicCount", userStat.dynamicCount);
+  await pref.put("userfollowerCount", userStat.followerCount);
+  await pref.put("userFollowingCount", userStat.followingCount);
   Get.find<HomeController>().faceUrl.value = userInfo.face;
 }

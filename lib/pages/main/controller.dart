@@ -15,7 +15,7 @@ class MainController extends GetxController {
   ];
 
   _initData() {
-    update(["main"]);
+    // update(["main"]);
   }
 
   void onTap() {}

@@ -42,6 +42,7 @@ jobs:
           ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
 
       - run: flutter pub get
+      - run: flutter pub upgrade
       # 打包apk
       - name: Collect Apks
         run: flutter build apk --release --split-per-abi

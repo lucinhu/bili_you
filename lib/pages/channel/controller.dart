@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 class ChannelController extends GetxController {
   ChannelController();
 
-  _initData() {
-    update(["channel"]);
-  }
+  // _initData() {
+  //   update(["channel"]);
+  // }
 
   void onTap() {}
 
@@ -14,11 +14,11 @@ class ChannelController extends GetxController {
   //   super.onInit();
   // }
 
-  @override
-  void onReady() {
-    super.onReady();
-    _initData();
-  }
+  // @override
+  // void onReady() {
+  //   super.onReady();
+  //   _initData();
+  // }
 
   // @override
   // void onClose() {

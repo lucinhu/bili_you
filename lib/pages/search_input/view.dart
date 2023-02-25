@@ -109,6 +109,7 @@ class SearchInputPage extends GetView<SearchInputPageController> {
                 children: [
                   Expanded(
                     child: TextField(
+                      focusNode: controller.textFeildFocusNode,
                       controller: controller.textEditingController,
                       onChanged: controller.onSearchWordChanged,
                       autofocus: true,

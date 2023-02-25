@@ -2,16 +2,17 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/search_api.dart';
 import 'package:bili_you/common/models/search/hot_words.dart';
+import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/pages/search_result/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchInputPageController extends GetxController {
   SearchInputPageController();
   RxBool showSearchSuggest = false.obs;
   RxList<Widget> searchSuggestionItems = <Widget>[].obs;
   TextEditingController textEditingController = TextEditingController();
+  final FocusNode textFeildFocusNode = FocusNode();
   late String defaultSearchWord;
   RxBool showEditDelete = false.obs;
 
@@ -106,9 +107,9 @@ class SearchInputPageController extends GetxController {
 
 //获取/刷新历史搜索词控件
   _refreshHistoryWord() async {
-    var pref = await SharedPreferences.getInstance();
+    var box = BiliYouStorage.history;
     List<Widget> widgetList = [];
-    List<String> list = pref.getStringList("searchHistory") ?? [];
+    List<dynamic> list = box.get("searchHistory", defaultValue: <String>[]);
     for (String i in list.reversed) {
       widgetList.add(
         GestureDetector(
@@ -132,29 +133,29 @@ class SearchInputPageController extends GetxController {
 
 //保存搜索词
   _saveSearchedWord(String keyWord) async {
-    var pref = await SharedPreferences.getInstance();
-    List<String> list = pref.getStringList("searchHistory") ?? [];
+    var box = BiliYouStorage.history;
+    List<dynamic> list = box.get("searchHistory", defaultValue: <String>[]);
 //不存在相同的词就放进去
     if (!list.contains(keyWord)) {
       list.add(keyWord);
+      box.put("searchHistory", list);
     }
-    pref.setStringList("searchHistory", list);
     _refreshHistoryWord(); //刷新历史记录控件
   }
 
 //删除所有搜索历史
   clearAllSearchedWords() async {
-    var pref = await SharedPreferences.getInstance();
-    pref.setStringList("searchHistory", []);
+    var box = BiliYouStorage.history;
+    box.put("searchHistory", <String>[]);
     _refreshHistoryWord(); //刷新历史记录控件
   }
 
 //删除历史记录某个词
   _deleteSearchedWord(String word) async {
-    var pref = await SharedPreferences.getInstance();
-    List<String> list = pref.getStringList("searchHistory") ?? [];
+    var box = BiliYouStorage.history;
+    List<dynamic> list = box.get("searchHistory", defaultValue: <String>[]);
     list.remove(word);
-    pref.setStringList("searchHistory", list);
+    box.put("searchHistory", list);
     _refreshHistoryWord();
   }
 
@@ -165,8 +166,14 @@ class SearchInputPageController extends GetxController {
   }
 
   _initData() async {
-    update(["search"]);
+    // update(["search"]);
     _refreshHistoryWord();
+    textFeildFocusNode.addListener(() {
+      if (textFeildFocusNode.hasFocus &&
+          textEditingController.text.isNotEmpty) {
+        showEditDelete.value = true;
+      }
+    });
   }
 
   @override

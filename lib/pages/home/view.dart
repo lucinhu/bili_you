@@ -54,7 +54,7 @@ class HomeViewGetX extends GetView<HomeController> {
             //更新搜索框默认词
             controller.refreshDefaultSearchWord();
           },
-          color: Theme.of(context).colorScheme.secondaryContainer,
+          color: Theme.of(context).colorScheme.primaryContainer,
           height: 50,
           focusElevation: 0,
           hoverElevation: 0,
@@ -62,13 +62,13 @@ class HomeViewGetX extends GetView<HomeController> {
           disabledElevation: 0,
           elevation: 0,
           shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25)),
+            borderRadius: BorderRadius.all(Radius.circular(28)),
           ),
           child: Flex(
             direction: Axis.horizontal,
             children: [
               const SizedBox(
-                width: 3,
+                width: 2,
               ),
               InkWell(
                 borderRadius: BorderRadius.circular(15),
@@ -78,12 +78,12 @@ class HomeViewGetX extends GetView<HomeController> {
                 },
                 child: Icon(
                   (Icons.search),
-                  size: 30,
-                  color: Theme.of(context).textTheme.titleMedium!.color,
+                  size: 24,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(
-                width: 12,
+                width: 8,
               ),
               Expanded(
                   child: Obx(() => Text(
@@ -93,11 +93,11 @@ class HomeViewGetX extends GetView<HomeController> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 16,
-                          color: Theme.of(context).textTheme.titleMedium!.color,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ))),
               InkWell(
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: BorderRadius.circular(12),
                   onTap: () async {
                     await showDialog(
                         useRootNavigator: false,
@@ -117,8 +117,8 @@ class HomeViewGetX extends GetView<HomeController> {
                             //头像
                             return Obx(() => CachedNetworkImage(
                                   cacheManager: controller.cacheManager,
-                                  width: 36,
-                                  height: 36,
+                                  width: 32,
+                                  height: 32,
                                   fit: BoxFit.fill,
                                   imageUrl: controller.faceUrl.value,
                                 ));
@@ -132,6 +132,7 @@ class HomeViewGetX extends GetView<HomeController> {
         ),
         centerTitle: true,
         bottom: TabBar(
+          splashFactory: NoSplash.splashFactory,
           labelStyle: const TextStyle(height: 2.5, fontSize: 15),
           labelPadding: const EdgeInsets.only(bottom: 6),
           tabs: const [Text("直播"), Text("推荐")],
