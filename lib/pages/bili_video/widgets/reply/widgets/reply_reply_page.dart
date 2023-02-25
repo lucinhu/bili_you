@@ -113,17 +113,19 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
               return EasyRefresh.builder(
                 onLoad: _onLoad,
                 onRefresh: _onRefresh,
-                header: const ClassicHeader(
-                  processedDuration: Duration.zero,
-                  safeArea: false,
-                  showMessage: false,
-                  processingText: "正在刷新...",
-                  readyText: "正在刷新...",
-                  armedText: "释放以刷新",
-                  dragText: "下拉刷新",
-                  processedText: "刷新成功",
-                  failedText: "刷新失败",
-                ),
+                header: const MaterialHeader()
+                // const ClassicHeader(
+                //   processedDuration: Duration.zero,
+                //   safeArea: false,
+                //   showMessage: false,
+                //   processingText: "正在刷新...",
+                //   readyText: "正在刷新...",
+                //   armedText: "释放以刷新",
+                //   dragText: "下拉刷新",
+                //   processedText: "刷新成功",
+                //   failedText: "刷新失败",
+                // )
+                ,
                 footer: const ClassicFooter(
                   processedDuration: Duration.zero,
                   safeArea: false,

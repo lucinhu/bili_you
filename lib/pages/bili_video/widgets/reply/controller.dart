@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/video_reply_api.dart';
 import 'package:bili_you/common/models/reply/reply.dart';
+import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
@@ -21,12 +22,32 @@ class ReplyController extends GetxController {
   ReplyModel? replyResponse;
   List<Widget> replyList = <Widget>[];
   int pageNum = 1;
+  RxString sortTypeText = "按热度".obs;
+  RxString sortInfoText = "热门评论".obs;
+  VideoReplySort _replySort = VideoReplySort.like;
+
+  //切换排列方式
+  void toggleSort() {
+    if (_replySort == VideoReplySort.like) {
+      sortTypeText.value = "按时间";
+      sortInfoText.value = "最新评论";
+      //切换为按时间排列
+      _replySort = VideoReplySort.time;
+    } else {
+      sortTypeText.value = "按热度";
+      sortInfoText.value = "热门评论";
+      //切换为按热度排列
+      _replySort = VideoReplySort.like;
+    }
+    //刷新评论
+    refreshController.callRefresh();
+  }
 
 //添加评论条目到控件列表
   addReplyItemWidget(List<Widget> list, ReplyItemModel i,
-      {bool isTop = false}) {
+      {bool frontDivider = true, bool isTop = false}) {
     Widget? subReplies;
-    if (replyList.isNotEmpty || list.isNotEmpty) {
+    if (frontDivider) {
       list.add(Divider(
         color: Theme.of(Get.context!).colorScheme.secondaryContainer,
         thickness: 1,
@@ -91,8 +112,8 @@ class ReplyController extends GetxController {
 //加载评论区控件条目
   Future<bool> _addReplyItems() async {
     try {
-      replyResponse =
-          await VideoReplyApi.requestVideoReply(bvid: bvid, pageNum: pageNum);
+      replyResponse = await VideoReplyApi.requestVideoReply(
+          bvid: bvid, pageNum: pageNum, sort: _replySort);
 
       if (replyResponse!.code != 0) {
         log(replyResponse!.code.toString());
@@ -102,17 +123,48 @@ class ReplyController extends GetxController {
       if (pageNum <= replyResponse!.data.page.count) {
         if (replyList.isEmpty) {
           //当第一次时
+          //添加排列方式按钮
+          replyList.add(
+            Row(
+              children: [
+                Padding(
+                    padding: const EdgeInsets.only(left: 12, right: 12),
+                    child: Obx(
+                      () => Text(
+                          "${sortInfoText.value} ${StringFormatUtils.numFormat(replyResponse!.data.page.count)}"),
+                    )),
+                const Spacer(),
+                //排列方式按钮
+                MaterialButton(
+                  child: Row(
+                    children: [
+                      Icon(Icons.sort_rounded,
+                          size: 16, color: Get.textTheme.bodyMedium!.color),
+                      Obx(
+                        () => Text(
+                          sortTypeText.value,
+                          style:
+                              TextStyle(color: Get.textTheme.bodyMedium!.color),
+                        ),
+                      )
+                    ],
+                  ),
+                  //点击切换评论排列方式
+                  onPressed: () {
+                    toggleSort();
+                  },
+                ),
+              ],
+            ),
+          );
           //添加置顶评论(如果有的话)
           for (var i in replyResponse!.data.topReplies) {
-            addReplyItemWidget(replyList, i, isTop: true);
+            addReplyItemWidget(replyList, i, frontDivider: false, isTop: true);
           }
         }
         //添加常规评论
         for (var i in replyResponse!.data.replies) {
-          addReplyItemWidget(
-            replyList,
-            i,
-          );
+          addReplyItemWidget(replyList, i, frontDivider: replyList.length != 1);
         }
         pageNum++;
       }
@@ -127,7 +179,7 @@ class ReplyController extends GetxController {
   onReplyRefresh() async {
     pageNum = 1;
     replyList.clear();
-    update(["reply"]);
+    // update(["reply"]);
     await _addReplyItems().then((value) {
       if (value) {
         refreshController.finishRefresh();
