@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/video_reply_api.dart';
 import 'package:bili_you/common/models/reply/reply.dart';
+import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:bili_you/common/models/reply/reply_item.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
@@ -14,7 +16,6 @@ import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_reply_page
 class ReplyController extends GetxController {
   ReplyController({required this.bvid});
   final String bvid;
-  // RefreshController refreshController = RefreshController(initialRefresh: true);
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
   ReplyModel? replyResponse;
@@ -157,8 +158,10 @@ class ReplyController extends GetxController {
   //   super.onInit();
   // }
 
-  // @override
-  // void onClose() {
-  //   super.onClose();
-  // }
+  @override
+  void onClose() {
+    //清理其他用户头像的缓存
+    CacheManager(Config(CacheKeys.othersFaceKey)).emptyCache();
+    super.onClose();
+  }
 }
