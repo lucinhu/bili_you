@@ -34,7 +34,7 @@ class VideoTileItem extends StatelessWidget {
         onTap(context);
       },
       child: Padding(
-        padding: const EdgeInsets.only(right: 5, left: 5, top: 5, bottom: 5),
+        padding: const EdgeInsets.all(8),
         child: SizedBox(
           height: 90,
           child: Row(children: [
@@ -82,7 +82,7 @@ class VideoTileItem extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                  padding: const EdgeInsets.only(left: 5, right: 5),
+                  padding: const EdgeInsets.only(left: 8, right: 8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

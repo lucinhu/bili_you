@@ -41,6 +41,7 @@ class HomeViewGetX extends GetView<HomeController> {
   Widget _buildView(context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 64,
         title: MaterialButton(
           onLongPress: () {
             //长按进入测试界面
@@ -54,22 +55,18 @@ class HomeViewGetX extends GetView<HomeController> {
             //更新搜索框默认词
             controller.refreshDefaultSearchWord();
           },
-          color: Theme.of(context).colorScheme.primaryContainer,
-          height: 50,
+          color: Theme.of(context).colorScheme.surfaceVariant,
+          height: 56,
+          elevation: 0,
           focusElevation: 0,
           hoverElevation: 0,
-          highlightElevation: 0,
           disabledElevation: 0,
-          elevation: 0,
+          highlightElevation: 0,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(28)),
           ),
-          child: Flex(
-            direction: Axis.horizontal,
+          child: Row(
             children: [
-              const SizedBox(
-                width: 2,
-              ),
               InkWell(
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
@@ -83,50 +80,41 @@ class HomeViewGetX extends GetView<HomeController> {
                 ),
               ),
               const SizedBox(
-                width: 8,
+                width: 16,
               ),
               Expanded(
                   child: Obx(() => Text(
-                        //搜索框默认词
-                        controller.defaultSearchWord.value,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ))),
-              InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () async {
-                    await showDialog(
-                        useRootNavigator: false,
-                        context: context,
-                        builder: (context) {
-                          return const UserMenuPage();
-                        }).then((value) => controller.refreshFace());
-                  },
-                  child: Container(
-                      clipBehavior: Clip.antiAlias,
-                      decoration: const BoxDecoration(shape: BoxShape.circle),
-                      child: FutureBuilder(
-                        future: controller.loadOldFace(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            //头像
-                            return Obx(() => CachedNetworkImage(
-                                  cacheManager: controller.cacheManager,
-                                  width: 32,
-                                  height: 32,
-                                  fit: BoxFit.fill,
-                                  imageUrl: controller.faceUrl.value,
-                                ));
-                          } else {
-                            return Container();
-                          }
-                        },
-                      )))
+                      //搜索框默认词
+                      controller.defaultSearchWord.value,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyLarge))),
+              const SizedBox(
+                width: 16,
+              ),
+              Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: FutureBuilder(
+                    future: controller.loadOldFace(),
+                    builder: (context, snapshot) {
+                      Widget placeHolder = Container(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      );
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        //头像
+                        return Obx(() => CachedNetworkImage(
+                            cacheManager: controller.cacheManager,
+                            width: 32,
+                            height: 32,
+                            fit: BoxFit.fill,
+                            imageUrl: controller.faceUrl.value,
+                            placeholder: (context, url) => placeHolder));
+                      } else {
+                        return placeHolder;
+                      }
+                    },
+                  )),
             ],
           ),
         ),

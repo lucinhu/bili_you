@@ -50,17 +50,7 @@ class _ReplyViewGetX extends GetView<ReplyController> {
         refreshOnStart: true,
         onLoad: controller.onReplyLoad,
         onRefresh: controller.onReplyRefresh,
-        header: const ClassicHeader(
-          processedDuration: Duration.zero,
-          safeArea: false,
-          showMessage: false,
-          processingText: "正在刷新...",
-          readyText: "正在刷新...",
-          armedText: "释放以刷新",
-          dragText: "下拉刷新",
-          processedText: "刷新成功",
-          failedText: "刷新失败",
-        ),
+        header: const MaterialHeader(),
         footer: const ClassicFooter(
           processedDuration: Duration.zero,
           safeArea: false,
@@ -91,12 +81,7 @@ class _ReplyViewGetX extends GetView<ReplyController> {
       init: ReplyController(bvid: bvid),
       id: "reply",
       builder: (_) {
-        return SafeArea(
-            left: false,
-            right: false,
-            bottom: false,
-            top: false,
-            child: _buildView());
+        return _buildView();
       },
     );
   }

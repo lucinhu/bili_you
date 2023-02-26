@@ -1,6 +1,7 @@
 import 'package:bili_you/common/api/api_constants.dart';
 import 'package:bili_you/common/models/search/default_search_word.dart';
 import 'package:bili_you/common/models/search/hot_words.dart';
+import 'package:bili_you/common/models/search/search_bangumi.dart';
 import 'package:bili_you/common/models/search/search_suggest.dart';
 import 'package:bili_you/common/models/search/search_video.dart';
 import 'package:bili_you/common/utils/my_dio.dart';
@@ -51,6 +52,21 @@ class SearchApi {
     }, response.data);
     return ret;
   }
+
+  ///搜索番剧请求
+  static Future<BangumiSearchModel> requestSearchBangumi(
+      {required String keyWord, required int page}) async {
+    var dio = MyDio.dio;
+    var response = await dio.get(ApiConstants.searchWithType, queryParameters: {
+      'keyword': keyWord,
+      'search_type': SearchType.bangumi.value,
+      'page': page,
+    });
+    var ret = await compute((data) {
+      return BangumiSearchModel.fromJson(response.data);
+    }, response.data);
+    return ret;
+  }
 }
 
 //视频搜索排序类型
@@ -72,4 +88,33 @@ enum SearchVideoOrder {
 //视频搜索排序类型对应的字符串值实现
 extension SearchVideoOrderExtension on SearchVideoOrder {
   String get value => ['', 'click', 'pubdate', 'dm', 'stow', 'scores'][index];
+}
+
+// 视频：video
+// 番剧：media_bangumi
+// 影视：media_ft
+// 直播间及主播：live
+// 直播间：live_room
+// 主播：live_user
+// 专栏：article
+// 话题：topic
+// 用户：bili_user
+// 相簿：photo
+// 搜索类型
+enum SearchType {
+  //视频
+  video,
+  //番剧
+  bangumi,
+  //影视
+  movie,
+  //直播间
+  liveRoom,
+  //用户
+  user
+}
+
+extension SearchTypeExtension on SearchType {
+  String get value =>
+      ['video', 'media_bangumi', 'media_ft', 'live_room', 'user'][index];
 }

@@ -1,4 +1,6 @@
-import 'package:easy_refresh/easy_refresh.dart';
+import 'package:bili_you/common/api/search_api.dart';
+
+import 'package:bili_you/pages/search_tab_view/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,17 +21,17 @@ class _SearchResultPageState extends State<SearchResultPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return _SearchResultViewGetX(keyword: widget.keyword);
+    return _SearchResultViewGetX(keyWord: widget.keyword);
   }
 }
 
 class _SearchResultViewGetX extends GetView<SearchResultController> {
-  const _SearchResultViewGetX({Key? key, required this.keyword})
+  const _SearchResultViewGetX({Key? key, required this.keyWord})
       : super(key: key);
-  final String keyword;
+  final String keyWord;
 
   AppBar _appBar(context) {
-    controller.keyWord = keyword;
+    controller.keyWord = keyWord;
     return AppBar(
         shape: UnderlineInputBorder(
             borderSide: BorderSide(color: Theme.of(context).dividerColor)),
@@ -37,7 +39,7 @@ class _SearchResultViewGetX extends GetView<SearchResultController> {
           children: [
             Expanded(
               child: TextField(
-                controller: TextEditingController(text: keyword),
+                controller: TextEditingController(text: keyWord),
                 readOnly: true,
                 style: const TextStyle(fontSize: 18),
                 decoration: const InputDecoration(
@@ -52,53 +54,35 @@ class _SearchResultViewGetX extends GetView<SearchResultController> {
               width: 70,
               child: IconButton(
                 onPressed: () {
-                  controller.refreshController.callRefresh();
+                  // controller.refreshController.callRefresh();
                 },
                 icon: const Icon(Icons.search_rounded),
               ),
             )
           ],
-        ));
-  }
-
-  // 主视图
-  Widget _buildView() {
-    return EasyRefresh.builder(
-      refreshOnStart: true,
-      onLoad: controller.onLoad,
-      onRefresh: controller.onRefresh,
-      header: const ClassicHeader(
-        processedDuration: Duration.zero,
-        safeArea: false,
-        showMessage: false,
-        processingText: "正在刷新...",
-        readyText: "正在刷新...",
-        armedText: "释放以刷新",
-        dragText: "下拉刷新",
-        processedText: "刷新成功",
-        failedText: "刷新失败",
-      ),
-      footer: const ClassicFooter(
-        processedDuration: Duration.zero,
-        safeArea: false,
-        showMessage: false,
-        processingText: "加载中...",
-        processedText: "加载成功",
-        readyText: "加载中...",
-        armedText: "释放以加载更多",
-        dragText: "上拉加载",
-        failedText: "加载失败",
-        noMoreText: "没有更多内容",
-      ),
-      controller: controller.refreshController,
-      childBuilder: (context, physics) => ListView.builder(
-        physics: physics,
-        itemCount: controller.searchItemWidgetList.length,
-        itemBuilder: (context, index) {
-          return controller.searchItemWidgetList[index];
-        },
-      ),
-    );
+        ),
+        bottom: TabBar(
+            controller: controller.tabController,
+            onTap: (value) {
+              controller.tabController.animateTo(value);
+            },
+            tabs: const [
+              Tab(
+                text: "视频",
+              ),
+              Tab(
+                text: "番剧",
+              ),
+              Tab(
+                text: "直播",
+              ),
+              Tab(
+                text: "影视",
+              ),
+              Tab(
+                text: "用户",
+              )
+            ]));
   }
 
   @override
@@ -109,7 +93,31 @@ class _SearchResultViewGetX extends GetView<SearchResultController> {
       builder: (_) {
         return Scaffold(
           appBar: _appBar(context),
-          body: _buildView(),
+          body: TabBarView(
+            controller: controller.tabController,
+            children: [
+              SearchTabViewPage(
+                keyWord: keyWord,
+                searchType: SearchType.video,
+              ),
+              SearchTabViewPage(
+                keyWord: keyWord,
+                searchType: SearchType.bangumi,
+              ),
+              SearchTabViewPage(
+                keyWord: keyWord,
+                searchType: SearchType.liveRoom,
+              ),
+              SearchTabViewPage(
+                keyWord: keyWord,
+                searchType: SearchType.movie,
+              ),
+              SearchTabViewPage(
+                keyWord: keyWord,
+                searchType: SearchType.user,
+              )
+            ],
+          ),
         );
       },
     );
