@@ -182,7 +182,8 @@ class BiliVideoPlayerController {
     updateWidget();
   }
 
-  void changeCid(int cid) {
+  void changeCid(String bvid, int cid) {
+    this.bvid = bvid;
     this.cid = cid;
     reloadWidget();
   }

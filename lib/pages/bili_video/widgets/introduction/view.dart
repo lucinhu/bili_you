@@ -1,5 +1,6 @@
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -8,14 +9,30 @@ import 'package:get/get.dart';
 import 'index.dart';
 
 class IntroductionPage extends StatefulWidget {
-  const IntroductionPage({
-    super.key,
-    required this.changePartCallback,
-    required this.pauseVideoCallback,
-    required this.bvid,
-  });
+  const IntroductionPage(
+      {super.key,
+      required this.changePartCallback,
+      required this.pauseVideoCallback,
+      this.refreshReply,
+      required this.bvid,
+      this.cid,
+      this.ssid,
+      this.isBangumi = false});
   final String bvid;
-  final Function(int cid) changePartCallback;
+
+  ///普通视频可以不用传入cid, 番剧必须传入
+  final int? cid;
+
+  ///番剧专用
+  final int? ssid;
+
+  ///是否是番剧
+  final bool isBangumi;
+
+  ///番剧必须要的刷新评论区回调
+  final Function()? refreshReply;
+
+  final Function(String bvid, int cid) changePartCallback;
   final Function() pauseVideoCallback;
 
   @override
@@ -32,6 +49,10 @@ class _IntroductionPageState extends State<IntroductionPage>
     return _IntroductionViewGetX(
       changePartCallback: widget.changePartCallback,
       bvid: widget.bvid,
+      cid: widget.cid,
+      refreshReply: widget.refreshReply ?? () {},
+      ssid: widget.ssid,
+      isBangumi: widget.isBangumi,
       stopVideo: widget.pauseVideoCallback,
       tag: tag,
     );
@@ -52,13 +73,22 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
       {Key? key,
       required this.changePartCallback,
       required this.bvid,
+      required this.refreshReply,
+      this.cid,
+      this.ssid,
+      required this.isBangumi,
       required this.stopVideo,
       required String tag})
       : _tag = tag,
         super(key: key);
   final String bvid;
+  final int? cid;
+  final int? ssid;
+  final bool isBangumi;
   final Function() stopVideo;
-  final Function(int cid) changePartCallback;
+  final Function(String bivd, int cid) changePartCallback;
+  final Function() refreshReply;
+
   final String _tag;
   @override
   String? get tag => _tag;
@@ -122,10 +152,10 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 10),
-          child: SelectableText(
-            controller.videoInfo.title,
-            style: const TextStyle(fontSize: 16),
-          ),
+          child: Obx(() => SelectableText(
+                controller.title.value,
+                style: const TextStyle(fontSize: 16),
+              )),
         ),
         Row(
           children: [
@@ -178,11 +208,13 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
           ),
         ),
 
-        SelectableText(
-          controller.videoInfo.desc,
-          style: TextStyle(
-            fontSize: 12,
-            color: Theme.of(context).hintColor,
+        Obx(
+          () => SelectableText(
+            controller.describe.value,
+            style: TextStyle(
+              fontSize: 12,
+              color: Theme.of(context).hintColor,
+            ),
           ),
         ),
         //TODO tags
@@ -220,7 +252,7 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
 
         Builder(
           builder: (context) {
-            if (controller.videoInfo.pages.length > 1) {
+            if (controller.partButtons.length > 1) {
               return SizedBox(
                   height: 50,
                   child: Row(
@@ -296,6 +328,10 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
         init: IntroductionController(
             changePartCallback: changePartCallback,
             bvid: bvid,
+            refreshReply: refreshReply,
+            cid: cid,
+            ssid: ssid,
+            isBangumi: isBangumi,
             stopVideo: stopVideo),
         tag: tag,
         id: "introduction",

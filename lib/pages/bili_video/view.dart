@@ -1,16 +1,23 @@
 import 'dart:developer';
 
-import 'package:bili_you/pages/bili_video/widgets/introduction/view.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'index.dart';
 
 class BiliVideoPage extends StatefulWidget {
-  const BiliVideoPage({Key? key, required this.bvid, required this.cid})
+  const BiliVideoPage(
+      {Key? key,
+      required this.bvid,
+      required this.cid,
+      required this.introductionBuilder})
       : super(key: key);
   final String bvid;
   final int cid;
+  final Widget Function(
+      Function(String bvid, int cid) changePartCallback,
+      Function() pauseVideoCallback,
+      Function() refreshReply) introductionBuilder;
 
   @override
   State<BiliVideoPage> createState() => _BiliVideoPageState();
@@ -29,7 +36,11 @@ class _BiliVideoPageState extends State<BiliVideoPage>
         vsync: this,
         animationDuration: const Duration(milliseconds: 200));
     return _BiliVideoPage(
-        bvid: widget.bvid, cid: widget.cid, tabController: tabController);
+      bvid: widget.bvid,
+      cid: widget.cid,
+      introductionBuilder: widget.introductionBuilder,
+      tabController: tabController,
+    );
   }
 }
 
@@ -38,11 +49,16 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
       {Key? key,
       required this.bvid,
       required this.cid,
+      required this.introductionBuilder,
       required this.tabController})
       : super(key: key);
   final String bvid;
   final int cid;
   final TabController tabController;
+  final Widget Function(
+      Function(String bvid, int cid) changePartCallback,
+      Function() pauseVideoCallback,
+      Function() refreshReply) introductionBuilder;
   static int _tagId = 0;
   final _tag = "BiliVideoPage:${_tagId++}";
   @override
@@ -69,14 +85,16 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
           child: TabBarView(
             controller: tabController,
             children: [
-              IntroductionPage(
-                bvid: bvid,
-                changePartCallback: controller.changeVideoPart,
-                pauseVideoCallback: controller.biliVideoPlayerController.pause,
-              ),
-              ReplyPage(
-                bvid: bvid,
-              )
+              introductionBuilder(
+                  controller.changeVideoPart,
+                  controller.biliVideoPlayerController.pause,
+                  controller.refreshReply),
+              Builder(builder: (context) {
+                //Builder可以让ReplyPage在TabBarView显示到它的时候才取controller.bvid
+                return ReplyPage(
+                  bvid: controller.bvid,
+                );
+              })
             ],
           ),
         )

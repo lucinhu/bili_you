@@ -1,13 +1,16 @@
 import 'dart:developer';
 
+import 'package:bili_you/common/api/bangumi_api.dart';
 import 'package:bili_you/common/api/related_video_api.dart';
 import 'package:bili_you/common/api/video_info_api.dart';
+import 'package:bili_you/common/models/bangumi/bangumi_info.dart';
 import 'package:bili_you/common/models/related_video/related_video.dart';
 import 'package:bili_you/common/models/video_info/video_info.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/video_tile_item.dart';
 import 'package:bili_you/pages/bili_video/view.dart';
+import 'package:bili_you/pages/bili_video/widgets/introduction/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
@@ -15,12 +18,23 @@ import 'package:get/get.dart';
 class IntroductionController extends GetxController {
   IntroductionController(
       {required this.bvid,
+      required this.cid,
+      required this.ssid,
+      required this.isBangumi,
       required this.changePartCallback,
-      required this.stopVideo});
-  final String bvid;
+      required this.stopVideo,
+      required this.refreshReply});
+  String bvid;
+  int? cid;
+  int? ssid;
+  late RxString title = "".obs;
+  late RxString describe = "".obs;
+  final bool isBangumi;
   late VideoInfoModel videoInfo;
+  late BangumiInfoModel bangumiInfo;
   late RelatedVideoModel? relatedVideoModel;
-  final Function(int cid) changePartCallback;
+  final Function(String bvid, int cid) changePartCallback;
+  final Function() refreshReply;
   final Function() stopVideo;
   final CacheManager cacheManager =
       CacheManager(Config(CacheKeys.relatedVideosItemCoverKey));
@@ -41,12 +55,21 @@ class IntroductionController extends GetxController {
 //加载视频信息
   Future<bool> loadVideoInfo() async {
     try {
-      await _loadRelatedVideo(); //加载相关视频
       videoInfo = await VideoInfoApi.requestVideoInfo(bvid: bvid);
-      //初始化时构造分p按钮
-      _loadPartButtons();
-      //构造相关视频
-      _loadRelatedVideos();
+      title.value = videoInfo.title;
+      describe.value = videoInfo.desc;
+      if (!isBangumi) {
+        //当是普通视频时
+        await _loadRelatedVideo(); //加载相关视频
+        //初始化时构造分p按钮
+        _loadVideoPartButtons();
+        //构造相关视频
+        _loadRelatedVideos();
+      } else {
+        //如果是番剧
+        bangumiInfo = await BangumiApi.requestBangumiInfo(ssid: ssid);
+        _loadBangumiPartButtons(bangumiInfo);
+      }
       return true;
     } catch (e) {
       log(e.toString());
@@ -58,32 +81,48 @@ class IntroductionController extends GetxController {
   //   update(["introduction"]);
   // }
 
-  _loadPartButtons() {
-    //构造分p按钮列表
-    for (var i in videoInfo.pages) {
-      partButtons.add(
-        Padding(
-          padding: const EdgeInsets.all(2),
-          child: MaterialButton(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5)),
-              color: Theme.of(Get.context!).colorScheme.primaryContainer,
-              onPressed: () {
-                //点击切换分p
-                changePartCallback(i.cid);
-              },
-              child: Builder(
-                builder: (context) {
-                  if (i.part.isNotEmpty) {
-                    return Text(i.part);
-                  } else {
-                    return Container();
-                  }
-                },
-              )),
-        ),
-      );
+  //添加一个分p/剧集按钮
+  _addAButtion(String bvid, int cid, String text, int index) {
+    partButtons.add(
+      Padding(
+        padding: const EdgeInsets.all(2),
+        child: MaterialButton(
+            elevation: 0,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            color: Theme.of(Get.context!).colorScheme.primaryContainer,
+            onPressed: () async {
+              //点击切换分p
+              changePartCallback(bvid, cid);
+              if (isBangumi) {
+                //如果是番剧的还，切换时还需要改变标题，简介
+                videoInfo = await VideoInfoApi.requestVideoInfo(bvid: bvid);
+                title.value = videoInfo.title;
+                describe.value = videoInfo.desc;
+                //评论区也要刷新
+                refreshReply();
+              }
+            },
+            child: Text(text)),
+      ),
+    );
+  }
+
+  //构造分p按钮列表
+  _loadVideoPartButtons() {
+    for (int i = 0; i < videoInfo.pages.length; i++) {
+      _addAButtion(bvid, videoInfo.pages[i].cid, videoInfo.pages[i].part, i);
+    }
+  }
+
+//构造番剧剧集按钮
+  _loadBangumiPartButtons(BangumiInfoModel bangumiInfoModel) {
+    for (int i = 0; i < bangumiInfoModel.result!.episodes!.length; i++) {
+      _addAButtion(
+          bangumiInfoModel.result!.episodes![i].bvid!,
+          bangumiInfoModel.result!.episodes![i].cid!,
+          bangumiInfoModel.result!.episodes![i].longTitle!,
+          i);
     }
   }
 
@@ -102,7 +141,20 @@ class IntroductionController extends GetxController {
           cacheManager: cacheManager,
           onTap: (context) {
             stopVideo();
-            Get.to(() => BiliVideoPage(bvid: i.bvid, cid: i.cid),
+            Get.to(
+                () => BiliVideoPage(
+                      bvid: i.bvid,
+                      cid: i.cid,
+                      introductionBuilder: (changePartCallback,
+                          pauseVideoCallback, refreshReply) {
+                        return IntroductionPage(
+                            changePartCallback: changePartCallback,
+                            pauseVideoCallback: pauseVideoCallback,
+                            bvid: bvid,
+                            cid: cid,
+                            isBangumi: isBangumi);
+                      },
+                    ),
                 preventDuplicates: false);
           },
         ));

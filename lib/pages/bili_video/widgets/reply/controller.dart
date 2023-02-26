@@ -16,7 +16,7 @@ import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_reply_page
 
 class ReplyController extends GetxController {
   ReplyController({required this.bvid});
-  final String bvid;
+  String bvid;
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
   ReplyModel? replyResponse;

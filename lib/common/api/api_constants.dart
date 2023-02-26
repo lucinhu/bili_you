@@ -91,4 +91,7 @@ class ApiConstants {
 
   ///弹幕
   static const String danmaku = "$apiBase/x/v2/dm/web/seg.so";
+
+  ///番剧/剧集
+  static const String bangumiInfo = "$apiBase/pgc/view/web/season";
 }

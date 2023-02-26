@@ -1,5 +1,8 @@
+import 'package:bili_you/common/api/bangumi_api.dart';
 import 'package:bili_you/common/models/search/search_bangumi.dart';
 import 'package:bili_you/common/widget/bangumi_tile_item.dart';
+import 'package:bili_you/pages/bili_video/index.dart';
+import 'package:bili_you/pages/bili_video/widgets/introduction/index.dart';
 import 'package:get/get.dart';
 import 'dart:developer';
 
@@ -72,8 +75,17 @@ class SearchTabViewController extends GetxController {
               log("加载cid失败,${e.toString()}");
               return false;
             }
-            Get.to(() =>
-                BiliVideoPage(bvid: i.bvid, cid: videoParts.data.first.cid));
+            Get.to(() => BiliVideoPage(
+                  bvid: i.bvid,
+                  cid: videoParts.data.first.cid,
+                  introductionBuilder:
+                      (changePartCallback, pauseVideoCallback, refreshReply) =>
+                          IntroductionPage(
+                    changePartCallback: changePartCallback,
+                    pauseVideoCallback: pauseVideoCallback,
+                    bvid: i.bvid,
+                  ),
+                ));
           },
         ));
         currentPage += 1;
@@ -107,7 +119,30 @@ class SearchTabViewController extends GetxController {
             title: StringFormatUtils.keyWordTitleToRawTitle(i.title!),
             describe: "${i.areas}\n${i.styles!}",
             score: i.mediaScore!.score!,
-            onTap: (context) {}));
+            onTap: (context) async {
+              var bangumi =
+                  await BangumiApi.requestBangumiInfo(ssid: i.seasonId);
+              if (bangumi.code != 0) {
+                log("搜索失败");
+                //加载失败
+                return false;
+              }
+              Get.to(() => BiliVideoPage(
+                    bvid: bangumi.result!.episodes!.first.bvid!,
+                    cid: bangumi.result!.episodes!.first.cid!,
+                    introductionBuilder: (changePartCallback,
+                            pauseVideoCallback, refreshReply) =>
+                        IntroductionPage(
+                      bvid: bangumi.result!.episodes!.first.bvid!,
+                      cid: bangumi.result!.episodes!.first.cid!,
+                      ssid: i.seasonId,
+                      isBangumi: true,
+                      refreshReply: refreshReply,
+                      changePartCallback: changePartCallback,
+                      pauseVideoCallback: pauseVideoCallback,
+                    ),
+                  ));
+            }));
         currentPage += 1;
       }
       return true;

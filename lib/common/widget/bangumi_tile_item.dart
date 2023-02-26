@@ -21,7 +21,7 @@ class BangumiTileItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap(context),
+      onTap: () => onTap(context),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: SizedBox(
@@ -53,7 +53,6 @@ class BangumiTileItem extends StatelessWidget {
                         title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8, bottom: 8),

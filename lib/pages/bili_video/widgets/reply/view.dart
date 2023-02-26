@@ -7,6 +7,7 @@ import 'index.dart';
 class ReplyPage extends StatefulWidget {
   const ReplyPage({Key? key, required this.bvid}) : super(key: key);
   final String bvid;
+  static int tagId = 0;
 
   @override
   State<ReplyPage> createState() => _ReplyPageState();
@@ -16,8 +17,8 @@ class _ReplyPageState extends State<ReplyPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  static int tagId = 0;
-  final tag = "ReplyPage:${tagId++}";
+
+  final tag = "ReplyPage:${ReplyPage.tagId++}";
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class _ReplyPageState extends State<ReplyPage>
 
   @override
   void dispose() {
-    tagId--;
+    ReplyPage.tagId--;
     super.dispose();
   }
 }
