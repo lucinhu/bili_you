@@ -19,6 +19,7 @@ class IntroductionPage extends StatefulWidget {
       this.ssid,
       this.isBangumi = false});
   final String bvid;
+  static int tagId = 0;
 
   ///普通视频可以不用传入cid, 番剧必须传入
   final int? cid;
@@ -41,8 +42,7 @@ class IntroductionPage extends StatefulWidget {
 
 class _IntroductionPageState extends State<IntroductionPage>
     with AutomaticKeepAliveClientMixin {
-  static int tagId = 0;
-  String tag = "IntroductionPage:${tagId++}";
+  String tag = "IntroductionPage:${IntroductionPage.tagId++}";
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -60,7 +60,7 @@ class _IntroductionPageState extends State<IntroductionPage>
 
   @override
   void dispose() {
-    tagId--;
+    IntroductionPage.tagId--;
     super.dispose();
   }
 
@@ -332,7 +332,7 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
             cid: cid,
             ssid: ssid,
             isBangumi: isBangumi,
-            stopVideo: stopVideo),
+            pauseVideo: stopVideo),
         tag: tag,
         id: "introduction",
         builder: (_) => FutureBuilder(

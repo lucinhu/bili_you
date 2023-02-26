@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:bili_you/pages/bili_video/widgets/introduction/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,14 +11,13 @@ class BiliVideoPage extends StatefulWidget {
       {Key? key,
       required this.bvid,
       required this.cid,
-      required this.introductionBuilder})
+      this.ssid,
+      this.isBangumi = false})
       : super(key: key);
   final String bvid;
   final int cid;
-  final Widget Function(
-      Function(String bvid, int cid) changePartCallback,
-      Function() pauseVideoCallback,
-      Function() refreshReply) introductionBuilder;
+  final int? ssid;
+  final bool isBangumi;
 
   @override
   State<BiliVideoPage> createState() => _BiliVideoPageState();
@@ -38,8 +38,9 @@ class _BiliVideoPageState extends State<BiliVideoPage>
     return _BiliVideoPage(
       bvid: widget.bvid,
       cid: widget.cid,
-      introductionBuilder: widget.introductionBuilder,
+      isBangumi: widget.isBangumi,
       tabController: tabController,
+      ssid: widget.ssid,
     );
   }
 }
@@ -49,16 +50,16 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
       {Key? key,
       required this.bvid,
       required this.cid,
-      required this.introductionBuilder,
+      required this.isBangumi,
+      this.ssid,
       required this.tabController})
       : super(key: key);
   final String bvid;
   final int cid;
+  final int? ssid;
+  final bool isBangumi;
   final TabController tabController;
-  final Widget Function(
-      Function(String bvid, int cid) changePartCallback,
-      Function() pauseVideoCallback,
-      Function() refreshReply) introductionBuilder;
+
   static int _tagId = 0;
   final _tag = "BiliVideoPage:${_tagId++}";
   @override
@@ -85,10 +86,15 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
           child: TabBarView(
             controller: tabController,
             children: [
-              introductionBuilder(
-                  controller.changeVideoPart,
-                  controller.biliVideoPlayerController.pause,
-                  controller.refreshReply),
+              IntroductionPage(
+                changePartCallback: controller.changeVideoPart,
+                pauseVideoCallback: controller.biliVideoPlayerController.pause,
+                refreshReply: controller.refreshReply,
+                bvid: controller.bvid,
+                cid: controller.cid,
+                ssid: controller.ssid,
+                isBangumi: controller.isBangumi,
+              ),
               Builder(builder: (context) {
                 //Builder可以让ReplyPage在TabBarView显示到它的时候才取controller.bvid
                 return ReplyPage(
@@ -110,7 +116,8 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
         log(_tagId.toString());
       },
       tag: tag,
-      init: BiliVideoController(bvid: bvid, cid: cid),
+      init: BiliVideoController(
+          bvid: bvid, cid: cid, ssid: ssid, isBangumi: isBangumi),
       id: "bili_video_play",
       builder: (_) {
         return Scaffold(

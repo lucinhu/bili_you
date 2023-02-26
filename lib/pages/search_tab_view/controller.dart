@@ -78,13 +78,6 @@ class SearchTabViewController extends GetxController {
             Get.to(() => BiliVideoPage(
                   bvid: i.bvid,
                   cid: videoParts.data.first.cid,
-                  introductionBuilder:
-                      (changePartCallback, pauseVideoCallback, refreshReply) =>
-                          IntroductionPage(
-                    changePartCallback: changePartCallback,
-                    pauseVideoCallback: pauseVideoCallback,
-                    bvid: i.bvid,
-                  ),
                 ));
           },
         ));
@@ -130,17 +123,8 @@ class SearchTabViewController extends GetxController {
               Get.to(() => BiliVideoPage(
                     bvid: bangumi.result!.episodes!.first.bvid!,
                     cid: bangumi.result!.episodes!.first.cid!,
-                    introductionBuilder: (changePartCallback,
-                            pauseVideoCallback, refreshReply) =>
-                        IntroductionPage(
-                      bvid: bangumi.result!.episodes!.first.bvid!,
-                      cid: bangumi.result!.episodes!.first.cid!,
-                      ssid: i.seasonId,
-                      isBangumi: true,
-                      refreshReply: refreshReply,
-                      changePartCallback: changePartCallback,
-                      pauseVideoCallback: pauseVideoCallback,
-                    ),
+                    ssid: bangumi.result!.seasonId,
+                    isBangumi: true,
                   ));
             }));
         currentPage += 1;

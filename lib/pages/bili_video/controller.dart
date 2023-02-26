@@ -7,9 +7,15 @@ import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
 import 'package:get/get.dart';
 
 class BiliVideoController extends GetxController {
-  BiliVideoController({required this.bvid, required this.cid});
+  BiliVideoController(
+      {required this.bvid,
+      required this.cid,
+      this.ssid,
+      required this.isBangumi});
   String bvid;
   int cid;
+  int? ssid;
+  bool isBangumi;
   late BiliVideoPlayer biliVideoPlayer;
   late BiliVideoPlayerController biliVideoPlayerController;
 

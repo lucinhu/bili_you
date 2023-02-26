@@ -92,29 +92,37 @@ class HomeViewGetX extends GetView<HomeController> {
               const SizedBox(
                 width: 16,
               ),
-              Container(
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(shape: BoxShape.circle),
-                  child: FutureBuilder(
-                    future: controller.loadOldFace(),
-                    builder: (context, snapshot) {
-                      Widget placeHolder = Container(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      );
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        //头像
-                        return Obx(() => CachedNetworkImage(
-                            cacheManager: controller.cacheManager,
-                            width: 32,
-                            height: 32,
-                            fit: BoxFit.fill,
-                            imageUrl: controller.faceUrl.value,
-                            placeholder: (context, url) => placeHolder));
-                      } else {
-                        return placeHolder;
-                      }
-                    },
-                  )),
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const UserMenuPage(),
+                  );
+                },
+                child: Container(
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(shape: BoxShape.circle),
+                    child: FutureBuilder(
+                      future: controller.loadOldFace(),
+                      builder: (context, snapshot) {
+                        Widget placeHolder = Container(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        );
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          //头像
+                          return Obx(() => CachedNetworkImage(
+                              cacheManager: controller.cacheManager,
+                              width: 32,
+                              height: 32,
+                              fit: BoxFit.fill,
+                              imageUrl: controller.faceUrl.value,
+                              placeholder: (context, url) => placeHolder));
+                        } else {
+                          return placeHolder;
+                        }
+                      },
+                    )),
+              ),
             ],
           ),
         ),

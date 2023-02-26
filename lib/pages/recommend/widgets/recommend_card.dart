@@ -45,12 +45,6 @@ class RecommendCard extends StatelessWidget {
       () => BiliVideoPage(
         bvid: bvid,
         cid: cid,
-        introductionBuilder:
-            (changePartCallback, pauseVideoCallback, refreshReply) =>
-                IntroductionPage(
-                    changePartCallback: changePartCallback,
-                    pauseVideoCallback: pauseVideoCallback,
-                    bvid: bvid),
       ),
     );
   }

@@ -22,7 +22,7 @@ class IntroductionController extends GetxController {
       required this.ssid,
       required this.isBangumi,
       required this.changePartCallback,
-      required this.stopVideo,
+      required this.pauseVideo,
       required this.refreshReply});
   String bvid;
   int? cid;
@@ -35,7 +35,7 @@ class IntroductionController extends GetxController {
   late RelatedVideoModel? relatedVideoModel;
   final Function(String bvid, int cid) changePartCallback;
   final Function() refreshReply;
-  final Function() stopVideo;
+  final Function() pauseVideo;
   final CacheManager cacheManager =
       CacheManager(Config(CacheKeys.relatedVideosItemCoverKey));
 
@@ -140,22 +140,13 @@ class IntroductionController extends GetxController {
           pubDate: i.pubdate,
           cacheManager: cacheManager,
           onTap: (context) {
-            stopVideo();
-            Get.to(
-                () => BiliVideoPage(
-                      bvid: i.bvid,
-                      cid: i.cid,
-                      introductionBuilder: (changePartCallback,
-                          pauseVideoCallback, refreshReply) {
-                        return IntroductionPage(
-                            changePartCallback: changePartCallback,
-                            pauseVideoCallback: pauseVideoCallback,
-                            bvid: bvid,
-                            cid: cid,
-                            isBangumi: isBangumi);
-                      },
-                    ),
-                preventDuplicates: false);
+            pauseVideo();
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => BiliVideoPage(
+                bvid: i.bvid,
+                cid: i.cid,
+              ),
+            ));
           },
         ));
       }
