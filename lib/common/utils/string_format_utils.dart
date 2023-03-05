@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:get/get_utils/src/extensions/export.dart';
 
 //格式化工具
@@ -86,5 +88,20 @@ class StringFormatUtils {
   //去掉标题的关键词标签
   static String keyWordTitleToRawTitle(String keyWordTitle) {
     return keyWordTitle.replaceAll(RegExp(r'<.*?>'), '');
+  }
+
+  //byte数转文件大小
+  static String byteNumToFileSize(double byteNum) {
+    if (byteNum / 1024 < 1) {
+      return "${byteNum}byte";
+    } else if (byteNum / 1024 / 1024 < 1) {
+      return "${(byteNum / 1024).toPrecision(2)}KB";
+    } else if (byteNum / 1024 / 1024 / 1024 < 1) {
+      return "${(byteNum / 1024 / 1024).toPrecision(2)}MB";
+    } else if (byteNum / 1024 / 1024 / 1024 / 1024 < 1) {
+      return "${(byteNum / 1024 / 1024 / 1024).toPrecision(2)}GB";
+    } else {
+      return "${byteNum}byte";
+    }
   }
 }

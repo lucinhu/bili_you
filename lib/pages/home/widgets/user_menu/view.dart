@@ -1,5 +1,6 @@
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/pages/about/about_page.dart';
+import 'package:bili_you/pages/settings_page/settings_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -216,7 +217,11 @@ class UserMenuPage extends GetView<UserMenuController> {
                 thickness: 2,
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const SettingsPage(),
+                  ));
+                },
                 child: Padding(
                   padding: const EdgeInsets.only(
                       left: 35, right: 35, top: 25, bottom: 25),
