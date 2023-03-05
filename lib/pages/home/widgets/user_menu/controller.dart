@@ -78,12 +78,12 @@ class UserMenuController extends GetxController {
     MyDio.cookieManager.cookieJar.deleteAll();
     resetRX();
     var box = BiliYouStorage.user;
-    box.put('hasLogin', false);
+    box.put(UserStorageKeys.hasLogin, false);
     cacheManager.emptyCache();
   }
 
   Future<bool> hasLogin() async {
-    return BiliYouStorage.user.get("hasLogin") ?? false;
+    return BiliYouStorage.user.get(UserStorageKeys.hasLogin) ?? false;
   }
 
   // @override

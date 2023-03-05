@@ -94,4 +94,7 @@ class ApiConstants {
 
   ///番剧/剧集
   static const String bangumiInfo = "$apiBase/pgc/view/web/season";
+
+  ///用户投稿视频&查询
+  static const String userVideoSearch = "$apiBase/x/space/wbi/arc/search";
 }

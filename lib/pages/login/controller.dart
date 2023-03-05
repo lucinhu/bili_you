@@ -60,16 +60,16 @@ startCaptcha(
 ///清除头像缓存
 Future<void> onLoginSuccess(
     UserInfoModel userInfo, UserStatModel userStat) async {
-  var pref = BiliYouStorage.user;
+  var box = BiliYouStorage.user;
   await CacheManager(Config(CacheKeys.userFaceKey)).emptyCache();
-  await pref.put("hasLogin", true);
-  await pref.put("userFace", userInfo.face);
-  await pref.put("userName", userInfo.userName);
-  await pref.put("userLevel", userInfo.levelInfo.currentLevel);
-  await pref.put("userCurrentExp", userInfo.levelInfo.currentExp);
-  await pref.put("userNextExp", userInfo.levelInfo.nextExp);
-  await pref.put("userDynamicCount", userStat.dynamicCount);
-  await pref.put("userfollowerCount", userStat.followerCount);
-  await pref.put("userFollowingCount", userStat.followingCount);
+  await box.put(UserStorageKeys.hasLogin, true);
+  await box.put(UserStorageKeys.userFace, userInfo.face);
+  await box.put(UserStorageKeys.userName, userInfo.userName);
+  // await box.put(UserStorageKeys.userLevel, userInfo.levelInfo.currentLevel);
+  // await box.put(UserStorageKeys.userCurrentExp, userInfo.levelInfo.currentExp);
+  // await box.put(UserStorageKeys.userNextExp, userInfo.levelInfo.nextExp);
+  // await box.put(UserStorageKeys.userDynamicCount, userStat.dynamicCount);
+  // await box.put(UserStorageKeys.userFollowerCount, userStat.followerCount);
+  // await box.put(UserStorageKeys.userFollowingCount, userStat.followingCount);
   Get.find<HomeController>().faceUrl.value = userInfo.face;
 }

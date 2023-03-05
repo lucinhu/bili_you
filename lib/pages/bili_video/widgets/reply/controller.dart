@@ -4,6 +4,7 @@ import 'package:bili_you/common/api/video_reply_api.dart';
 import 'package:bili_you/common/models/reply/reply.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/pages/user_space/view.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 import 'package:flutter/material.dart';
@@ -106,6 +107,11 @@ class ReplyController extends GetxController {
       isTop: isTop,
       cardLabels: i.cardLabel,
       isUp: int.parse(i.member.mid) == replyResponse!.data.upper.mid,
+      onTapUser: (context) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => UserSpacePage(mid: i.mid),
+        ));
+      },
     ));
   }
 

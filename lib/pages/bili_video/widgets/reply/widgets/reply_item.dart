@@ -17,7 +17,8 @@ class ReplyItemWidget extends StatelessWidget {
       this.bottomWidget,
       this.isTop = false,
       this.isUp = false,
-      this.cardLabels = const []});
+      this.cardLabels = const [],
+      this.onTapUser});
   final String face;
   final String name;
   final Content content;
@@ -28,6 +29,7 @@ class ReplyItemWidget extends StatelessWidget {
   final bool isTop; //是否是置顶
   final bool isUp; //是否是up主
   final List<CardLabel> cardLabels;
+  final Function(BuildContext context)? onTapUser;
 
   static TextSpan buildReplyItemContent(Content content) {
     List<InlineSpan> spans = [];
@@ -69,18 +71,24 @@ class ReplyItemWidget extends StatelessWidget {
           children: [
             Column(
               children: [
-                Container(
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(shape: BoxShape.circle),
-                  child: CachedNetworkImage(
-                    imageUrl: face,
-                    width: 45,
-                    height: 45,
-                    fit: BoxFit.cover,
-                    filterQuality: FilterQuality.none,
-                    cacheManager: CacheManager(Config(CacheKeys.othersFaceKey)),
-                    placeholder: (context, url) => Container(
-                      color: Theme.of(context).colorScheme.primaryContainer,
+                GestureDetector(
+                  onTap: () {
+                    onTapUser?.call(context);
+                  },
+                  child: Container(
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(shape: BoxShape.circle),
+                    child: CachedNetworkImage(
+                      imageUrl: face,
+                      width: 45,
+                      height: 45,
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.none,
+                      cacheManager:
+                          CacheManager(Config(CacheKeys.othersFaceKey)),
+                      placeholder: (context, url) => Container(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                      ),
                     ),
                   ),
                 ),
@@ -111,44 +119,47 @@ class ReplyItemWidget extends StatelessWidget {
                     Padding(
                       padding:
                           const EdgeInsets.only(left: 10, top: 5, bottom: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                name,
+                      child: GestureDetector(
+                        onTap: () => onTapUser?.call(context),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  name,
+                                  style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Builder(
+                                  builder: (context) {
+                                    if (isUp) {
+                                      //显示up主
+                                      return Text(
+                                        ' UP主 ',
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      );
+                                    } else {
+                                      return Container();
+                                    }
+                                  },
+                                )
+                              ],
+                            ),
+                            Text(location,
                                 style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Builder(
-                                builder: (context) {
-                                  if (isUp) {
-                                    //显示up主
-                                    return Text(
-                                      ' UP主 ',
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold),
-                                    );
-                                  } else {
-                                    return Container();
-                                  }
-                                },
-                              )
-                            ],
-                          ),
-                          Text(location,
-                              style: TextStyle(
-                                  color: Theme.of(context).hintColor,
-                                  fontSize: 12))
-                        ],
+                                    color: Theme.of(context).hintColor,
+                                    fontSize: 12))
+                          ],
+                        ),
                       ),
                     ),
                     Padding(

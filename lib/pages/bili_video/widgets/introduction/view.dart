@@ -1,6 +1,7 @@
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
+import 'package:bili_you/pages/user_space/view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -123,31 +124,40 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
       children: [
         SizedBox(
           height: 50,
-          child: Row(
-            children: [
-              Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: const BoxDecoration(shape: BoxShape.circle),
-                child: //头像
-                    CachedNetworkImage(
-                  width: 45,
-                  height: 45,
-                  fit: BoxFit.cover,
-                  filterQuality: FilterQuality.none,
-                  cacheManager: CacheManager(Config(CacheKeys.othersFaceKey)),
-                  imageUrl: controller.videoInfo.owner.face,
+          child: GestureDetector(
+            onTap: () {
+              controller.pauseVideo();
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) =>
+                    UserSpacePage(mid: controller.videoInfo.owner.mid),
+              ));
+            },
+            child: Row(
+              children: [
+                Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: //头像
+                      CachedNetworkImage(
+                    width: 45,
+                    height: 45,
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.none,
+                    cacheManager: CacheManager(Config(CacheKeys.othersFaceKey)),
+                    imageUrl: controller.videoInfo.owner.face,
+                  ),
                 ),
-              ),
-              Container(
-                  padding: const EdgeInsets.only(left: 5),
-                  child: Text(
-                    controller.videoInfo.owner.name,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold),
-                  ))
-            ],
+                Container(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: Text(
+                      controller.videoInfo.owner.name,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
+                    ))
+              ],
+            ),
           ),
         ),
         Padding(

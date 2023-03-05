@@ -3,6 +3,7 @@ import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player_panel.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
+import 'package:bili_you/pages/user_space/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -62,6 +63,9 @@ class UiTestController extends GetxController {
           },
         ),
       ),
+      "用户投稿": const UserSpacePage(
+        mid: 16752607,
+      )
     };
     //初始化构建测试页面项列表
     _buildListTiles();

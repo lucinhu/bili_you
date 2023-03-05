@@ -21,4 +21,12 @@ class BiliYouStorage {
 
 class UserStorageKeys {
   static const String userFace = "userFace";
+  static const String hasLogin = "hasLogin";
+  static const String userName = "userName";
+  // static const String userLevel = "userLevel";
+  // static const String userCurrentExp = "userCurrentExp";
+  // static const String userNextExp = "userNextExp";
+  // static const String userDynamicCount = "userDynamicCount";
+  // static const String userFollowerCount = "userFollowerCount";
+  // static const String userFollowingCount = "userFollowingCount";
 }

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/video_reply_api.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
+import 'package:bili_you/pages/user_space/view.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 import 'package:flutter/material.dart';
@@ -43,6 +44,9 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
           like: data.data.root.like,
           location: data.data.root.replyControl.location,
           isUp: int.parse(data.data.root.member.mid) == data.data.upper.mid,
+          onTapUser: (context) => Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => UserSpacePage(mid: data.data.root.mid),
+          )),
         );
 
         for (var i in data.data.replies) {
@@ -68,6 +72,10 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
             like: i.like,
             location: i.replyControl.location,
             isUp: int.parse(i.member.mid) == data.data.upper.mid,
+            onTapUser: (context) =>
+                Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => UserSpacePage(mid: i.mid),
+            )),
           ));
         }
         _pageNum.value++;
