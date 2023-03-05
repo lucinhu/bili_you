@@ -1,4 +1,5 @@
 import 'package:bili_you/common/api/bangumi_api.dart';
+import 'package:bili_you/common/models/bangumi/bangumi_info.dart';
 import 'package:bili_you/common/models/search/search_bangumi.dart';
 import 'package:bili_you/common/widget/bangumi_tile_item.dart';
 import 'package:bili_you/pages/bili_video/index.dart';
@@ -63,21 +64,34 @@ class SearchTabViewController extends GetxController {
           playNum: i.playNum,
           pubDate: i.pubdate,
           cacheManager: cacheManager,
-          onTap: (context) async {
+          onTap: (context) {
             late VideoPartsModel videoParts;
-            try {
-              videoParts = await VideoInfoApi.requestVideoParts(bvid: i.bvid);
-              if (videoParts.code != 0) {
-                log("加载cid失败,${videoParts.message}");
-                return false;
-              }
-            } catch (e) {
-              log("加载cid失败,${e.toString()}");
-              return false;
-            }
-            Get.to(() => BiliVideoPage(
-                  bvid: i.bvid,
-                  cid: videoParts.data.first.cid,
+            Get.to(() => FutureBuilder(
+                  future: Future(() async {
+                    try {
+                      videoParts =
+                          await VideoInfoApi.requestVideoParts(bvid: i.bvid);
+                      if (videoParts.code != 0) {
+                        log("加载cid失败,${videoParts.message}");
+                      }
+                    } catch (e) {
+                      log("加载cid失败,${e.toString()}");
+                    }
+                  }),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return BiliVideoPage(
+                        bvid: i.bvid,
+                        cid: videoParts.data.first.cid,
+                      );
+                    } else {
+                      return const Scaffold(
+                        body: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+                  },
                 ));
           },
         ));
@@ -113,18 +127,32 @@ class SearchTabViewController extends GetxController {
             describe: "${i.areas}\n${i.styles!}",
             score: i.mediaScore!.score!,
             onTap: (context) async {
-              var bangumi =
-                  await BangumiApi.requestBangumiInfo(ssid: i.seasonId);
-              if (bangumi.code != 0) {
-                log("搜索失败");
-                //加载失败
-                return false;
-              }
-              Get.to(() => BiliVideoPage(
-                    bvid: bangumi.result!.episodes!.first.bvid!,
-                    cid: bangumi.result!.episodes!.first.cid!,
-                    ssid: bangumi.result!.seasonId,
-                    isBangumi: true,
+              late BangumiInfoModel bangumi;
+              Get.to(() => FutureBuilder(
+                    future: Future(() async {
+                      bangumi =
+                          await BangumiApi.requestBangumiInfo(ssid: i.seasonId);
+                      if (bangumi.code != 0) {
+                        log("加载失败");
+                        //加载失败
+                      }
+                    }),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return BiliVideoPage(
+                          bvid: bangumi.result!.episodes!.first.bvid!,
+                          cid: bangumi.result!.episodes!.first.cid!,
+                          ssid: bangumi.result!.seasonId,
+                          isBangumi: true,
+                        );
+                      } else {
+                        return const Scaffold(
+                          body: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                    },
                   ));
             }));
         currentPage += 1;
