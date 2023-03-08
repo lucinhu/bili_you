@@ -34,8 +34,14 @@
 ## 截图
 
 <div align=center>
-<img src="assets/screenshot/Screenshot_1675523690.png" width = "200" />
-<img src="assets/screenshot/Screenshot_1675523697.png" width = "200"  />
-<img src="assets/screenshot/Screenshot_1675523788.png" width = "200"  />
-<img src="assets/screenshot/Screenshot_1675523799.png" width = "200" />
+<img src="assets/screenshot/v1.0.3/main_page.png" width = "200" />
+<img src="assets/screenshot/v1.0.3/user_info.png" width = "200"  />
+<img src="assets/screenshot/v1.0.3/search_page.png" width = "200"  />
+<img src="assets/screenshot/v1.0.3/video_search.png" width = "200" />
+<img src="assets/screenshot/v1.0.3/bangumi_search.png" width = "200" />
+<img src="assets/screenshot/v1.0.3/video_play.png" width = "200" />
+<img src="assets/screenshot/v1.0.3/bangumi_play.png" width = "200" />
+<img src="assets/screenshot/v1.0.3/reply.png" width = "200" />
+<img src="assets/screenshot/v1.0.3/reply_reply.png" width = "200" />
+<img src="assets/screenshot/v1.0.3/about_page.png" width = "200" />
 </div>
