@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bili_you/pages/bili_video/widgets/introduction/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'index.dart';
 
@@ -110,24 +111,27 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<BiliVideoController>(
-      dispose: (state) {
-        _tagId--;
-        log(_tagId.toString());
-      },
-      tag: tag,
-      init: BiliVideoController(
-          bvid: bvid, cid: cid, ssid: ssid, isBangumi: isBangumi),
-      id: "bili_video_play",
-      builder: (_) {
-        return Scaffold(
-            body: Column(
-          children: [
-            _player(),
-            Expanded(child: _buildView(context)),
-          ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+            statusBarIconBrightness: Brightness.light),
+        child: GetBuilder<BiliVideoController>(
+          dispose: (state) {
+            _tagId--;
+            log(_tagId.toString());
+          },
+          tag: tag,
+          init: BiliVideoController(
+              bvid: bvid, cid: cid, ssid: ssid, isBangumi: isBangumi),
+          id: "bili_video_play",
+          builder: (_) {
+            return Scaffold(
+                body: Column(
+              children: [
+                _player(),
+                Expanded(child: _buildView(context)),
+              ],
+            ));
+          },
         ));
-      },
-    );
   }
 }
