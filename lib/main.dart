@@ -1,11 +1,11 @@
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/utils/my_dio.dart';
+import 'package:bili_you/common/utils/settings.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import 'common/style/color_schemes.g.dart';
 import 'main.reflectable.dart';
 import 'pages/splash/view.dart';
 
@@ -31,10 +31,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(builder: ((lightDynamic, darkDynamic) {
       return GetMaterialApp(
+        themeMode: SettingsUtil.currentThemeMode,
         theme: ThemeData(
-            colorScheme: lightDynamic ?? lightColorScheme, useMaterial3: true),
+            colorScheme: SettingsUtil.currentTheme == BiliTheme.dynamic
+                ? lightDynamic ?? BiliTheme.dynamic.themeDataLight.colorScheme
+                : SettingsUtil.currentTheme.themeDataLight.colorScheme,
+            useMaterial3: true),
         darkTheme: ThemeData(
-            colorScheme: darkDynamic ?? darkColorScheme, useMaterial3: true),
+            colorScheme: SettingsUtil.currentTheme == BiliTheme.dynamic
+                ? darkDynamic ?? BiliTheme.dynamic.themeDataDark.colorScheme
+                : SettingsUtil.currentTheme.themeDataDark.colorScheme,
+            useMaterial3: true),
         home: const SplashPage(),
       );
     }));

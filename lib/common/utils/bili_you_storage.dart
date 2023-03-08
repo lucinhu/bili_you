@@ -30,3 +30,8 @@ class UserStorageKeys {
   // static const String userFollowerCount = "userFollowerCount";
   // static const String userFollowingCount = "userFollowingCount";
 }
+
+class SettingsStorageKeys {
+  static const String themeMode = "themeMode";
+  static const String biliTheme = "biliTheme";
+}

@@ -1,4 +1,6 @@
-import 'package:bili_you/pages/settings_page/pages/cache_management_page.dart';
+import 'package:bili_you/pages/settings_page/appearance_settings_page.dart';
+import 'package:bili_you/pages/settings_page/common_settings_page.dart';
+import 'package:bili_you/pages/settings_page/others_settings_page.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -6,26 +8,29 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color iconColor = Theme.of(context).colorScheme.primary;
     return Scaffold(
       appBar: AppBar(title: const Text("设置")),
       body: ListView(children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
-          child: Text(
-            "缓存",
-            style: TextStyle(color: Theme.of(context).colorScheme.primary),
-          ),
+        ListTile(
+          leading: Icon(Icons.tune_outlined, color: iconColor),
+          title: const Text("通用"),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const CommonSettingsPage(),
+          )),
         ),
         ListTile(
-          title: const Text(
-            "缓存管理",
-          ),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const CacheManagementPage(),
-            ));
-          },
-        )
+          leading: Icon(Icons.color_lens_outlined, color: iconColor),
+          title: const Text("外观"),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const AppearanceSettingsPage())),
+        ),
+        ListTile(
+            leading: Icon(Icons.more_horiz_outlined, color: iconColor),
+            title: const Text("其他"),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const OthersSettingsPage(),
+                ))),
       ]),
     );
   }
