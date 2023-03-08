@@ -16,18 +16,8 @@ class _RecommendPageState extends State<RecommendPage>
   @override
   bool get wantKeepAlive => true;
 
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return const _RecommendViewGetX();
-  }
-}
-
-class _RecommendViewGetX extends GetView<RecommendController> {
-  const _RecommendViewGetX({Key? key}) : super(key: key);
-
   // 主视图
-  Widget _buildView(context) {
+  Widget _buildView(BuildContext context, RecommendController controller) {
     return EasyRefresh.builder(
       refreshOnStart: true,
       onLoad: controller.onLoad,
@@ -69,48 +59,16 @@ class _RecommendViewGetX extends GetView<RecommendController> {
         },
       ),
     );
-    // return SmartRefresher(
-    //   header: const ClassicHeader(
-    //     refreshingText: "正在刷新...",
-    //     releaseText: "释放以刷新",
-    //     idleText: "下拉刷新",
-    //     completeText: "刷新成功",
-    //     failedText: "刷新失败",
-    //   ),
-    //   footer: const ClassicFooter(
-    //     loadStyle: LoadStyle.ShowWhenLoading,
-    //     loadingText: "加载中...",
-    //     canLoadingText: "释放以加载更多",
-    //     idleText: "上拉加载",
-    //     failedText: "加载失败",
-    //     noDataText: "没有更多内容",
-    //   ),
-    //   controller: controller.refreshController,
-    //   enablePullUp: true,
-    //   onRefresh: controller.onRefresh,
-    //   onLoading: controller.onLoad,
-    //   child: GridView.builder(
-    //     padding: const EdgeInsets.all(8),
-    //     gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-    //       mainAxisSpacing: 8,
-    //       crossAxisSpacing: 8,
-    //       maxCrossAxisExtent: 340,
-    //     ),
-    //     itemCount: controller.recommendViewList.length,
-    //     itemBuilder: (context, index) {
-    //       return controller.recommendViewList[index];
-    //     },
-    //   ),
-    // );
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GetBuilder<RecommendController>(
       init: RecommendController(),
       id: "recommend",
-      builder: (_) {
-        return _buildView(context);
+      builder: (controller) {
+        return _buildView(context, controller);
       },
     );
   }

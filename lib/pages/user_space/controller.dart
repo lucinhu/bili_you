@@ -13,7 +13,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 
 class UserSpacePageController extends GetxController {
-  UserSpacePageController({required this.refreshKey, required this.mid});
+  UserSpacePageController({required this.mid});
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
   CacheManager cacheManager =
@@ -21,7 +21,6 @@ class UserSpacePageController extends GetxController {
   final int mid;
   int currentPage = 1;
   List<Widget> searchItemWidgetList = <Widget>[];
-  final GlobalKey refreshKey;
 
   Future<bool> loadVideoItemWidgtLists() async {
     try {
@@ -89,9 +88,7 @@ class UserSpacePageController extends GetxController {
     } else {
       refreshController.finishLoad(IndicatorResult.fail);
     }
-    if (refreshKey.currentState?.mounted ?? false) {
-      refreshKey.currentState?.setState(() {});
-    }
+    update(['user_space']);
   }
 
   Future<void> onRefresh() async {
@@ -104,8 +101,6 @@ class UserSpacePageController extends GetxController {
     } else {
       refreshController.finishRefresh(IndicatorResult.fail);
     }
-    if (refreshKey.currentState?.mounted ?? false) {
-      refreshKey.currentState?.setState(() {});
-    }
+    update(['user_space']);
   }
 }

@@ -7,8 +7,8 @@ import 'package:get/get.dart';
 import 'index.dart';
 
 class SearchResultPage extends StatefulWidget {
-  const SearchResultPage({Key? key, required this.keyword}) : super(key: key);
-  final String keyword;
+  const SearchResultPage({Key? key, required this.keyWord}) : super(key: key);
+  final String keyWord;
   @override
   State<SearchResultPage> createState() => _SearchResultPageState();
 }
@@ -18,20 +18,7 @@ class _SearchResultPageState extends State<SearchResultPage>
   @override
   bool get wantKeepAlive => true;
 
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return _SearchResultViewGetX(keyWord: widget.keyword);
-  }
-}
-
-class _SearchResultViewGetX extends GetView<SearchResultController> {
-  const _SearchResultViewGetX({Key? key, required this.keyWord})
-      : super(key: key);
-  final String keyWord;
-
-  AppBar _appBar(context) {
-    controller.keyWord = keyWord;
+  AppBar _appBar(BuildContext context, SearchResultController controller) {
     return AppBar(
         shape: UnderlineInputBorder(
             borderSide: BorderSide(color: Theme.of(context).dividerColor)),
@@ -39,7 +26,7 @@ class _SearchResultViewGetX extends GetView<SearchResultController> {
           children: [
             Expanded(
               child: TextField(
-                controller: TextEditingController(text: keyWord),
+                controller: TextEditingController(text: widget.keyWord),
                 readOnly: true,
                 style: const TextStyle(fontSize: 18),
                 decoration: const InputDecoration(
@@ -87,33 +74,34 @@ class _SearchResultViewGetX extends GetView<SearchResultController> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GetBuilder<SearchResultController>(
-      init: SearchResultController(),
+      init: SearchResultController(keyWord: widget.keyWord),
       id: "search_result",
-      builder: (_) {
+      builder: (controller) {
         return Scaffold(
-          appBar: _appBar(context),
+          appBar: _appBar(context, controller),
           body: TabBarView(
             controller: controller.tabController,
             children: [
               SearchTabViewPage(
-                keyWord: keyWord,
+                keyWord: widget.keyWord,
                 searchType: SearchType.video,
               ),
               SearchTabViewPage(
-                keyWord: keyWord,
+                keyWord: widget.keyWord,
                 searchType: SearchType.bangumi,
               ),
               SearchTabViewPage(
-                keyWord: keyWord,
+                keyWord: widget.keyWord,
                 searchType: SearchType.liveRoom,
               ),
               SearchTabViewPage(
-                keyWord: keyWord,
+                keyWord: widget.keyWord,
                 searchType: SearchType.movie,
               ),
               SearchTabViewPage(
-                keyWord: keyWord,
+                keyWord: widget.keyWord,
                 searchType: SearchType.user,
               )
             ],

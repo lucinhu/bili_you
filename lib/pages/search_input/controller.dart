@@ -99,7 +99,7 @@ class SearchInputPageController extends GetxController {
     if (keyWord.trim().isNotEmpty) {
       log("searching: $keyWord");
       _saveSearchedWord(keyWord.trim());
-      Get.to(() => SearchResultPage(keyword: keyWord));
+      Get.to(() => SearchResultPage(keyWord: keyWord));
     } else if (keyWord.isEmpty && defaultSearchWord.isNotEmpty) {
       setTextFieldText(defaultSearchWord);
       search(defaultSearchWord);

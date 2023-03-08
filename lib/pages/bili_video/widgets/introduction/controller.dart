@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/bangumi_api.dart';
 import 'package:bili_you/common/api/related_video_api.dart';
+import 'package:bili_you/common/api/search_api.dart';
 import 'package:bili_you/common/api/video_info_api.dart';
 import 'package:bili_you/common/models/bangumi/bangumi_info.dart';
 import 'package:bili_you/common/models/related_video/related_video.dart';
@@ -141,12 +142,14 @@ class IntroductionController extends GetxController {
           cacheManager: cacheManager,
           onTap: (context) {
             pauseVideo();
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => BiliVideoPage(
-                bvid: i.bvid,
-                cid: i.cid,
-              ),
-            ));
+            Get.to(
+                () => BiliVideoPage(
+                      bvid: i.bvid,
+                      cid: i.cid,
+                      isBangumi: i.tname == SearchType.bangumi.value,
+                      ssid: i.seasonId,
+                    ),
+                preventDuplicates: false);
           },
         ));
       }

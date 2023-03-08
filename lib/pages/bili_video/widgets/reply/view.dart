@@ -5,9 +5,15 @@ import 'package:get/get.dart';
 import 'index.dart';
 
 class ReplyPage extends StatefulWidget {
-  const ReplyPage({Key? key, required this.bvid}) : super(key: key);
+  const ReplyPage({
+    Key? key,
+    required this.bvid,
+    required this.pauseVideoCallback,
+  })  : tag = "ReplyPage:$bvid",
+        super(key: key);
   final String bvid;
-  static int tagId = 0;
+  final String tag;
+  final Function() pauseVideoCallback;
 
   @override
   State<ReplyPage> createState() => _ReplyPageState();
@@ -15,38 +21,12 @@ class ReplyPage extends StatefulWidget {
 
 class _ReplyPageState extends State<ReplyPage>
     with AutomaticKeepAliveClientMixin {
+  _ReplyPageState();
   @override
   bool get wantKeepAlive => true;
 
-  final tag = "ReplyPage:${ReplyPage.tagId++}";
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return _ReplyViewGetX(
-      bvid: widget.bvid,
-      tag: tag,
-    );
-  }
-
-  @override
-  void dispose() {
-    ReplyPage.tagId--;
-    super.dispose();
-  }
-}
-
-class _ReplyViewGetX extends GetView<ReplyController> {
-  const _ReplyViewGetX({Key? key, required this.bvid, required tag})
-      : _tag = tag,
-        super(key: key);
-  final String bvid;
-  final String _tag;
-  @override
-  String? get tag => _tag;
-
   // 主视图
-  Widget _buildView() {
+  Widget _buildView(ReplyController controller) {
     return EasyRefresh.builder(
         refreshOnStart: true,
         onLoad: controller.onReplyLoad,
@@ -77,13 +57,13 @@ class _ReplyViewGetX extends GetView<ReplyController> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ReplyController>(
-      tag: tag,
-      init: ReplyController(bvid: bvid),
-      id: "reply",
-      builder: (_) {
-        return _buildView();
-      },
+    super.build(context);
+    return GetBuilder(
+      init: ReplyController(
+          bvid: widget.bvid, pauseVideoCallback: widget.pauseVideoCallback),
+      tag: widget.tag,
+      builder: (controller) => _buildView(controller),
+      id: 'reply',
     );
   }
 }

@@ -18,9 +18,10 @@ class IntroductionPage extends StatefulWidget {
       required this.bvid,
       this.cid,
       this.ssid,
-      this.isBangumi = false});
+      this.isBangumi = false})
+      : tag = "IntroductionPage:$bvid";
   final String bvid;
-  static int tagId = 0;
+  final String tag;
 
   ///普通视频可以不用传入cid, 番剧必须传入
   final int? cid;
@@ -43,56 +44,8 @@ class IntroductionPage extends StatefulWidget {
 
 class _IntroductionPageState extends State<IntroductionPage>
     with AutomaticKeepAliveClientMixin {
-  String tag = "IntroductionPage:${IntroductionPage.tagId++}";
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return _IntroductionViewGetX(
-      changePartCallback: widget.changePartCallback,
-      bvid: widget.bvid,
-      cid: widget.cid,
-      refreshReply: widget.refreshReply ?? () {},
-      ssid: widget.ssid,
-      isBangumi: widget.isBangumi,
-      stopVideo: widget.pauseVideoCallback,
-      tag: tag,
-    );
-  }
-
-  @override
-  void dispose() {
-    IntroductionPage.tagId--;
-    super.dispose();
-  }
-
   @override
   bool get wantKeepAlive => true;
-}
-
-class _IntroductionViewGetX extends GetView<IntroductionController> {
-  const _IntroductionViewGetX(
-      {Key? key,
-      required this.changePartCallback,
-      required this.bvid,
-      required this.refreshReply,
-      this.cid,
-      this.ssid,
-      required this.isBangumi,
-      required this.stopVideo,
-      required String tag})
-      : _tag = tag,
-        super(key: key);
-  final String bvid;
-  final int? cid;
-  final int? ssid;
-  final bool isBangumi;
-  final Function() stopVideo;
-  final Function(String bivd, int cid) changePartCallback;
-  final Function() refreshReply;
-
-  final String _tag;
-  @override
-  String? get tag => _tag;
 
   //带有图标,及图标底下有标题的按钮
   Widget _iconTextButton(
@@ -117,7 +70,7 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
   }
 
   // 主视图
-  Widget _buildView(context) {
+  Widget _buildView(BuildContext context, IntroductionController controller) {
     return ListView(
       shrinkWrap: true,
       padding: const EdgeInsets.all(10),
@@ -127,10 +80,9 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
           child: GestureDetector(
             onTap: () {
               controller.pauseVideo();
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) =>
-                    UserSpacePage(mid: controller.videoInfo.owner.mid),
-              ));
+              Get.to(
+                () => UserSpacePage(mid: controller.videoInfo.owner.mid),
+              );
             },
             child: Row(
               children: [
@@ -334,23 +286,24 @@ class _IntroductionViewGetX extends GetView<IntroductionController> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GetBuilder(
         init: IntroductionController(
-            changePartCallback: changePartCallback,
-            bvid: bvid,
-            refreshReply: refreshReply,
-            cid: cid,
-            ssid: ssid,
-            isBangumi: isBangumi,
-            pauseVideo: stopVideo),
-        tag: tag,
+            changePartCallback: widget.changePartCallback,
+            bvid: widget.bvid,
+            refreshReply: widget.refreshReply ?? () {},
+            cid: widget.cid,
+            ssid: widget.ssid,
+            isBangumi: widget.isBangumi,
+            pauseVideo: widget.pauseVideoCallback),
+        tag: widget.tag,
         id: "introduction",
-        builder: (_) => FutureBuilder(
+        builder: (controller) => FutureBuilder(
               future: controller.loadVideoInfo(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.data == true) {
-                    return _buildView(context);
+                    return _buildView(context, controller);
                   } else {
                     return Center(
                       child: IconButton(

@@ -21,24 +21,8 @@ class _SearchTabViewPageState extends State<SearchTabViewPage>
   @override
   bool get wantKeepAlive => true;
 
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return _SearchTabViewGetX(
-        keyWord: widget.keyWord, searchType: widget.searchType);
-  }
-}
-
-class _SearchTabViewGetX extends GetView<SearchTabViewController> {
-  const _SearchTabViewGetX(
-      {Key? key, required this.keyWord, required this.searchType})
-      : super(key: key);
-  final String keyWord;
-  final SearchType searchType;
-  @override
-  String? get tag => searchType.value;
   // 主视图
-  Widget _buildView() {
+  Widget _buildView(SearchTabViewController controller) {
     return EasyRefresh.builder(
       refreshOnStart: true,
       onLoad: controller.onLoad,
@@ -79,12 +63,14 @@ class _SearchTabViewGetX extends GetView<SearchTabViewController> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GetBuilder<SearchTabViewController>(
-      tag: searchType.value,
-      init: SearchTabViewController(keyWord: keyWord, searchType: searchType),
+      tag: widget.searchType.value,
+      init: SearchTabViewController(
+          keyWord: widget.keyWord, searchType: widget.searchType),
       id: "search_video_result",
-      builder: (_) {
-        return _buildView();
+      builder: (controller) {
+        return _buildView(controller);
       },
     );
   }

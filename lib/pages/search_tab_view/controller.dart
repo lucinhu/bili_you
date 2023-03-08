@@ -83,6 +83,8 @@ class SearchTabViewController extends GetxController {
                       return BiliVideoPage(
                         bvid: i.bvid,
                         cid: videoParts.data.first.cid,
+                        isBangumi: i.typename == SearchType.bangumi.value,
+                        ssid: i.mid,
                       );
                     } else {
                       return const Scaffold(

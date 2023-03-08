@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bili_you/common/api/video_reply_api.dart';
+import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:easy_refresh/easy_refresh.dart';
@@ -13,9 +14,11 @@ class ReplyReplyPage extends StatefulWidget {
     super.key,
     required this.bvid,
     required this.rootId,
+    required this.pauseVideoCallback,
   });
   final String bvid;
   final int rootId;
+  final Function() pauseVideoCallback;
 
   @override
   State<ReplyReplyPage> createState() => _ReplyReplyPageState();
@@ -37,17 +40,19 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
       }
       if (_pageNum.value <= data.data.page.count) {
         _rootReply = ReplyItemWidget(
-          face: data.data.root.member.avatar,
-          name: data.data.root.member.uname,
-          content: data.data.root.content,
-          timeStamp: data.data.root.ctime,
-          like: data.data.root.like,
-          location: data.data.root.replyControl.location,
-          isUp: int.parse(data.data.root.member.mid) == data.data.upper.mid,
-          onTapUser: (context) => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => UserSpacePage(mid: data.data.root.mid),
-          )),
-        );
+            face: data.data.root.member.avatar,
+            name: data.data.root.member.uname,
+            content: data.data.root.content,
+            timeStamp: data.data.root.ctime,
+            like: data.data.root.like,
+            location: data.data.root.replyControl.location,
+            isUp: int.parse(data.data.root.member.mid) == data.data.upper.mid,
+            onTapUser: (context) {
+              widget.pauseVideoCallback();
+              Get.to(
+                () => UserSpacePage(mid: data.data.root.mid),
+              );
+            });
 
         for (var i in data.data.replies) {
           if (_replyReplies.isEmpty) {
@@ -65,18 +70,19 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
           }
 
           _replyReplies.add(ReplyItemWidget(
-            face: i.member.avatar,
-            name: i.member.uname,
-            content: i.content,
-            timeStamp: i.ctime,
-            like: i.like,
-            location: i.replyControl.location,
-            isUp: int.parse(i.member.mid) == data.data.upper.mid,
-            onTapUser: (context) =>
-                Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => UserSpacePage(mid: i.mid),
-            )),
-          ));
+              face: i.member.avatar,
+              name: i.member.uname,
+              content: i.content,
+              timeStamp: i.ctime,
+              like: i.like,
+              location: i.replyControl.location,
+              isUp: int.parse(i.member.mid) == data.data.upper.mid,
+              onTapUser: (context) {
+                widget.pauseVideoCallback();
+                Get.to(
+                  () => UserSpacePage(mid: i.mid),
+                );
+              }));
         }
         _pageNum.value++;
       }
@@ -121,19 +127,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
               return EasyRefresh.builder(
                 onLoad: _onLoad,
                 onRefresh: _onRefresh,
-                header: const MaterialHeader()
-                // const ClassicHeader(
-                //   processedDuration: Duration.zero,
-                //   safeArea: false,
-                //   showMessage: false,
-                //   processingText: "正在刷新...",
-                //   readyText: "正在刷新...",
-                //   armedText: "释放以刷新",
-                //   dragText: "下拉刷新",
-                //   processedText: "刷新成功",
-                //   failedText: "刷新失败",
-                // )
-                ,
+                header: const MaterialHeader(),
                 footer: const ClassicFooter(
                   processedDuration: Duration.zero,
                   safeArea: false,

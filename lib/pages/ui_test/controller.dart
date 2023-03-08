@@ -38,8 +38,9 @@ class UiTestController extends GetxController {
   @override
   void onInit() {
     _testPages = {
-      "评论测试": const ReplyPage(
+      "评论测试": ReplyPage(
         bvid: "170001",
+        pauseVideoCallback: () {},
       ),
       "许可": const LicensePage(
         applicationIcon: ImageIcon(

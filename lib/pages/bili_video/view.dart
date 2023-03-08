@@ -8,74 +8,35 @@ import 'package:get/get.dart';
 import 'index.dart';
 
 class BiliVideoPage extends StatefulWidget {
-  const BiliVideoPage(
-      {Key? key,
-      required this.bvid,
-      required this.cid,
-      this.ssid,
-      this.isBangumi = false})
-      : super(key: key);
+  const BiliVideoPage({
+    Key? key,
+    required this.bvid,
+    required this.cid,
+    this.isBangumi = false,
+    this.ssid,
+  })  : tag = "BiliVideoPage:$bvid",
+        super(key: key);
   final String bvid;
   final int cid;
   final int? ssid;
   final bool isBangumi;
+  final String tag;
 
   @override
   State<BiliVideoPage> createState() => _BiliVideoPageState();
 }
 
-class _BiliVideoPageState extends State<BiliVideoPage>
-    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    final TabController tabController = TabController(
-        length: 2,
-        vsync: this,
-        animationDuration: const Duration(milliseconds: 200));
-    return _BiliVideoPage(
-      bvid: widget.bvid,
-      cid: widget.cid,
-      isBangumi: widget.isBangumi,
-      tabController: tabController,
-      ssid: widget.ssid,
-    );
-  }
-}
-
-class _BiliVideoPage extends GetView<BiliVideoController> {
-  _BiliVideoPage(
-      {Key? key,
-      required this.bvid,
-      required this.cid,
-      required this.isBangumi,
-      this.ssid,
-      required this.tabController})
-      : super(key: key);
-  final String bvid;
-  final int cid;
-  final int? ssid;
-  final bool isBangumi;
-  final TabController tabController;
-
-  static int _tagId = 0;
-  final _tag = "BiliVideoPage:${_tagId++}";
-  @override
-  String? get tag => _tag;
-
+class _BiliVideoPageState extends State<BiliVideoPage> {
   // 主视图
-  Widget _player() {
+  Widget _player(BiliVideoController controller) {
     return controller.biliVideoPlayer;
   }
 
-  Widget _buildView(context) {
+  Widget _buildView(context, BiliVideoController controller) {
     return Column(
       children: [
         TabBar(
-            controller: tabController,
+            controller: controller.tabController,
             splashFactory: NoSplash.splashFactory,
             tabs: const [
               Tab(
@@ -85,7 +46,7 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
             ]),
         Expanded(
           child: TabBarView(
-            controller: tabController,
+            controller: controller.tabController,
             children: [
               IntroductionPage(
                 changePartCallback: controller.changeVideoPart,
@@ -100,6 +61,8 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
                 //Builder可以让ReplyPage在TabBarView显示到它的时候才取controller.bvid
                 return ReplyPage(
                   bvid: controller.bvid,
+                  pauseVideoCallback:
+                      controller.biliVideoPlayerController.pause,
                 );
               })
             ],
@@ -114,24 +77,20 @@ class _BiliVideoPage extends GetView<BiliVideoController> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: const SystemUiOverlayStyle(
             statusBarIconBrightness: Brightness.light),
-        child: GetBuilder<BiliVideoController>(
-          dispose: (state) {
-            _tagId--;
-            log(_tagId.toString());
-          },
-          tag: tag,
+        child: GetBuilder(
           init: BiliVideoController(
-              bvid: bvid, cid: cid, ssid: ssid, isBangumi: isBangumi),
-          id: "bili_video_play",
-          builder: (_) {
-            return Scaffold(
-                body: Column(
-              children: [
-                _player(),
-                Expanded(child: _buildView(context)),
-              ],
-            ));
-          },
+              bvid: widget.bvid,
+              cid: widget.cid,
+              ssid: widget.ssid,
+              isBangumi: widget.isBangumi),
+          tag: widget.tag,
+          builder: (controller) => Scaffold(
+              body: Column(
+            children: [
+              _player(controller),
+              Expanded(child: _buildView(context, controller)),
+            ],
+          )),
         ));
   }
 }

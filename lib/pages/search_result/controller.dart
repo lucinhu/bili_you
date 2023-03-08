@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 
 class SearchResultController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  SearchResultController();
+  SearchResultController({required this.keyWord});
   late TabController tabController;
-  String keyWord = "";
+  String keyWord;
 
   @override
   void onInit() {

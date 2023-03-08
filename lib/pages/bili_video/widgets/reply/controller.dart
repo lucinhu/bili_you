@@ -4,6 +4,7 @@ import 'package:bili_you/common/api/video_reply_api.dart';
 import 'package:bili_you/common/models/reply/reply.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/pages/bili_video/index.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
@@ -16,7 +17,7 @@ import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_reply_page
 // import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ReplyController extends GetxController {
-  ReplyController({required this.bvid});
+  ReplyController({required this.bvid, required this.pauseVideoCallback});
   String bvid;
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
@@ -26,6 +27,7 @@ class ReplyController extends GetxController {
   RxString sortTypeText = "按热度".obs;
   RxString sortInfoText = "热门评论".obs;
   VideoReplySort _replySort = VideoReplySort.like;
+  final Function() pauseVideoCallback;
 
   //切换排列方式
   void toggleSort() {
@@ -89,7 +91,11 @@ class ReplyController extends GetxController {
             onTap: () {
               //楼中楼点击后弹出详细楼中楼
               Get.bottomSheet(
-                  ReplyReplyPage(bvid: i.oid.toString(), rootId: i.rpid),
+                  ReplyReplyPage(
+                    bvid: i.oid.toString(),
+                    rootId: i.rpid,
+                    pauseVideoCallback: pauseVideoCallback,
+                  ),
                   backgroundColor: Theme.of(Get.context!).cardColor,
                   clipBehavior: Clip.antiAlias);
             },
@@ -108,9 +114,10 @@ class ReplyController extends GetxController {
       cardLabels: i.cardLabel,
       isUp: int.parse(i.member.mid) == replyResponse!.data.upper.mid,
       onTapUser: (context) {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => UserSpacePage(mid: i.mid),
-        ));
+        pauseVideoCallback();
+        Get.to(
+          () => UserSpacePage(mid: i.mid),
+        );
       },
     ));
   }
