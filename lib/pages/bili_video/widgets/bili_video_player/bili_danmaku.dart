@@ -98,6 +98,7 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
     for (int segmentIndex = 1;
         segmentIndex <= widget.controller.segmentCount;
         segmentIndex++) {
+      log(widget.controller.biliVideoPlayerController.cid.toString());
       var response = await DanmakuApi.requestDanmaku(
           cid: widget.controller.biliVideoPlayerController.cid,
           segmentIndex: segmentIndex);
@@ -170,6 +171,14 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
       danmakuController = null;
       setState(() {});
     };
+    controller.refreshDanmaku = () {
+      controller._isInitialized = false;
+      controller.currentIndex = 0;
+      controller.currentSegmentIndex = 0;
+      controller.dmSegList.clear();
+      controller.segmentCount = 0;
+      controller.updateWidget();
+    };
 
     super.initState();
   }
@@ -211,6 +220,7 @@ class BiliDanmakuController {
   bool _isInitialized = false;
 
   late void Function() updateWidget;
+  late void Function() refreshDanmaku;
 
   bool _visible = true;
   bool get visible => _visible;

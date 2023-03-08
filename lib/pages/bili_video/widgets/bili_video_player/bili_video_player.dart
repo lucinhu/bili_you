@@ -86,68 +86,72 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
     widget.controller._padding = MediaQuery.of(context).padding;
     return Hero(
       tag: "BiliVideoPlayer:${widget.controller.bvid}",
-      child: SafeArea(
-          left: false,
-          right: false,
-          bottom: false,
-          child: FutureBuilder(
-            future: loadVideo(widget.controller.bvid, widget.controller.cid),
-            builder: (context, snapshot) {
-              return StatefulBuilder(
-                  key: aspectRatioKey,
-                  builder: (context, builder) {
-                    return AspectRatio(
-                        aspectRatio: widget.controller._aspectRatio,
-                        child: Builder(
-                          builder: (context) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              if (snapshot.data == true) {
-                                return Stack(children: [
-                                  Center(
-                                    child: AspectRatio(
-                                      aspectRatio: widget
-                                          .controller
-                                          ._videoAudioController!
-                                          .value
-                                          .aspectRatio,
-                                      child: VideoAudioPlayer(widget
-                                          .controller._videoAudioController!),
+      child: Container(
+        color: Colors.black,
+        child: SafeArea(
+            left: false,
+            right: false,
+            bottom: false,
+            child: FutureBuilder(
+              future: loadVideo(widget.controller.bvid, widget.controller.cid),
+              builder: (context, snapshot) {
+                return StatefulBuilder(
+                    key: aspectRatioKey,
+                    builder: (context, builder) {
+                      return AspectRatio(
+                          aspectRatio: widget.controller._aspectRatio,
+                          child: Builder(
+                            builder: (context) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (snapshot.data == true) {
+                                  return Stack(children: [
+                                    Center(
+                                      child: AspectRatio(
+                                        aspectRatio: widget
+                                            .controller
+                                            ._videoAudioController!
+                                            .value
+                                            .aspectRatio,
+                                        child: VideoAudioPlayer(widget
+                                            .controller._videoAudioController!),
+                                      ),
                                     ),
-                                  ),
-                                  Center(
-                                    child: danmaku,
-                                  ),
-                                  Center(
-                                    child: controllPanel,
-                                  ),
-                                ]);
+                                    Center(
+                                      child: danmaku,
+                                    ),
+                                    Center(
+                                      child: controllPanel,
+                                    ),
+                                  ]);
+                                } else {
+                                  //加载失败,重试按钮
+                                  return Center(
+                                    child: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            widget.controller
+                                                ._videoAudioController
+                                                ?.dispose();
+                                            widget.controller
+                                                ._videoAudioController = null;
+                                          });
+                                        },
+                                        icon:
+                                            const Icon(Icons.refresh_rounded)),
+                                  );
+                                }
                               } else {
-                                //加载失败,重试按钮
-                                return Center(
-                                  child: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          widget
-                                              .controller._videoAudioController
-                                              ?.dispose();
-                                          widget.controller
-                                              ._videoAudioController = null;
-                                        });
-                                      },
-                                      icon: const Icon(Icons.refresh_rounded)),
+                                return const Center(
+                                  child: CircularProgressIndicator(),
                                 );
                               }
-                            } else {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                          },
-                        ));
-                  });
-            },
-          )),
+                            },
+                          ));
+                    });
+              },
+            )),
+      ),
     );
   }
 }
@@ -179,6 +183,7 @@ class BiliVideoPlayerController {
   void reloadWidget() {
     _videoAudioController?.dispose();
     _videoAudioController = null;
+    biliDanmakuController?.refreshDanmaku();
     updateWidget();
   }
 
