@@ -112,7 +112,7 @@ class PhoneLoginController extends GetxController {
       message = "成功登录";
       await onLoginSuccess(
           await UserApi.requestUserInfo(), await UserApi.requestUserStat());
-      Get.back();
+      Get.back(closeOverlays: true);
       //请求错误
     } else if (code == 1006) {
       //请输入正确的短信验证码

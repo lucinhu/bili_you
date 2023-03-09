@@ -80,6 +80,8 @@ abstract class LoginApi {
       String username,
       String password) async {
     Dio dio = MyDio.dio;
+    //先获取cookie
+    await dio.get(ApiConstants.bilibiliBase);
     //加密密码
     dynamic publicKey = RSAKeyParser().parse(passwordLoginKeyHash.key);
     String passwordEncryptyed = Encrypter(RSA(publicKey: publicKey))
@@ -95,11 +97,9 @@ abstract class LoginApi {
           'validate': captchaResult.validate,
           'seccode': captchaResult.seccode,
           'go_url': ApiConstants.bilibiliBase,
-          'source': "main_web"
         },
         options: Options(headers: {
-          'User-Agent': ApiConstants.userAgent,
-          'Referer': ApiConstants.passwordLogin
+          'user-agent': ApiConstants.userAgent,
         }, contentType: Headers.formUrlEncodedContentType));
 
     return JsonMapper.deserialize<PasswordLoginResultModel>(response.data)!;

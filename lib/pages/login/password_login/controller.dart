@@ -52,7 +52,7 @@ class PasswordLoginController extends GetxController {
             Get.rawSnackbar(title: "登陆", message: "成功!");
             await onLoginSuccess(await UserApi.requestUserInfo(),
                 await UserApi.requestUserStat());
-            Get.back();
+            Get.back(closeOverlays: true);
           } else if (passwordLoginResult.status == 2) {
             //提示当前环境有安全问题，需要手机验证或绑定
             Get.rawSnackbar(

@@ -9,7 +9,7 @@ class ApiConstants {
 
   static const String apiBase = "https://api.bilibili.com";
 
-  static const String passportBase = "http://passport.bilibili.com";
+  static const String passportBase = "https://passport.bilibili.com";
 
   static const String sSearchBase = "http://s.search.bilibili.com";
 
