@@ -3,10 +3,8 @@ import 'package:bili_you/common/models/bangumi/bangumi_info.dart';
 import 'package:bili_you/common/models/search/search_bangumi.dart';
 import 'package:bili_you/common/widget/bangumi_tile_item.dart';
 import 'package:bili_you/pages/bili_video/index.dart';
-import 'package:bili_you/pages/bili_video/widgets/introduction/index.dart';
 import 'package:get/get.dart';
 import 'dart:developer';
-
 import 'package:bili_you/common/api/search_api.dart';
 import 'package:bili_you/common/api/video_info_api.dart';
 import 'package:bili_you/common/models/video_info/video_parts.dart';
@@ -83,8 +81,6 @@ class SearchTabViewController extends GetxController {
                       return BiliVideoPage(
                         bvid: i.bvid,
                         cid: videoParts.data.first.cid,
-                        isBangumi: i.typename == SearchType.bangumi.value,
-                        ssid: i.mid,
                       );
                     } else {
                       return const Scaffold(

@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/bangumi_api.dart';
 import 'package:bili_you/common/api/related_video_api.dart';
-import 'package:bili_you/common/api/search_api.dart';
 import 'package:bili_you/common/api/video_info_api.dart';
 import 'package:bili_you/common/models/bangumi/bangumi_info.dart';
 import 'package:bili_you/common/models/related_video/related_video.dart';
@@ -11,7 +10,6 @@ import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/video_tile_item.dart';
 import 'package:bili_you/pages/bili_video/view.dart';
-import 'package:bili_you/pages/bili_video/widgets/introduction/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
@@ -146,8 +144,6 @@ class IntroductionController extends GetxController {
                 () => BiliVideoPage(
                       bvid: i.bvid,
                       cid: i.cid,
-                      isBangumi: i.tname == SearchType.bangumi.value,
-                      ssid: i.seasonId,
                     ),
                 preventDuplicates: false);
           },
