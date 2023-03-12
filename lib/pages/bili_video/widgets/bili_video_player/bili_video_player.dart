@@ -6,8 +6,6 @@ import 'package:bili_you/common/utils/fullscreen.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
 
 class BiliVideoPlayer extends StatefulWidget {
   const BiliVideoPlayer(this.controller,
@@ -40,13 +38,15 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
         return false;
       }
       widget.controller._videoAudioController = VideoAudioController(
-          videoUrl: data.dash.video[0].baseUrl,
-          audioUrl: data.dash.audio[0].baseUrl,
+          videoUrl: data.data!.dash!.video![0].baseUrl!,
+          audioUrl: data.data!.dash!.audio![0].baseUrl!,
           audioHeaders: VideoPlayApi.videoPlayerHttpHeaders,
           videoHeaders: VideoPlayApi.videoPlayerHttpHeaders,
           autoWakelock: true);
       await widget.controller._videoAudioController!.ensureInitialized();
-      await widget.controller._videoAudioController!.play();
+      if (widget.controller._playWhenInitialize) {
+        await widget.controller._videoAudioController!.play();
+      }
       return true;
     } catch (e) {
       log("bili_video_player $e");
@@ -161,6 +161,7 @@ class BiliVideoPlayerController {
   String bvid;
   int cid;
   bool isFullScreen = false;
+  bool _playWhenInitialize = true;
   late Size _size;
   late EdgeInsets _padding;
 
@@ -273,10 +274,12 @@ class BiliVideoPlayerController {
   }
 
   Future<void> play() async {
+    _playWhenInitialize = true;
     await _videoAudioController?.play();
   }
 
   Future<void> pause() async {
+    _playWhenInitialize = false;
     await _videoAudioController?.pause();
   }
 
