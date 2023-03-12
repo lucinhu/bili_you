@@ -1,13 +1,11 @@
 import 'package:bili_you/common/api/api_constants.dart';
-import 'package:bili_you/common/models/video_play/video_play.dart';
+import 'package:bili_you/common/models/network/video_play/video_play.dart';
 import 'package:bili_you/common/utils/my_dio.dart';
-import 'package:bili_you/main.reflectable.dart';
-import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class VideoPlayApi {
-  static Future<VideoPlayModel> requestVideoPlay(
+  static Future<VideoPlayResponse> requestVideoPlay(
       {required String bvid,
       required int cid,
       int qn = 116,
@@ -25,10 +23,9 @@ class VideoPlayApi {
         },
         options: Options(headers: {
           'user_agent': ApiConstants.userAgent,
-        }));
+        }, responseType: ResponseType.plain));
     var ret = await compute((data) async {
-      initializeReflectable();
-      return JsonMapper.deserialize<VideoPlayModel>(data)!;
+      return VideoPlayResponse.fromRawJson(data);
     }, response.data);
     return ret;
   }

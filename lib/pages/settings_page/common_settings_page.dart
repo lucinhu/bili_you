@@ -7,6 +7,6 @@ class CommonSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text("通用设置")),
-        body: ListView(children: []));
+        body: ListView(children: const []));
   }
 }

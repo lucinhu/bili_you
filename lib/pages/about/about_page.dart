@@ -7,7 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../common/api/github_api.dart';
-import '../../common/models/github/github_releases_item.dart';
+import '../../common/models/network/github/github_releases_item.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});

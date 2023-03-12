@@ -32,7 +32,7 @@ jobs:
       - name: Flutter action
         uses: subosito/flutter-action@v2
         with:
-            flutter-version: 3.7.6
+            flutter-version: 3.7.7
             channel: stable
       
       - name: Decode keystore

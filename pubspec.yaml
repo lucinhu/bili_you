@@ -50,7 +50,6 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   wakelock: ^0.6.2
   path: ^1.8.2
-  dart_json_mapper: ^2.2.7+1
   protobuf: ^2.1.0
   easy_refresh: ^3.3.0+1
   package_info_plus: ^3.0.2
@@ -122,16 +121,16 @@ flutter:
 targets:
   $default:
     builders:
-      dart_json_mapper:
-        generate_for:
-        # here should be listed entry point files having 'void main()' function
-          - lib/main.dart
+      # dart_json_mapper:
+      #   generate_for:
+      #   # here should be listed entry point files having 'void main()' function
+      #     - lib/main.dart
 
-      # This part is needed to tell original reflectable builder to stay away
-      # it overrides default options for reflectable builder to an **empty** set of files
-      reflectable:
-        generate_for:
-          - no/files
+      # # This part is needed to tell original reflectable builder to stay away
+      # # it overrides default options for reflectable builder to an **empty** set of files
+      # reflectable:
+      #   generate_for:
+      #     - no/files
 
 flutter_icons:
   android: true

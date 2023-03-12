@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:bili_you/common/api/api_constants.dart';
 import 'package:bili_you/common/api/search_api.dart';
 import 'package:bili_you/common/api/user_api.dart';
-import 'package:bili_you/common/models/search/default_search_word.dart';
-import 'package:bili_you/common/models/user/user_info.dart';
+import 'package:bili_you/common/models/network/search/default_search_word.dart';
+import 'package:bili_you/common/models/network/user/user_info.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 
@@ -15,7 +15,7 @@ class HomeController extends GetxController {
   HomeController();
   CacheManager cacheManager = CacheManager(Config(CacheKeys.userFaceKey));
   RxString faceUrl = ApiConstants.noface.obs;
-  late UserInfoModel userInfo;
+  late UserInfoResponse userInfo;
 
   RxString defaultSearchWord = "搜索".obs;
 
@@ -25,10 +25,10 @@ class HomeController extends GetxController {
 
   refreshDefaultSearchWord() async {
     try {
-      DefaultSearchWordModel defaultSearchWordModel =
+      DefaultSearchWordResponse defaultSearchWordModel =
           await SearchApi.requestDefaultSearchWord();
       if (defaultSearchWordModel.code == 0) {
-        defaultSearchWord.value = defaultSearchWordModel.showName;
+        defaultSearchWord.value = defaultSearchWordModel.data?.showName ?? "";
       }
     } catch (e) {
       log("获取搜素框默认词失败,网络错误?");
@@ -50,7 +50,7 @@ class HomeController extends GetxController {
   Future<void> refreshFace() async {
     try {
       userInfo = await UserApi.requestUserInfo();
-      faceUrl.value = userInfo.face;
+      faceUrl.value = userInfo.data?.face ?? ApiConstants.noface;
     } catch (e) {
       faceUrl.value = ApiConstants.noface;
       log(e.toString());

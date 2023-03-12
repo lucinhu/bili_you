@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/api_constants.dart';
 import 'package:bili_you/common/api/user_api.dart';
-import 'package:bili_you/common/models/user/user_info.dart';
-import 'package:bili_you/common/models/user/user_stat.dart';
+import 'package:bili_you/common/models/network/user/user_info.dart';
+import 'package:bili_you/common/models/network/user/user_stat.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/utils/my_dio.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
@@ -23,21 +23,21 @@ class UserMenuController extends GetxController {
   RxInt followingCount = 0.obs;
   RxInt followerCount = 0.obs;
 
-  late UserInfoModel userInfo;
-  late UserStatModel userStat;
+  late UserInfoResponse userInfo;
+  late UserStatResponse userStat;
 
   _initData() async {
     try {
       userInfo = await UserApi.requestUserInfo();
       userStat = await UserApi.requestUserStat();
-      faceUrl.value = userInfo.face;
-      name.value = userInfo.userName;
-      level.value = userInfo.levelInfo.currentLevel;
-      currentExp.value = userInfo.levelInfo.currentExp;
-      nextExp.value = userInfo.levelInfo.nextExp;
-      dynamicCount.value = userStat.dynamicCount;
-      followerCount.value = userStat.followerCount;
-      followingCount.value = userStat.followingCount;
+      faceUrl.value = userInfo.data!.face!;
+      name.value = userInfo.data!.uname!;
+      level.value = userInfo.data!.levelInfo!.currentLevel!;
+      currentExp.value = userInfo.data!.levelInfo!.currentExp!;
+      nextExp.value = userInfo.data!.levelInfo!.nextExp!;
+      dynamicCount.value = userStat.data!.dynamicCount!;
+      followerCount.value = userStat.data!.follower!;
+      followingCount.value = userStat.data!.following!;
     } catch (e) {
       log(e.toString());
     }

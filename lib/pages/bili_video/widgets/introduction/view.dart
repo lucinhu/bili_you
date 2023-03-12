@@ -1,6 +1,6 @@
+import 'package:bili_you/common/api/api_constants.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
-import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +81,8 @@ class _IntroductionPageState extends State<IntroductionPage>
             onTap: () {
               controller.pauseVideo();
               Get.to(
-                () => UserSpacePage(mid: controller.videoInfo.owner.mid),
+                () => UserSpacePage(
+                    mid: controller.videoInfo.data?.owner?.mid ?? 0),
               );
             },
             child: Row(
@@ -96,13 +97,14 @@ class _IntroductionPageState extends State<IntroductionPage>
                     fit: BoxFit.cover,
                     filterQuality: FilterQuality.none,
                     cacheManager: CacheManager(Config(CacheKeys.othersFaceKey)),
-                    imageUrl: controller.videoInfo.owner.face,
+                    imageUrl: controller.videoInfo.data?.owner?.face ??
+                        ApiConstants.noface,
                   ),
                 ),
                 Container(
                     padding: const EdgeInsets.only(left: 5),
                     child: Text(
-                      controller.videoInfo.owner.name,
+                      controller.videoInfo.data?.owner?.name ?? "",
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 15,
@@ -127,7 +129,7 @@ class _IntroductionPageState extends State<IntroductionPage>
               color: Theme.of(context).hintColor,
             ),
             Text(
-              " ${StringFormatUtils.numFormat(controller.videoInfo.stat.view)}  ",
+              " ${StringFormatUtils.numFormat(controller.videoInfo.data?.stat?.view ?? 0)}  ",
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).hintColor,
@@ -139,14 +141,14 @@ class _IntroductionPageState extends State<IntroductionPage>
               color: Theme.of(context).hintColor,
             ),
             Text(
-              " ${controller.videoInfo.stat.danmaku}   ",
+              " ${controller.videoInfo.data?.stat?.danmaku ?? 0}   ",
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).hintColor,
               ),
             ),
             Text(
-              "${StringFormatUtils.timeStampToDate(controller.videoInfo.pubdate)} ${StringFormatUtils.timeStampToTime(controller.videoInfo.pubdate)}",
+              "${StringFormatUtils.timeStampToDate(controller.videoInfo.data?.pubdate ?? 0)} ${StringFormatUtils.timeStampToTime(controller.videoInfo.data?.pubdate ?? 0)}",
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).hintColor,
@@ -160,7 +162,7 @@ class _IntroductionPageState extends State<IntroductionPage>
               Row(
             children: [
               Text(
-                "${controller.videoInfo.bvid} 版权信息:${controller.videoInfo.copyright}",
+                "${controller.videoInfo.data?.bvid} 版权信息:${controller.videoInfo.data?.copyright}",
                 style: TextStyle(
                   fontSize: 12,
                   color: Theme.of(context).hintColor,
@@ -188,7 +190,7 @@ class _IntroductionPageState extends State<IntroductionPage>
                 _iconTextButton(
                     icon: const Icon(Icons.thumb_up_rounded),
                     text: StringFormatUtils.numFormat(
-                        controller.videoInfo.stat.like)),
+                        controller.videoInfo.data?.stat?.like ?? 0)),
                 const Spacer(),
                 _iconTextButton(
                     icon: const Icon(Icons.thumb_down_alt_rounded),
@@ -197,17 +199,17 @@ class _IntroductionPageState extends State<IntroductionPage>
                 _iconTextButton(
                     icon: const Icon(Icons.circle_rounded),
                     text: StringFormatUtils.numFormat(
-                        controller.videoInfo.stat.coin)),
+                        controller.videoInfo.data?.stat?.coin ?? 0)),
                 const Spacer(),
                 _iconTextButton(
                     icon: const Icon(Icons.star_rounded),
                     text: StringFormatUtils.numFormat(
-                        controller.videoInfo.stat.favorite)),
+                        controller.videoInfo.data?.stat?.favorite ?? 0)),
                 const Spacer(),
                 _iconTextButton(
                     icon: const Icon(Icons.share_rounded),
                     text: StringFormatUtils.numFormat(
-                        controller.videoInfo.stat.share)),
+                        controller.videoInfo.data?.stat?.share ?? 0)),
                 const Spacer(),
               ],
             )),

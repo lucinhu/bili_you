@@ -42,7 +42,7 @@ class VideoTileItem extends StatelessWidget {
               width: 160,
               height: 90,
               child: Container(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
+                clipBehavior: Clip.hardEdge,
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(5)),
                 child: Stack(

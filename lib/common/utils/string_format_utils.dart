@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:get/get_utils/src/extensions/export.dart';
 
 //格式化工具

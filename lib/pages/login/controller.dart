@@ -1,5 +1,5 @@
-import 'package:bili_you/common/models/user/user_info.dart';
-import 'package:bili_you/common/models/user/user_stat.dart';
+import 'package:bili_you/common/models/network/user/user_info.dart';
+import 'package:bili_you/common/models/network/user/user_stat.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/pages/home/index.dart';
@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:gt3_flutter_plugin/gt3_flutter_plugin.dart';
 
 import '../../common/api/login_api.dart';
-import '../../common/models/login/captcha_result.dart';
+import '../../common/models/network/login/captcha_result.dart';
 
 ///人机测试
 ///必须在回调函数里面处理成功事件
@@ -24,15 +24,15 @@ startCaptcha(
   var captcha = Gt3FlutterPlugin(config);
   try {
     captchaResult =
-        CaptchaResultModel(captchaData: await LoginApi.getCaptchaData());
+        CaptchaResultModel(captchaData: await LoginApi.requestCaptchaData());
   } catch (e) {
     Get.rawSnackbar(title: "获取captcha数据错误", message: "网络问题");
     debugPrint("获取captcha数据错误,${e.toString()}");
     return;
   }
   var gtCaptchaData = Gt3RegisterData(
-      challenge: captchaResult.captchaData.challenge,
-      gt: captchaResult.captchaData.gt,
+      challenge: captchaResult.captchaData.data!.geetest!.challenge,
+      gt: captchaResult.captchaData.data!.geetest!.gt!,
       success: captchaResult.captchaData.code == 0);
   captcha.addEventHandler(
       //返回信息的时候
@@ -59,17 +59,17 @@ startCaptcha(
 ///登录成功时设置登录状态
 ///清除头像缓存
 Future<void> onLoginSuccess(
-    UserInfoModel userInfo, UserStatModel userStat) async {
+    UserInfoResponse userInfo, UserStatResponse userStat) async {
   var box = BiliYouStorage.user;
   await CacheManager(Config(CacheKeys.userFaceKey)).emptyCache();
   await box.put(UserStorageKeys.hasLogin, true);
-  await box.put(UserStorageKeys.userFace, userInfo.face);
-  await box.put(UserStorageKeys.userName, userInfo.userName);
+  await box.put(UserStorageKeys.userFace, userInfo.data!.face!);
+  await box.put(UserStorageKeys.userName, userInfo.data!.uname!);
   // await box.put(UserStorageKeys.userLevel, userInfo.levelInfo.currentLevel);
   // await box.put(UserStorageKeys.userCurrentExp, userInfo.levelInfo.currentExp);
   // await box.put(UserStorageKeys.userNextExp, userInfo.levelInfo.nextExp);
   // await box.put(UserStorageKeys.userDynamicCount, userStat.dynamicCount);
   // await box.put(UserStorageKeys.userFollowerCount, userStat.followerCount);
   // await box.put(UserStorageKeys.userFollowingCount, userStat.followingCount);
-  Get.find<HomeController>().faceUrl.value = userInfo.face;
+  Get.find<HomeController>().faceUrl.value = userInfo.data!.face!;
 }

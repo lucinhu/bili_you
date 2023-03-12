@@ -1,15 +1,14 @@
-import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:dio/dio.dart';
 import 'package:encrypt/encrypt.dart';
 
 import 'package:bili_you/common/utils/my_dio.dart';
 import 'api_constants.dart';
-import '../models/login/captcha_data.dart';
-import '../models/login/captcha_result.dart';
-import '../models/login/password_login_key_hash.dart';
-import '../models/login/password_login_result.dart';
-import '../models/login/sms_login_result.dart';
-import '../models/login/sms_request_result.dart';
+import '../models/network/login/captcha_data.dart';
+import '../models/network/login/captcha_result.dart';
+import '../models/network/login/password_login_key_hash.dart';
+import '../models/network/login/password_login_result.dart';
+import '../models/network/login/post_sms_login.dart';
+import '../models/network/login/post_sms_require.dart';
 
 ///b站登陆接口\
 ///设计原则：\
@@ -23,22 +22,23 @@ import '../models/login/sms_request_result.dart';
 ///2.其余错误请判断错误码(code)，配套有错误信息(message)
 abstract class LoginApi {
   ///获取登陆需要的key和hash
-  static Future<PasswordLoginKeyHashModel> getPasswordLoginKeyHash() async {
+  static Future<PasswordLoginKeyHashResponse>
+      requestPasswordLoginKeyHash() async {
     Dio dio = MyDio.dio;
     var response = await dio.get(ApiConstants.passwordPublicKeyHash);
-    return JsonMapper.deserialize<PasswordLoginKeyHashModel>(response.data)!;
+    return PasswordLoginKeyHashResponse.fromJson(response.data);
   }
 
   ///获取人机测试所需要的数据
-  static Future<CaptchaDataModel> getCaptchaData() async {
+  static Future<CaptchaDataResponse> requestCaptchaData() async {
     var dio = MyDio.dio;
     var response = await dio
         .get(ApiConstants.captcha, queryParameters: {"source": "main_web"});
-    return JsonMapper.deserialize<CaptchaDataModel>(response.data)!;
+    return CaptchaDataResponse.fromJson(response.data);
   }
 
   ///请求发送验证码信息到手机
-  static Future<SmsRequestResultModel> requestSmsToPhone(int cid, int tel,
+  static Future<PostSmsRequireResponse> postSendSmsToPhone(int cid, int tel,
       String token, String challenge, String validate, String seccode) async {
     var dio = MyDio.dio;
     var response = await dio.post(ApiConstants.smsCode,
@@ -52,11 +52,11 @@ abstract class LoginApi {
           "seccode": seccode
         },
         options: Options(contentType: Headers.formUrlEncodedContentType));
-    return JsonMapper.deserialize<SmsRequestResultModel>(response.data)!;
+    return PostSmsRequireResponse.fromJson(response.data);
   }
 
   ///短信登录
-  static Future<SmsLoginResultModel> smsLogin(
+  static Future<PostSmsLoginResponse> smsLogin(
       int cid, int tel, int code, String captchaKey) async {
     Dio dio = MyDio.dio;
     var response = await dio.post(ApiConstants.smsLogin,
@@ -70,30 +70,30 @@ abstract class LoginApi {
           "go_url": ApiConstants.bilibiliBase
         },
         options: Options(contentType: Headers.formUrlEncodedContentType));
-    return JsonMapper.deserialize<SmsLoginResultModel>(response.data)!;
+    return PostSmsLoginResponse.fromJson(response.data);
   }
 
   ///密码登陆
-  static Future<PasswordLoginResultModel> postPasswordLoginInfo(
+  static Future<PostPasswordLoginResponse> postPasswordLoginInfo(
       CaptchaResultModel captchaResult,
-      PasswordLoginKeyHashModel passwordLoginKeyHash,
+      PasswordLoginKeyHashResponse passwordLoginKeyHash,
       String username,
       String password) async {
     Dio dio = MyDio.dio;
     //先获取cookie
     await dio.get(ApiConstants.bilibiliBase);
     //加密密码
-    dynamic publicKey = RSAKeyParser().parse(passwordLoginKeyHash.key);
+    dynamic publicKey = RSAKeyParser().parse(passwordLoginKeyHash.data!.key!);
     String passwordEncryptyed = Encrypter(RSA(publicKey: publicKey))
-        .encrypt(passwordLoginKeyHash.hash + password)
+        .encrypt(passwordLoginKeyHash.data!.hash! + password)
         .base64;
     var response = await dio.post(ApiConstants.passwordLogin,
         data: {
           'username': username,
           'password': passwordEncryptyed,
           'keep': 0,
-          'token': captchaResult.captchaData.token,
-          'challenge': captchaResult.captchaData.challenge,
+          'token': captchaResult.captchaData.data!.token!,
+          'challenge': captchaResult.captchaData.data!.geetest!.challenge!,
           'validate': captchaResult.validate,
           'seccode': captchaResult.seccode,
           'go_url': ApiConstants.bilibiliBase,
@@ -102,6 +102,6 @@ abstract class LoginApi {
           'user-agent': ApiConstants.userAgent,
         }, contentType: Headers.formUrlEncodedContentType));
 
-    return JsonMapper.deserialize<PasswordLoginResultModel>(response.data)!;
+    return PostPasswordLoginResponse.fromJson(response.data);
   }
 }

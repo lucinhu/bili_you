@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:bili_you/common/api/danmaku_api.dart';
-import 'package:bili_you/common/models/proto/danmaku/danmaku.pb.dart';
+import 'package:bili_you/common/models/network/proto/danmaku/danmaku.pb.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';

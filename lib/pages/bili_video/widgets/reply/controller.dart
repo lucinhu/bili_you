@@ -1,17 +1,16 @@
 import 'dart:developer';
 
+import 'package:bili_you/common/api/api_constants.dart';
 import 'package:bili_you/common/api/video_reply_api.dart';
-import 'package:bili_you/common/models/reply/reply.dart';
+import 'package:bili_you/common/models/network/reply/reply.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
-import 'package:bili_you/pages/bili_video/index.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
-import 'package:bili_you/common/models/reply/reply_item.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_reply_page.dart';
 // import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -21,7 +20,7 @@ class ReplyController extends GetxController {
   String bvid;
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
-  ReplyModel? replyResponse;
+  ReplyResponse? replyResponse;
   List<Widget> replyList = <Widget>[];
   int pageNum = 1;
   RxString sortTypeText = "按热度".obs;
@@ -47,7 +46,7 @@ class ReplyController extends GetxController {
   }
 
 //添加评论条目到控件列表
-  addReplyItemWidget(List<Widget> list, ReplyItemModel i,
+  addReplyItemWidget(List<Widget> list, ReplyItemRaw i,
       {bool frontDivider = true, bool isTop = false}) {
     Widget? subReplies;
     if (frontDivider) {
@@ -56,9 +55,9 @@ class ReplyController extends GetxController {
         thickness: 1,
       ));
     }
-    if (i.replies.isNotEmpty) {
+    if (i.replies!.isNotEmpty) {
       List<Widget> preSubReplies = []; //预显示在外的楼中楼
-      for (var j in i.replies) {
+      for (var j in i.replies!) {
         //添加预显示在外楼中楼评论条目
         preSubReplies.add(Padding(
             padding: const EdgeInsets.only(top: 8),
@@ -66,9 +65,9 @@ class ReplyController extends GetxController {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: "${j.member.uname}: ",
+                    text: "${j.member!.uname}: ",
                   ),
-                  ReplyItemWidget.buildReplyItemContent(j.content)
+                  ReplyItemWidget.buildReplyItemContent(j.content!)
                 ],
               ),
               maxLines: 2,
@@ -93,7 +92,7 @@ class ReplyController extends GetxController {
               Get.bottomSheet(
                   ReplyReplyPage(
                     bvid: i.oid.toString(),
-                    rootId: i.rpid,
+                    rootId: i.rpid!,
                     pauseVideoCallback: pauseVideoCallback,
                   ),
                   backgroundColor: Theme.of(Get.context!).cardColor,
@@ -103,20 +102,20 @@ class ReplyController extends GetxController {
     }
     //添加评论条目
     list.add(ReplyItemWidget(
-      face: i.member.avatar,
-      name: i.member.uname,
-      content: i.content,
-      like: i.like,
-      timeStamp: i.ctime,
+      face: i.member?.avatar ?? ApiConstants.noface,
+      name: i.member?.uname ?? "",
+      content: i.content!,
+      like: i.like ?? 0,
+      timeStamp: i.ctime ?? 0,
       bottomWidget: subReplies,
-      location: i.replyControl.location,
+      location: i.replyControl?.location ?? "",
       isTop: isTop,
-      cardLabels: i.cardLabel,
-      isUp: int.parse(i.member.mid) == replyResponse!.data.upper.mid,
+      cardLabels: i.cardLabels!,
+      isUp: int.parse(i.member!.mid!) == replyResponse!.data!.upper!.mid!,
       onTapUser: (context) {
         pauseVideoCallback();
         Get.to(
-          () => UserSpacePage(mid: i.mid),
+          () => UserSpacePage(mid: i.mid!),
         );
       },
     ));
@@ -130,10 +129,11 @@ class ReplyController extends GetxController {
 
       if (replyResponse!.code != 0) {
         log(replyResponse!.code.toString());
-        log(replyResponse!.message);
+        log(replyResponse!.message!);
         return false;
       }
-      if (pageNum <= replyResponse!.data.page.count) {
+
+      if (pageNum <= replyResponse!.data!.page!.count!) {
         if (replyList.isEmpty) {
           //当第一次时
           //添加排列方式按钮
@@ -144,7 +144,7 @@ class ReplyController extends GetxController {
                     padding: const EdgeInsets.only(left: 12, right: 12),
                     child: Obx(
                       () => Text(
-                          "${sortInfoText.value} ${StringFormatUtils.numFormat(replyResponse!.data.page.count)}"),
+                          "${sortInfoText.value} ${StringFormatUtils.numFormat(replyResponse!.data!.page!.count!)}"),
                     )),
                 const Spacer(),
                 //排列方式按钮
@@ -171,12 +171,12 @@ class ReplyController extends GetxController {
             ),
           );
           //添加置顶评论(如果有的话)
-          for (var i in replyResponse!.data.topReplies) {
+          for (var i in replyResponse!.data!.topReplies!) {
             addReplyItemWidget(replyList, i, frontDivider: false, isTop: true);
           }
         }
         //添加常规评论
-        for (var i in replyResponse!.data.replies) {
+        for (var i in replyResponse!.data!.replies!) {
           addReplyItemWidget(replyList, i, frontDivider: replyList.length != 1);
         }
         pageNum++;

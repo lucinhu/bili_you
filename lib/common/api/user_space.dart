@@ -1,11 +1,11 @@
 import 'package:bili_you/common/api/api_constants.dart';
-import 'package:bili_you/common/models/user_space/user_video_search.dart';
+import 'package:bili_you/common/models/network/user_space/user_video_search.dart';
 import 'package:bili_you/common/utils/my_dio.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class UserSpaceApi {
-  static Future<UserVideoSearchModel> requestUserVideoSearch({
+  static Future<UserVideoSearchResponse> requestUserVideoSearch({
     required int mid,
     required int pageNum,
     String? keyword,
@@ -25,7 +25,7 @@ class UserSpaceApi {
           'user-agent': ApiConstants.userAgent,
         }));
     var ret = await compute((message) async {
-      return UserVideoSearchModel.fromJson(message);
+      return UserVideoSearchResponse.fromJson(message);
     }, response.data);
     return ret;
   }

@@ -1,13 +1,14 @@
 import 'package:bili_you/common/api/bangumi_api.dart';
-import 'package:bili_you/common/models/bangumi/bangumi_info.dart';
-import 'package:bili_you/common/models/search/search_bangumi.dart';
+import 'package:bili_you/common/models/network/bangumi/bangumi_info.dart';
+import 'package:bili_you/common/models/network/search/search_bangumi.dart';
+import 'package:bili_you/common/models/network/search/search_video.dart';
 import 'package:bili_you/common/widget/bangumi_tile_item.dart';
 import 'package:bili_you/pages/bili_video/index.dart';
 import 'package:get/get.dart';
 import 'dart:developer';
 import 'package:bili_you/common/api/search_api.dart';
 import 'package:bili_you/common/api/video_info_api.dart';
-import 'package:bili_you/common/models/video_info/video_parts.dart';
+import 'package:bili_you/common/models/network/video_info/video_parts.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/video_tile_item.dart';
@@ -48,27 +49,27 @@ class SearchTabViewController extends GetxController {
         return false;
       }
       //加载成功,添加控件
-      numPages = videoSearch.numPages;
-      for (var i in videoSearch.result) {
+      numPages = videoSearch.data?.numPages ?? 0;
+      for (var i in videoSearch.data?.result ?? <Result>[]) {
         searchItemWidgetList.add(VideoTileItem(
-          picUrl: i.pic,
-          bvid: i.bvid,
-          title: StringFormatUtils.keyWordTitleToRawTitle(i.title),
-          upName: i.author,
+          picUrl: "http:${i.pic!}",
+          bvid: i.bvid!,
+          title: StringFormatUtils.keyWordTitleToRawTitle(i.title!),
+          upName: i.author!,
           duration: StringFormatUtils.timeLengthFormat(Duration(
-                  minutes: int.parse(i.duration.split(':').first),
-                  seconds: int.parse(i.duration.split(':').last))
+                  minutes: int.parse(i.duration!.split(':').first),
+                  seconds: int.parse(i.duration!.split(':').last))
               .inSeconds),
-          playNum: i.playNum,
-          pubDate: i.pubdate,
+          playNum: i.play!,
+          pubDate: i.pubdate!,
           cacheManager: cacheManager,
           onTap: (context) {
-            late VideoPartsModel videoParts;
+            late VideoPartsResponse videoParts;
             Get.to(() => FutureBuilder(
                   future: Future(() async {
                     try {
                       videoParts =
-                          await VideoInfoApi.requestVideoParts(bvid: i.bvid);
+                          await VideoInfoApi.requestVideoParts(bvid: i.bvid!);
                       if (videoParts.code != 0) {
                         log("加载cid失败,${videoParts.message}");
                       }
@@ -79,8 +80,8 @@ class SearchTabViewController extends GetxController {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       return BiliVideoPage(
-                        bvid: i.bvid,
-                        cid: videoParts.data.first.cid,
+                        bvid: i.bvid!,
+                        cid: videoParts.data?.first.cid ?? 0,
                       );
                     } else {
                       return const Scaffold(
@@ -125,7 +126,7 @@ class SearchTabViewController extends GetxController {
             describe: "${i.areas}\n${i.styles!}",
             score: i.mediaScore!.score!,
             onTap: (context) async {
-              late BangumiInfoModel bangumi;
+              late BangumiInfoResponse bangumi;
               Get.to(() => FutureBuilder(
                     future: Future(() async {
                       bangumi =

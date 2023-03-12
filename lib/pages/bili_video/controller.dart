@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:bili_you/pages/bili_video/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player_panel.dart';

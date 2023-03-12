@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:bili_you/common/api/video_reply_api.dart';
-import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
+import 'package:bili_you/common/models/network/reply/reply_reply.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:easy_refresh/easy_refresh.dart';
@@ -38,23 +38,24 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
       if (data.code != 0) {
         return false;
       }
-      if (_pageNum.value <= data.data.page.count) {
+      if (_pageNum.value <= ((data.data?.page?.count) ?? 0)) {
         _rootReply = ReplyItemWidget(
-            face: data.data.root.member.avatar,
-            name: data.data.root.member.uname,
-            content: data.data.root.content,
-            timeStamp: data.data.root.ctime,
-            like: data.data.root.like,
-            location: data.data.root.replyControl.location,
-            isUp: int.parse(data.data.root.member.mid) == data.data.upper.mid,
+            face: data.data!.root!.member!.avatar!,
+            name: data.data!.root!.member!.uname!,
+            content: data.data!.root!.content!,
+            timeStamp: data.data!.root!.ctime!,
+            like: data.data!.root!.like!,
+            location: data.data?.root?.replyControl?.location ?? "",
+            isUp: int.parse(data.data!.root!.member!.mid!) ==
+                data.data!.upper!.mid!,
             onTapUser: (context) {
               widget.pauseVideoCallback();
               Get.to(
-                () => UserSpacePage(mid: data.data.root.mid),
+                () => UserSpacePage(mid: data.data!.root!.mid!),
               );
             });
 
-        for (var i in data.data.replies) {
+        for (var i in data.data?.replies ?? <Reply>[]) {
           if (_replyReplies.isEmpty) {
             _replyReplies.add(Divider(
               color: Theme.of(Get.context!).colorScheme.primaryContainer,
@@ -70,17 +71,17 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
           }
 
           _replyReplies.add(ReplyItemWidget(
-              face: i.member.avatar,
-              name: i.member.uname,
-              content: i.content,
-              timeStamp: i.ctime,
-              like: i.like,
-              location: i.replyControl.location,
-              isUp: int.parse(i.member.mid) == data.data.upper.mid,
+              face: i.member!.avatar!,
+              name: i.member!.uname!,
+              content: i.content!,
+              timeStamp: i.ctime!,
+              like: i.like!,
+              location: i.replyControl?.location ?? "",
+              isUp: int.parse(i.member!.mid!) == data.data!.upper!.mid!,
               onTapUser: (context) {
                 widget.pauseVideoCallback();
                 Get.to(
-                  () => UserSpacePage(mid: i.mid),
+                  () => UserSpacePage(mid: i.mid!),
                 );
               }));
         }

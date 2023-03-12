@@ -1,31 +1,31 @@
 import 'package:bili_you/common/api/api_constants.dart';
-import 'package:bili_you/common/models/video_info/video_info.dart';
-import 'package:bili_you/common/models/video_info/video_parts.dart';
+import 'package:bili_you/common/models/network/video_info/video_info.dart';
+import 'package:bili_you/common/models/network/video_info/video_parts.dart';
 import 'package:bili_you/common/utils/my_dio.dart';
-import 'package:bili_you/main.reflectable.dart';
-import 'package:dart_json_mapper/dart_json_mapper.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class VideoInfoApi {
-  static Future<VideoInfoModel> requestVideoInfo({required String bvid}) async {
+  static Future<VideoInfoResponse> requestVideoInfo(
+      {required String bvid}) async {
     var dio = MyDio.dio;
-    var response =
-        await dio.get(ApiConstants.videoInfo, queryParameters: {'bvid': bvid});
+    var response = await dio.get(ApiConstants.videoInfo,
+        queryParameters: {'bvid': bvid},
+        options: Options(responseType: ResponseType.plain));
     var ret = await compute((data) async {
-      initializeReflectable();
-      return JsonMapper.deserialize<VideoInfoModel>(data)!;
+      return VideoInfoResponse.fromRawJson(data);
     }, response.data);
     return ret;
   }
 
-  static Future<VideoPartsModel> requestVideoParts(
+  static Future<VideoPartsResponse> requestVideoParts(
       {required String bvid}) async {
     var dio = MyDio.dio;
-    var response =
-        await dio.get(ApiConstants.videoParts, queryParameters: {'bvid': bvid});
+    var response = await dio.get(ApiConstants.videoParts,
+        queryParameters: {'bvid': bvid},
+        options: Options(responseType: ResponseType.plain));
     var ret = await compute((data) {
-      initializeReflectable();
-      return JsonMapper.deserialize<VideoPartsModel>(data)!;
+      return VideoPartsResponse.fromRawJson(data);
     }, response.data);
     return ret;
   }

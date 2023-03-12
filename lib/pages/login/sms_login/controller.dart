@@ -1,13 +1,13 @@
 import 'dart:developer';
 
 import 'package:bili_you/common/api/user_api.dart';
-import 'package:bili_you/common/models/login/captcha_result.dart';
-import 'package:bili_you/common/models/login/sms_request_result.dart';
+import 'package:bili_you/common/models/network/login/captcha_result.dart';
+import 'package:bili_you/common/models/network/login/post_sms_require.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bili_you/common/values/coutry_id.dart';
 import 'package:bili_you/common/api/login_api.dart';
-import '../../../common/models/login/sms_login_result.dart';
+import '../../../common/models/network/login/post_sms_login.dart';
 import '../controller.dart';
 
 class PhoneLoginController extends GetxController {
@@ -18,7 +18,7 @@ class PhoneLoginController extends GetxController {
   int tel = 0; //手机号
   int messageCode = 0; //短信验证码
   CaptchaResultModel? _captchaResult;
-  SmsRequestResultModel? smsRequestResult;
+  PostSmsRequireResponse? smsRequestResult;
 
   _initData() {
     // update(["phone_login"]);
@@ -43,11 +43,11 @@ class PhoneLoginController extends GetxController {
       return;
     }
     try {
-      smsRequestResult = await LoginApi.requestSmsToPhone(
+      smsRequestResult = await LoginApi.postSendSmsToPhone(
           countryId,
           tel,
-          _captchaResult!.captchaData.token,
-          _captchaResult!.captchaData.challenge,
+          _captchaResult!.captchaData.data!.token!,
+          _captchaResult!.captchaData.data!.geetest!.challenge!,
           _captchaResult!.validate,
           _captchaResult!.seccode);
     } catch (e) {
@@ -55,12 +55,12 @@ class PhoneLoginController extends GetxController {
       log(e.toString());
       return;
     }
-    int code = smsRequestResult!.code;
+    int code = smsRequestResult!.code!;
     String title = "获取验证码";
     String message = "";
     if (code == 0) {
       //成功
-      message = "成功";
+      message = "获取短信验证码成功，请收到验证码后进行填写！";
     } else if (code == -400) {
       //请求错误
       message = "请求错误";
@@ -95,16 +95,16 @@ class PhoneLoginController extends GetxController {
       Get.rawSnackbar(title: "登录错误", message: "验证码未获取或获取失败");
       return;
     }
-    late SmsLoginResultModel smsLoginResult;
+    late PostSmsLoginResponse smsLoginResult;
     try {
       smsLoginResult = await LoginApi.smsLogin(
-          countryId, tel, messageCode, smsRequestResult!.captchaKey);
+          countryId, tel, messageCode, smsRequestResult!.data!.captchaKey!);
     } catch (e) {
       Get.rawSnackbar(title: "短信登录错误", message: "网络错误");
       log(e.toString());
       return;
     }
-    int code = smsLoginResult.code;
+    int code = smsLoginResult.code!;
     String title = "验证码登录";
     String message = "";
     if (code == 0) {

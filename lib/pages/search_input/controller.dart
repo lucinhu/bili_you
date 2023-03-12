@@ -1,7 +1,8 @@
 import 'dart:developer';
 
 import 'package:bili_you/common/api/search_api.dart';
-import 'package:bili_you/common/models/search/hot_words.dart';
+import 'package:bili_you/common/models/network/search/hot_words.dart';
+import 'package:bili_you/common/models/network/search/search_suggest.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/pages/search_result/index.dart';
 import 'package:bili_you/pages/search_result/view.dart';
@@ -22,23 +23,23 @@ class SearchInputPageController extends GetxController {
   //构造热搜按钮列表
   Future<List<Widget>> requestHotWordButtons() async {
     try {
-      HotWordsModel hotWordsModel = await SearchApi.requestHotWorlds();
+      HotWordResponse hotWordResponse = await SearchApi.requestHotWorlds();
       List<Widget> list = [];
-      if (hotWordsModel.code == 0) {
-        for (var i in hotWordsModel.list) {
+      if (hotWordResponse.code == 0) {
+        for (var i in hotWordResponse.data?.list ?? <ListElement>[]) {
           list.add(
             SizedBox(
                 width: MediaQuery.of(Get.context!).size.width * 0.5,
                 child: InkWell(
                     onTap: () {
-                      search(i.keyword);
-                      setTextFieldText(i.keyword);
+                      search(i.keyword ?? "");
+                      setTextFieldText(i.keyword ?? "");
                     },
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
                       child: Text(
                         overflow: TextOverflow.ellipsis,
-                        i.showName,
+                        i.showName ?? "",
                         maxLines: 1,
                         style: const TextStyle(fontSize: 14),
                       ),
@@ -57,18 +58,18 @@ class SearchInputPageController extends GetxController {
   requestSearchSuggestions(String keyWord) async {
     var result = await SearchApi.requestSearchSuggests(keyWord);
     List<Widget> list = [];
-    for (var i in result.items) {
+    for (var i in result.result?.tag ?? <Tag>[]) {
       list.add(InkWell(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
-            i.name,
+            i.name ?? "",
             style: const TextStyle(fontSize: 16),
           ),
         ),
         onTap: () {
-          setTextFieldText(i.value);
-          search(i.value);
+          setTextFieldText(i.value ?? "");
+          search(i.value ?? "");
         },
       ));
     }

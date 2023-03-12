@@ -12,7 +12,7 @@ class UiTestController extends GetxController {
 
   List<ListTile> listTiles = [];
   BiliVideoPlayerController biliVideoPlayerController =
-      BiliVideoPlayerController(bvid: "BV17x411w7KC", cid: 279786);
+      BiliVideoPlayerController(bvid: "170001", cid: 279786);
 
   //测试名称,页面对应表
   late Map<String, Widget> _testPages;

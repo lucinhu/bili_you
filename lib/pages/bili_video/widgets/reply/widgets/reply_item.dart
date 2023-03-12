@@ -1,4 +1,4 @@
-import 'package:bili_you/common/models/reply/reply_item.dart';
+import 'package:bili_you/common/models/network/reply/reply.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -33,20 +33,20 @@ class ReplyItemWidget extends StatelessWidget {
 
   static TextSpan buildReplyItemContent(Content content) {
     List<InlineSpan> spans = [];
-    content.message.splitMapJoin(RegExp(r"\[.*?\]"), onMatch: (match) {
+    content.message!.splitMapJoin(RegExp(r"\[.*?\]"), onMatch: (match) {
       //匹配到是[]的位置时,有可能是表情
       String matched = match[0]!;
       //判断是不是有这个表情
-      if (content.emoteMap.containsKey(matched)) {
+      if (content.emote!.containsKey(matched)) {
         spans.add(
           WidgetSpan(
               child: SizedBox(
-                  width: 20.0 * content.emoteMap[matched]!.size,
-                  height: 20.0 * content.emoteMap[matched]!.size,
+                  width: 20.0 * content.emote![matched]!.meta!.size!,
+                  height: 20.0 * content.emote![matched]!.meta!.size!,
                   child: CachedNetworkImage(
                     cacheKey: matched,
                     cacheManager: CacheManager(Config(CacheKeys.emoteKey)),
-                    imageUrl: content.emoteMap[matched]!.url,
+                    imageUrl: content.emote![matched]!.url!,
                   ))),
         );
       } else {
@@ -197,7 +197,7 @@ class ReplyItemWidget extends StatelessWidget {
                                 for (var i in cardLabels) {
                                   list.add(
                                     Text(
-                                      i.textContent, //标签,如热评,up觉得很赞
+                                      i.textContent!, //标签,如热评,up觉得很赞
                                       maxLines: 1,
                                       style: TextStyle(
                                         overflow: TextOverflow.ellipsis,

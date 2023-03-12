@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/user_space.dart';
 import 'package:bili_you/common/api/video_info_api.dart';
-import 'package:bili_you/common/models/user_space/user_video_search.dart';
-import 'package:bili_you/common/models/video_info/video_parts.dart';
+import 'package:bili_you/common/models/network/user_space/user_video_search.dart';
+import 'package:bili_you/common/models/network/video_info/video_parts.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/video_tile_item.dart';
 import 'package:bili_you/pages/bili_video/index.dart';
@@ -26,7 +26,7 @@ class UserSpacePageController extends GetxController {
     try {
       var response = await UserSpaceApi.requestUserVideoSearch(
           mid: mid, pageNum: currentPage);
-      if (response.code != 0 && response.data != null) {
+      if (response.code != 0 || response.data == null) {
         log("用户投稿加载失败");
         return false;
       }
@@ -42,7 +42,7 @@ class UserSpacePageController extends GetxController {
             pubDate: item.created!,
             cacheManager: cacheManager,
             onTap: (context) {
-              late VideoPartsModel videoParts;
+              late VideoPartsResponse videoParts;
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) {
                   return FutureBuilder(future: Future(() async {
@@ -59,7 +59,7 @@ class UserSpacePageController extends GetxController {
                     if (snapshot.connectionState == ConnectionState.done) {
                       return BiliVideoPage(
                         bvid: item.bvid!,
-                        cid: videoParts.data.first.cid,
+                        cid: videoParts.data?.first.cid ?? 0,
                       );
                     } else {
                       return const Scaffold(

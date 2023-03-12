@@ -1,4 +1,3 @@
-import 'package:bili_you/common/models/home/recommend_item.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/widgets.dart';
@@ -28,17 +27,19 @@ class RecommendController extends GetxController {
 
 //加载并追加视频推荐
   Future<bool> _addRecommendItems() async {
-    List<RecommendItemModel> list =
-        (await HomeApi.requestRecommendVideos(16, refreshIdx)).data.item;
-    for (RecommendItemModel i in list) {
+    var response = await HomeApi.requestRecommendVideos(16, refreshIdx);
+    if (response.code != 0 || response.data!.item == null) {
+      return false;
+    }
+    for (var i in response.data!.item!) {
       recommendViewList.add(RecommendCard(
           cacheManager: cacheManager,
-          imageUrl: i.coverPic,
-          playNum: StringFormatUtils.numFormat(i.playNum),
-          danmakuNum: StringFormatUtils.numFormat(i.danmakuNum),
-          timeLength: StringFormatUtils.timeLengthFormat(i.timeLength),
+          imageUrl: i.pic!,
+          playNum: StringFormatUtils.numFormat(i.stat!.view!),
+          danmakuNum: StringFormatUtils.numFormat(i.stat!.danmaku!),
+          timeLength: StringFormatUtils.timeLengthFormat(i.duration!),
           title: i.title,
-          upName: i.upName,
+          upName: i.owner!.name,
           bvid: i.bvid,
           cid: i.cid));
     }

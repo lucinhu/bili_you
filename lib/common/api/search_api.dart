@@ -1,60 +1,60 @@
 import 'package:bili_you/common/api/api_constants.dart';
-import 'package:bili_you/common/models/search/default_search_word.dart';
-import 'package:bili_you/common/models/search/hot_words.dart';
-import 'package:bili_you/common/models/search/search_bangumi.dart';
-import 'package:bili_you/common/models/search/search_suggest.dart';
-import 'package:bili_you/common/models/search/search_video.dart';
+import 'package:bili_you/common/models/network/search/default_search_word.dart';
+import 'package:bili_you/common/models/network/search/hot_words.dart';
+import 'package:bili_you/common/models/network/search/search_bangumi.dart';
+import 'package:bili_you/common/models/network/search/search_suggest.dart';
+import 'package:bili_you/common/models/network/search/search_video.dart';
 import 'package:bili_you/common/utils/my_dio.dart';
-import 'package:bili_you/main.reflectable.dart';
-import 'package:dart_json_mapper/dart_json_mapper.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class SearchApi {
-  static Future<DefaultSearchWordModel> requestDefaultSearchWord() async {
+  static Future<DefaultSearchWordResponse> requestDefaultSearchWord() async {
     var dio = MyDio.dio;
     var response = await dio.get(ApiConstants.defualtSearchWord);
-    return JsonMapper.deserialize<DefaultSearchWordModel>(response.data)!;
+    return DefaultSearchWordResponse.fromJson(response.data);
   }
 
-  static Future<HotWordsModel> requestHotWorlds() async {
+  static Future<HotWordResponse> requestHotWorlds() async {
     var dio = MyDio.dio;
     var response = await dio.get(ApiConstants.hotWordsMob);
-    return JsonMapper.deserialize<HotWordsModel>(response.data)!;
+    return HotWordResponse.fromJson(response.data);
   }
 
-  static Future<SearchSuggestModel> requestSearchSuggests(
+  static Future<SearchSuggestResponse> requestSearchSuggests(
       String keyWord) async {
     var dio = MyDio.dio;
     var response = await dio.get(ApiConstants.searchSuggest,
         queryParameters: {'term': keyWord, "main_ver": 'v1'});
-    return JsonMapper.deserialize<SearchSuggestModel>(response.data)!;
+    return SearchSuggestResponse.fromJson(response.data);
   }
 
   ///搜索视频请求
   ///keyword 搜索的词
   ///page 页码
   ///order搜索结果排序方式
-  static Future<SearchVideoModel> requestSearchVideo({
+  static Future<SearchVideoResponse> requestSearchVideo({
     required String keyword,
     required int page,
     SearchVideoOrder? order,
   }) async {
     var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.searchWithType, queryParameters: {
-      'keyword': keyword,
-      'search_type': 'video',
-      'order': order?.value ?? SearchVideoOrder.comprehensive,
-      'page': page,
-    });
+    var response = await dio.get(ApiConstants.searchWithType,
+        queryParameters: {
+          'keyword': keyword,
+          'search_type': 'video',
+          'order': order?.value ?? SearchVideoOrder.comprehensive,
+          'page': page,
+        },
+        options: Options(responseType: ResponseType.plain));
     var ret = await compute((data) {
-      initializeReflectable();
-      return JsonMapper.deserialize<SearchVideoModel>(data)!;
+      return SearchVideoResponse.fromRawJson(response.data);
     }, response.data);
     return ret;
   }
 
   ///搜索番剧请求
-  static Future<BangumiSearchModel> requestSearchBangumi(
+  static Future<BangumiSearchResponse> requestSearchBangumi(
       {required String keyWord, required int page}) async {
     var dio = MyDio.dio;
     var response = await dio.get(ApiConstants.searchWithType, queryParameters: {
@@ -63,7 +63,7 @@ class SearchApi {
       'page': page,
     });
     var ret = await compute((data) {
-      return BangumiSearchModel.fromJson(response.data);
+      return BangumiSearchResponse.fromJson(response.data);
     }, response.data);
     return ret;
   }
