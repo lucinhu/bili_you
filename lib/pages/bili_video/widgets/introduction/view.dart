@@ -214,7 +214,7 @@ class _IntroductionPageState extends State<IntroductionPage>
 
         Builder(
           builder: (context) {
-            if (controller.partButtons.length > 1) {
+            if (controller.partButtons.isNotEmpty) {
               return SizedBox(
                   height: 50,
                   child: Row(

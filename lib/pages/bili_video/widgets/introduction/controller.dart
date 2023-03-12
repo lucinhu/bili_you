@@ -109,8 +109,11 @@ class IntroductionController extends GetxController {
 
   //构造分p按钮列表
   _loadVideoPartButtons() {
-    for (int i = 0; i < videoInfo.pages.length; i++) {
-      _addAButtion(bvid, videoInfo.pages[i].cid, videoInfo.pages[i].part, i);
+    if ((videoInfo.data?.pages ?? []).length > 1) {
+      for (int i = 0; i < (videoInfo.data?.pages ?? []).length; i++) {
+        _addAButtion(bvid, videoInfo.data!.pages![i].cid!,
+            videoInfo.data!.pages![i].pagePart ?? '', i);
+      }
     }
   }
 
