@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:bili_you/common/api/user_space.dart';
+import 'package:bili_you/common/api/user_space_api.dart';
 import 'package:bili_you/common/api/video_info_api.dart';
-import 'package:bili_you/common/models/network/user_space/user_video_search.dart';
-import 'package:bili_you/common/models/network/video_info/video_parts.dart';
+import 'package:bili_you/common/models/local/user_space/user_video_search.dart';
+import 'package:bili_you/common/models/local/video/part_info.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/video_tile_item.dart';
 import 'package:bili_you/pages/bili_video/index.dart';
@@ -23,62 +23,55 @@ class UserSpacePageController extends GetxController {
   List<Widget> searchItemWidgetList = <Widget>[];
 
   Future<bool> loadVideoItemWidgtLists() async {
-    try {
-      var response = await UserSpaceApi.requestUserVideoSearch(
-          mid: mid, pageNum: currentPage);
-      if (response.code != 0 || response.data == null) {
-        log("用户投稿加载失败");
-        return false;
-      }
-      var data = response.data!;
-      for (var item in data.list?.vlist ?? <Vlist>[]) {
-        searchItemWidgetList.add(VideoTileItem(
-            picUrl: item.pic!,
-            bvid: item.bvid!,
-            title: item.title!,
-            upName: item.author!,
-            duration: item.length!,
-            playNum: item.play!,
-            pubDate: item.created!,
-            cacheManager: cacheManager,
-            onTap: (context) {
-              late VideoPartsResponse videoParts;
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) {
-                  return FutureBuilder(future: Future(() async {
-                    try {
-                      videoParts = await VideoInfoApi.requestVideoParts(
-                          bvid: item.bvid!);
-                      if (videoParts.code != 0) {
-                        log("加载cid失败,${videoParts.message}");
-                      }
-                    } catch (e) {
-                      log("加载cid失败,${e.toString()}");
-                    }
-                  }), builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return BiliVideoPage(
-                        bvid: item.bvid!,
-                        cid: videoParts.data?.first.cid ?? 0,
-                      );
-                    } else {
-                      return const Scaffold(
-                        body: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                  });
-                },
-              ));
-            }));
-      }
-      currentPage++;
-      return true;
-    } catch (e) {
-      log("用户投稿加载失败");
-      return false;
+    late UserVideoSearch userVideoSearch;
+    // try {
+    userVideoSearch =
+        await UserSpaceApi.getUserVideoSearch(mid: mid, pageNum: currentPage);
+    // } catch (e) {
+    //   log("loadVideoItemWidgtLists:$e");
+    //   return false;
+    // }
+    for (var item in userVideoSearch.videos) {
+      searchItemWidgetList.add(VideoTileItem(
+          picUrl: item.coverUrl,
+          bvid: item.bvid,
+          title: item.title,
+          upName: item.author,
+          duration: item.duration,
+          playNum: item.playCount,
+          pubDate: item.pubDate,
+          cacheManager: cacheManager,
+          onTap: (context) {
+            late List<PartInfo> videoParts;
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) {
+                return FutureBuilder(future: Future(() async {
+                  try {
+                    videoParts =
+                        await VideoInfoApi.getVideoParts(bvid: item.bvid);
+                  } catch (e) {
+                    log("加载cid失败,${e.toString()}");
+                  }
+                }), builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return BiliVideoPage(
+                      bvid: item.bvid,
+                      cid: videoParts.first.cid,
+                    );
+                  } else {
+                    return const Scaffold(
+                      body: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                });
+              },
+            ));
+          }));
     }
+    currentPage++;
+    return true;
   }
 
   Future<void> onLoad() async {

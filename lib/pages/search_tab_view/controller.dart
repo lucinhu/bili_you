@@ -1,14 +1,14 @@
 import 'package:bili_you/common/api/bangumi_api.dart';
-import 'package:bili_you/common/models/network/bangumi/bangumi_info.dart';
-import 'package:bili_you/common/models/network/search/search_bangumi.dart';
-import 'package:bili_you/common/models/network/search/search_video.dart';
+import 'package:bili_you/common/models/local/bangumi/bangumi_info.dart';
+import 'package:bili_you/common/models/local/search/search_bangumi_item.dart';
+import 'package:bili_you/common/models/local/search/search_video_item.dart';
+import 'package:bili_you/common/models/local/video/part_info.dart';
 import 'package:bili_you/common/widget/bangumi_tile_item.dart';
 import 'package:bili_you/pages/bili_video/index.dart';
 import 'package:get/get.dart';
 import 'dart:developer';
 import 'package:bili_you/common/api/search_api.dart';
 import 'package:bili_you/common/api/video_info_api.dart';
-import 'package:bili_you/common/models/network/video_info/video_parts.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/video_tile_item.dart';
@@ -28,7 +28,6 @@ class SearchTabViewController extends GetxController {
       CacheManager(Config(CacheKeys.searchResultItemCoverKey));
   List<Widget> searchItemWidgetList = <Widget>[];
   int currentPage = 1;
-  int numPages = 0;
 
   _initData() {
     // update(["search_video_result"]);
@@ -36,131 +35,108 @@ class SearchTabViewController extends GetxController {
 
 //搜索视频
   Future<bool> loadSearchVideoItemWidgtLists() async {
-    //如果当前页数等于总页数的话,就直接返回成功,代表已经没了
-    if (currentPage == numPages) {
-      return true;
-    }
+    late List<SearchVideoItem> list;
     try {
-      var videoSearch = await SearchApi.requestSearchVideo(
-          keyword: keyWord, page: currentPage);
-      if (videoSearch.code != 0) {
-        log("搜索失败");
-        //加载失败
-        return false;
-      }
-      //加载成功,添加控件
-      numPages = videoSearch.data?.numPages ?? 0;
-      for (var i in videoSearch.data?.result ?? <Result>[]) {
-        searchItemWidgetList.add(VideoTileItem(
-          picUrl: "http:${i.pic!}",
-          bvid: i.bvid!,
-          title: StringFormatUtils.keyWordTitleToRawTitle(i.title!),
-          upName: i.author!,
-          duration: StringFormatUtils.timeLengthFormat(Duration(
-                  minutes: int.parse(i.duration!.split(':').first),
-                  seconds: int.parse(i.duration!.split(':').last))
-              .inSeconds),
-          playNum: i.play!,
-          pubDate: i.pubdate!,
-          cacheManager: cacheManager,
-          onTap: (context) {
-            late VideoPartsResponse videoParts;
-            Get.to(() => FutureBuilder(
-                  future: Future(() async {
-                    try {
-                      videoParts =
-                          await VideoInfoApi.requestVideoParts(bvid: i.bvid!);
-                      if (videoParts.code != 0) {
-                        log("加载cid失败,${videoParts.message}");
-                      }
-                    } catch (e) {
-                      log("加载cid失败,${e.toString()}");
-                    }
-                  }),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return BiliVideoPage(
-                        bvid: i.bvid!,
-                        cid: videoParts.data?.first.cid ?? 0,
-                      );
-                    } else {
-                      return const Scaffold(
-                        body: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                  },
-                ));
-          },
-        ));
-        currentPage += 1;
-      }
-      return true;
+      list = await SearchApi.getSearchVideos(
+          keyWord: keyWord,
+          page: currentPage,
+          order: SearchVideoOrder.comprehensive);
     } catch (e) {
-      log("加载失败,${e.toString()}");
+      log("loadSearchVideoItemWidgtLists:$e");
       return false;
     }
+    currentPage++;
+    for (var i in list) {
+      searchItemWidgetList.add(VideoTileItem(
+        picUrl: i.coverUrl,
+        bvid: i.bvid,
+        title: StringFormatUtils.keyWordTitleToRawTitle(i.title),
+        upName: i.upName,
+        duration: StringFormatUtils.timeLengthFormat(i.timeLength),
+        playNum: i.playNum,
+        pubDate: i.pubDate,
+        cacheManager: cacheManager,
+        onTap: (context) {
+          late List<PartInfo> videoParts;
+          Get.to(() => FutureBuilder(
+                future: Future(() async {
+                  try {
+                    videoParts = await VideoInfoApi.getVideoParts(bvid: i.bvid);
+                  } catch (e) {
+                    log("加载cid失败,${e.toString()}");
+                  }
+                }),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return BiliVideoPage(
+                      bvid: i.bvid,
+                      cid: videoParts.first.cid,
+                    );
+                  } else {
+                    return const Scaffold(
+                      body: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                },
+              ));
+        },
+      ));
+    }
+    return true;
   }
 
 //搜索番剧
   Future<bool> loadSearchBangumiItemWidgtLists() async {
-    //如果当前页数等于总页数的话,就直接返回成功,代表已经没了
-    if (currentPage == numPages) {
-      return true;
-    }
+    late List<SearchBangumiItem> list;
     try {
-      var response = await SearchApi.requestSearchBangumi(
+      list = await SearchApi.getSearchBangumis(
           keyWord: keyWord, page: currentPage);
-      if (response.code != 0 || response.data == null) {
-        log("搜索失败");
-        //加载失败
-        return false;
-      }
-      //加载成功,添加控件
-      numPages = response.data!.numPages ?? 0;
-      for (var i in response.data!.result ?? <SearchBangumiResultItem>[]) {
-        searchItemWidgetList.add(BangumiTileItem(
-            coverUrl: i.cover!,
-            title: StringFormatUtils.keyWordTitleToRawTitle(i.title!),
-            describe: "${i.areas}\n${i.styles!}",
-            score: i.mediaScore!.score!,
-            onTap: (context) async {
-              late BangumiInfoResponse bangumi;
-              Get.to(() => FutureBuilder(
-                    future: Future(() async {
-                      bangumi =
-                          await BangumiApi.requestBangumiInfo(ssid: i.seasonId);
-                      if (bangumi.code != 0) {
-                        log("加载失败");
-                        //加载失败
-                      }
-                    }),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        return BiliVideoPage(
-                          bvid: bangumi.result!.episodes!.first.bvid!,
-                          cid: bangumi.result!.episodes!.first.cid!,
-                          ssid: bangumi.result!.seasonId,
-                          isBangumi: true,
-                        );
-                      } else {
-                        return const Scaffold(
-                          body: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-                    },
-                  ));
-            }));
-        currentPage += 1;
-      }
-      return true;
     } catch (e) {
-      log("加载失败,${e.toString()}");
+      log("loadSearchBangumiItemWidgtLists:$e");
       return false;
     }
+    for (var i in list) {
+      log(i.coverUrl);
+      searchItemWidgetList.add(BangumiTileItem(
+        coverUrl: i.coverUrl,
+        title: i.title,
+        describe: i.describe,
+        score: i.score,
+        onTap: (context) async {
+          late BangumiInfo bangumiInfo;
+          Get.to(() => FutureBuilder(
+                future: Future(() async {
+                  try {
+                    bangumiInfo = await BangumiApi.getBangumiInfo(ssid: i.ssid);
+                  } catch (e) {
+                    log("加载失败");
+                    rethrow;
+                  }
+                }),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return BiliVideoPage(
+                      bvid: bangumiInfo.episodes.first.bvid,
+                      cid: bangumiInfo.episodes.first.cid,
+                      ssid: bangumiInfo.ssid,
+                      isBangumi: true,
+                    );
+                  } else {
+                    return const Scaffold(
+                      body: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                },
+              ));
+        },
+      ));
+    }
+    currentPage++;
+    return true;
   }
 
   Future<bool> selectType() async {
@@ -195,7 +171,6 @@ class SearchTabViewController extends GetxController {
 
   Future<void> onRefresh() async {
     currentPage = 1;
-    numPages = 0;
     await cacheManager.emptyCache();
     searchItemWidgetList.clear();
     update(["search_video_result"]);

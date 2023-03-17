@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:bili_you/common/api/search_api.dart';
-import 'package:bili_you/common/models/network/search/hot_words.dart';
-import 'package:bili_you/common/models/network/search/search_suggest.dart';
+import 'package:bili_you/common/models/local/search/hot_word_item.dart';
+import 'package:bili_you/common/models/local/search/search_suggest_item.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/pages/search_result/index.dart';
 import 'package:bili_you/pages/search_result/view.dart';
@@ -22,58 +22,61 @@ class SearchInputPageController extends GetxController {
 
   //构造热搜按钮列表
   Future<List<Widget>> requestHotWordButtons() async {
+    List<Widget> widgetList = [];
+    late List<HotWordItem> wordList;
     try {
-      HotWordResponse hotWordResponse = await SearchApi.requestHotWorlds();
-      List<Widget> list = [];
-      if (hotWordResponse.code == 0) {
-        for (var i in hotWordResponse.data?.list ?? <ListElement>[]) {
-          list.add(
-            SizedBox(
-                width: MediaQuery.of(Get.context!).size.width * 0.5,
-                child: InkWell(
-                    onTap: () {
-                      search(i.keyword ?? "");
-                      setTextFieldText(i.keyword ?? "");
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
-                      child: Text(
-                        overflow: TextOverflow.ellipsis,
-                        i.showName ?? "",
-                        maxLines: 1,
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ))),
-          );
-        }
-      }
-      return list;
+      wordList = await SearchApi.getHotWords();
     } catch (e) {
-      log("获取热搜失败,网络错误?");
-      return [];
+      log("requestHotWordButtons:$e");
+      return widgetList;
     }
+    for (var i in wordList) {
+      widgetList.add(
+        SizedBox(
+            width: MediaQuery.of(Get.context!).size.width * 0.5,
+            child: InkWell(
+                onTap: () {
+                  search(i.keyWord);
+                  setTextFieldText(i.keyWord);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
+                  child: Text(
+                    overflow: TextOverflow.ellipsis,
+                    i.showWord,
+                    maxLines: 1,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ))),
+      );
+    }
+    return widgetList;
   }
 
 //获取搜索建议并构造其控件
-  requestSearchSuggestions(String keyWord) async {
-    var result = await SearchApi.requestSearchSuggests(keyWord);
-    List<Widget> list = [];
-    for (var i in result.result?.tag ?? <Tag>[]) {
-      list.add(InkWell(
+  Future<void> requestSearchSuggestions(String keyWord) async {
+    late List<SearchSuggestItem> list;
+    try {
+      list = await SearchApi.getSearchSuggests(keyWord: keyWord);
+    } catch (e) {
+      log("requestSearchSuggestions:$e");
+    }
+    searchSuggestionItems.clear();
+    for (var i in list) {
+      searchSuggestionItems.add(InkWell(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
-            i.name ?? "",
+            i.showWord,
             style: const TextStyle(fontSize: 16),
           ),
         ),
         onTap: () {
-          setTextFieldText(i.value ?? "");
-          search(i.value ?? "");
+          setTextFieldText(i.realWord);
+          search(i.realWord);
         },
       ));
     }
-    searchSuggestionItems.value = list;
   }
 
 //搜索框内容改变

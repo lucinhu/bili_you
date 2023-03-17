@@ -54,8 +54,8 @@ class VideoReplyReplyResponseData {
   Config? config;
   Control? control;
   Page? page;
-  List<Reply>? replies;
-  Root? root;
+  List<ReplyItemRaw>? replies;
+  ReplyItemRaw? root;
   bool? showBvid;
   String? showText;
   int? showType;
@@ -74,8 +74,9 @@ class VideoReplyReplyResponseData {
         page: json["page"] == null ? null : Page.fromJson(json["page"]),
         replies: json["replies"] == null
             ? []
-            : List<Reply>.from(json["replies"]!.map((x) => Reply.fromJson(x))),
-        root: json["root"] == null ? null : Root.fromJson(json["root"]),
+            : List<ReplyItemRaw>.from(
+                json["replies"]!.map((x) => ReplyItemRaw.fromJson(x))),
+        root: json["root"] == null ? null : ReplyItemRaw.fromJson(json["root"]),
         showBvid: json["show_bvid"],
         showText: json["show_text"],
         showType: json["show_type"],
@@ -88,7 +89,7 @@ class VideoReplyReplyResponseData {
         "page": page?.toJson(),
         "replies": replies == null
             ? []
-            : List<dynamic>.from(replies!.map((x) => x.toJson())),
+            : List<ReplyItemRaw>.from(replies!.map((x) => x.toJson())),
         "root": root?.toJson(),
         "show_bvid": showBvid,
         "show_text": showText,
@@ -233,136 +234,136 @@ class Page {
       };
 }
 
-class Reply {
-  Reply({
-    this.rpid,
-    this.oid,
-    this.type,
-    this.mid,
-    this.root,
-    this.parent,
-    this.dialog,
-    this.count,
-    this.rcount,
-    this.state,
-    this.fansgrade,
-    this.attr,
-    this.ctime,
-    this.rpidStr,
-    this.rootStr,
-    this.parentStr,
-    this.like,
-    this.action,
-    this.member,
-    this.content,
-    this.replies,
-    this.assist,
-    this.upAction,
-    this.invisible,
-    this.replyControl,
-    this.folder,
-    this.dynamicIdStr,
-  });
+// class Reply {
+//   Reply({
+//     this.rpid,
+//     this.oid,
+//     this.type,
+//     this.mid,
+//     this.root,
+//     this.parent,
+//     this.dialog,
+//     this.count,
+//     this.rcount,
+//     this.state,
+//     this.fansgrade,
+//     this.attr,
+//     this.ctime,
+//     this.rpidStr,
+//     this.rootStr,
+//     this.parentStr,
+//     this.like,
+//     this.action,
+//     this.member,
+//     this.content,
+//     this.replies,
+//     this.assist,
+//     this.upAction,
+//     this.invisible,
+//     this.replyControl,
+//     this.folder,
+//     this.dynamicIdStr,
+//   });
 
-  int? rpid;
-  int? oid;
-  int? type;
-  int? mid;
-  int? root;
-  int? parent;
-  int? dialog;
-  int? count;
-  int? rcount;
-  int? state;
-  int? fansgrade;
-  int? attr;
-  int? ctime;
-  String? rpidStr;
-  String? rootStr;
-  String? parentStr;
-  int? like;
-  int? action;
-  ReplyMember? member;
-  Content? content;
-  dynamic replies;
-  int? assist;
-  UpAction? upAction;
-  bool? invisible;
-  ReplyReplyControl? replyControl;
-  Folder? folder;
-  String? dynamicIdStr;
+//   int? rpid;
+//   int? oid;
+//   int? type;
+//   int? mid;
+//   int? root;
+//   int? parent;
+//   int? dialog;
+//   int? count;
+//   int? rcount;
+//   int? state;
+//   int? fansgrade;
+//   int? attr;
+//   int? ctime;
+//   String? rpidStr;
+//   String? rootStr;
+//   String? parentStr;
+//   int? like;
+//   int? action;
+//   ReplyMember? member;
+//   Content? content;
+//   dynamic replies;
+//   int? assist;
+//   UpAction? upAction;
+//   bool? invisible;
+//   ReplyReplyControl? replyControl;
+//   Folder? folder;
+//   String? dynamicIdStr;
 
-  factory Reply.fromRawJson(String str) => Reply.fromJson(json.decode(str));
+//   factory Reply.fromRawJson(String str) => Reply.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
+//   String toRawJson() => json.encode(toJson());
 
-  factory Reply.fromJson(Map<String, dynamic> json) => Reply(
-        rpid: json["rpid"],
-        oid: json["oid"],
-        type: json["type"],
-        mid: json["mid"],
-        root: json["root"],
-        parent: json["parent"],
-        dialog: json["dialog"],
-        count: json["count"],
-        rcount: json["rcount"],
-        state: json["state"],
-        fansgrade: json["fansgrade"],
-        attr: json["attr"],
-        ctime: json["ctime"],
-        rpidStr: json["rpid_str"],
-        rootStr: json["root_str"],
-        parentStr: json["parent_str"],
-        like: json["like"],
-        action: json["action"],
-        member: json["member"] == null
-            ? null
-            : ReplyMember.fromJson(json["member"]),
-        content:
-            json["content"] == null ? null : Content.fromJson(json["content"]),
-        replies: json["replies"],
-        assist: json["assist"],
-        upAction: json["up_action"] == null
-            ? null
-            : UpAction.fromJson(json["up_action"]),
-        invisible: json["invisible"],
-        replyControl: json["reply_control"] == null
-            ? null
-            : ReplyReplyControl.fromJson(json["reply_control"]),
-        folder: json["folder"] == null ? null : Folder.fromJson(json["folder"]),
-        dynamicIdStr: json["dynamic_id_str"],
-      );
+//   factory Reply.fromJson(Map<String, dynamic> json) => Reply(
+//         rpid: json["rpid"],
+//         oid: json["oid"],
+//         type: json["type"],
+//         mid: json["mid"],
+//         root: json["root"],
+//         parent: json["parent"],
+//         dialog: json["dialog"],
+//         count: json["count"],
+//         rcount: json["rcount"],
+//         state: json["state"],
+//         fansgrade: json["fansgrade"],
+//         attr: json["attr"],
+//         ctime: json["ctime"],
+//         rpidStr: json["rpid_str"],
+//         rootStr: json["root_str"],
+//         parentStr: json["parent_str"],
+//         like: json["like"],
+//         action: json["action"],
+//         member: json["member"] == null
+//             ? null
+//             : ReplyMember.fromJson(json["member"]),
+//         content:
+//             json["content"] == null ? null : Content.fromJson(json["content"]),
+//         replies: json["replies"],
+//         assist: json["assist"],
+//         upAction: json["up_action"] == null
+//             ? null
+//             : UpAction.fromJson(json["up_action"]),
+//         invisible: json["invisible"],
+//         replyControl: json["reply_control"] == null
+//             ? null
+//             : ReplyReplyControl.fromJson(json["reply_control"]),
+//         folder: json["folder"] == null ? null : Folder.fromJson(json["folder"]),
+//         dynamicIdStr: json["dynamic_id_str"],
+//       );
 
-  Map<String, dynamic> toJson() => {
-        "rpid": rpid,
-        "oid": oid,
-        "type": type,
-        "mid": mid,
-        "root": root,
-        "parent": parent,
-        "dialog": dialog,
-        "count": count,
-        "rcount": rcount,
-        "state": state,
-        "fansgrade": fansgrade,
-        "attr": attr,
-        "ctime": ctime,
-        "rpid_str": rpidStr,
-        "root_str": rootStr,
-        "parent_str": parentStr,
-        "like": like,
-        "action": action,
-        "member": member?.toJson(),
-        "content": content?.toJson(),
-        "replies": replies,
-        "assist": assist,
-        "up_action": upAction?.toJson(),
-        "invisible": invisible,
-        "reply_control": replyControl?.toJson(),
-        "folder": folder?.toJson(),
-        "dynamic_id_str": dynamicIdStr,
-      };
-}
+//   Map<String, dynamic> toJson() => {
+//         "rpid": rpid,
+//         "oid": oid,
+//         "type": type,
+//         "mid": mid,
+//         "root": root,
+//         "parent": parent,
+//         "dialog": dialog,
+//         "count": count,
+//         "rcount": rcount,
+//         "state": state,
+//         "fansgrade": fansgrade,
+//         "attr": attr,
+//         "ctime": ctime,
+//         "rpid_str": rpidStr,
+//         "root_str": rootStr,
+//         "parent_str": parentStr,
+//         "like": like,
+//         "action": action,
+//         "member": member?.toJson(),
+//         "content": content?.toJson(),
+//         "replies": replies,
+//         "assist": assist,
+//         "up_action": upAction?.toJson(),
+//         "invisible": invisible,
+//         "reply_control": replyControl?.toJson(),
+//         "folder": folder?.toJson(),
+//         "dynamic_id_str": dynamicIdStr,
+//       };
+// }
 
 class ReplyContent {
   ReplyContent({
@@ -1819,135 +1820,135 @@ class UpAction {
       };
 }
 
-class Root {
-  Root({
-    this.rpid,
-    this.oid,
-    this.type,
-    this.mid,
-    this.root,
-    this.parent,
-    this.dialog,
-    this.count,
-    this.rcount,
-    this.state,
-    this.fansgrade,
-    this.attr,
-    this.ctime,
-    this.rpidStr,
-    this.rootStr,
-    this.parentStr,
-    this.like,
-    this.action,
-    this.member,
-    this.content,
-    this.replies,
-    this.assist,
-    this.upAction,
-    this.invisible,
-    this.replyControl,
-    this.folder,
-    this.dynamicIdStr,
-  });
+// class Root {
+//   Root({
+//     this.rpid,
+//     this.oid,
+//     this.type,
+//     this.mid,
+//     this.root,
+//     this.parent,
+//     this.dialog,
+//     this.count,
+//     this.rcount,
+//     this.state,
+//     this.fansgrade,
+//     this.attr,
+//     this.ctime,
+//     this.rpidStr,
+//     this.rootStr,
+//     this.parentStr,
+//     this.like,
+//     this.action,
+//     this.member,
+//     this.content,
+//     this.replies,
+//     this.assist,
+//     this.upAction,
+//     this.invisible,
+//     this.replyControl,
+//     this.folder,
+//     this.dynamicIdStr,
+//   });
 
-  int? rpid;
-  int? oid;
-  int? type;
-  int? mid;
-  int? root;
-  int? parent;
-  int? dialog;
-  int? count;
-  int? rcount;
-  int? state;
-  int? fansgrade;
-  int? attr;
-  int? ctime;
-  String? rpidStr;
-  String? rootStr;
-  String? parentStr;
-  int? like;
-  int? action;
-  RootMember? member;
-  Content? content;
-  dynamic replies;
-  int? assist;
-  UpAction? upAction;
-  bool? invisible;
-  RootReplyControl? replyControl;
-  Folder? folder;
-  String? dynamicIdStr;
+//   int? rpid;
+//   int? oid;
+//   int? type;
+//   int? mid;
+//   int? root;
+//   int? parent;
+//   int? dialog;
+//   int? count;
+//   int? rcount;
+//   int? state;
+//   int? fansgrade;
+//   int? attr;
+//   int? ctime;
+//   String? rpidStr;
+//   String? rootStr;
+//   String? parentStr;
+//   int? like;
+//   int? action;
+//   RootMember? member;
+//   Content? content;
+//   dynamic replies;
+//   int? assist;
+//   UpAction? upAction;
+//   bool? invisible;
+//   RootReplyControl? replyControl;
+//   Folder? folder;
+//   String? dynamicIdStr;
 
-  factory Root.fromRawJson(String str) => Root.fromJson(json.decode(str));
+//   factory Root.fromRawJson(String str) => Root.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
+//   String toRawJson() => json.encode(toJson());
 
-  factory Root.fromJson(Map<String, dynamic> json) => Root(
-        rpid: json["rpid"],
-        oid: json["oid"],
-        type: json["type"],
-        mid: json["mid"],
-        root: json["root"],
-        parent: json["parent"],
-        dialog: json["dialog"],
-        count: json["count"],
-        rcount: json["rcount"],
-        state: json["state"],
-        fansgrade: json["fansgrade"],
-        attr: json["attr"],
-        ctime: json["ctime"],
-        rpidStr: json["rpid_str"],
-        rootStr: json["root_str"],
-        parentStr: json["parent_str"],
-        like: json["like"],
-        action: json["action"],
-        member:
-            json["member"] == null ? null : RootMember.fromJson(json["member"]),
-        content:
-            json["content"] == null ? null : Content.fromJson(json["content"]),
-        replies: json["replies"],
-        assist: json["assist"],
-        upAction: json["up_action"] == null
-            ? null
-            : UpAction.fromJson(json["up_action"]),
-        invisible: json["invisible"],
-        replyControl: json["reply_control"] == null
-            ? null
-            : RootReplyControl.fromJson(json["reply_control"]),
-        folder: json["folder"] == null ? null : Folder.fromJson(json["folder"]),
-        dynamicIdStr: json["dynamic_id_str"],
-      );
+//   factory Root.fromJson(Map<String, dynamic> json) => Root(
+//         rpid: json["rpid"],
+//         oid: json["oid"],
+//         type: json["type"],
+//         mid: json["mid"],
+//         root: json["root"],
+//         parent: json["parent"],
+//         dialog: json["dialog"],
+//         count: json["count"],
+//         rcount: json["rcount"],
+//         state: json["state"],
+//         fansgrade: json["fansgrade"],
+//         attr: json["attr"],
+//         ctime: json["ctime"],
+//         rpidStr: json["rpid_str"],
+//         rootStr: json["root_str"],
+//         parentStr: json["parent_str"],
+//         like: json["like"],
+//         action: json["action"],
+//         member:
+//             json["member"] == null ? null : RootMember.fromJson(json["member"]),
+//         content:
+//             json["content"] == null ? null : Content.fromJson(json["content"]),
+//         replies: json["replies"],
+//         assist: json["assist"],
+//         upAction: json["up_action"] == null
+//             ? null
+//             : UpAction.fromJson(json["up_action"]),
+//         invisible: json["invisible"],
+//         replyControl: json["reply_control"] == null
+//             ? null
+//             : RootReplyControl.fromJson(json["reply_control"]),
+//         folder: json["folder"] == null ? null : Folder.fromJson(json["folder"]),
+//         dynamicIdStr: json["dynamic_id_str"],
+//       );
 
-  Map<String, dynamic> toJson() => {
-        "rpid": rpid,
-        "oid": oid,
-        "type": type,
-        "mid": mid,
-        "root": root,
-        "parent": parent,
-        "dialog": dialog,
-        "count": count,
-        "rcount": rcount,
-        "state": state,
-        "fansgrade": fansgrade,
-        "attr": attr,
-        "ctime": ctime,
-        "rpid_str": rpidStr,
-        "root_str": rootStr,
-        "parent_str": parentStr,
-        "like": like,
-        "action": action,
-        "member": member?.toJson(),
-        "content": content?.toJson(),
-        "replies": replies,
-        "assist": assist,
-        "up_action": upAction?.toJson(),
-        "invisible": invisible,
-        "reply_control": replyControl?.toJson(),
-        "folder": folder?.toJson(),
-        "dynamic_id_str": dynamicIdStr,
-      };
-}
+//   Map<String, dynamic> toJson() => {
+//         "rpid": rpid,
+//         "oid": oid,
+//         "type": type,
+//         "mid": mid,
+//         "root": root,
+//         "parent": parent,
+//         "dialog": dialog,
+//         "count": count,
+//         "rcount": rcount,
+//         "state": state,
+//         "fansgrade": fansgrade,
+//         "attr": attr,
+//         "ctime": ctime,
+//         "rpid_str": rpidStr,
+//         "root_str": rootStr,
+//         "parent_str": parentStr,
+//         "like": like,
+//         "action": action,
+//         "member": member?.toJson(),
+//         "content": content?.toJson(),
+//         "replies": replies,
+//         "assist": assist,
+//         "up_action": upAction?.toJson(),
+//         "invisible": invisible,
+//         "reply_control": replyControl?.toJson(),
+//         "folder": folder?.toJson(),
+//         "dynamic_id_str": dynamicIdStr,
+//       };
+// }
 
 // class RootContent {
 //   RootContent({
@@ -2432,22 +2433,22 @@ class RootReplyControl {
       };
 }
 
-class Upper {
-  Upper({
-    this.mid,
-  });
+// class Upper {
+//   Upper({
+//     this.mid,
+//   });
 
-  int? mid;
+//   int? mid;
 
-  factory Upper.fromRawJson(String str) => Upper.fromJson(json.decode(str));
+//   factory Upper.fromRawJson(String str) => Upper.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
+//   String toRawJson() => json.encode(toJson());
 
-  factory Upper.fromJson(Map<String, dynamic> json) => Upper(
-        mid: json["mid"],
-      );
+//   factory Upper.fromJson(Map<String, dynamic> json) => Upper(
+//         mid: json["mid"],
+//       );
 
-  Map<String, dynamic> toJson() => {
-        "mid": mid,
-      };
-}
+//   Map<String, dynamic> toJson() => {
+//         "mid": mid,
+//       };
+// }

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:bili_you/common/api/user_api.dart';
 import 'package:bili_you/common/models/network/login/captcha_result.dart';
 import 'package:bili_you/common/models/network/login/post_sms_require.dart';
 import 'package:flutter/material.dart';
@@ -111,7 +110,7 @@ class PhoneLoginController extends GetxController {
       //成功登录
       message = "成功登录";
       await onLoginSuccess(
-          await UserApi.requestUserInfo(), await UserApi.requestUserStat());
+          await LoginApi.getLoginUserInfo(), await LoginApi.getLoginUserStat());
       Get.back(closeOverlays: true);
       //请求错误
     } else if (code == 1006) {

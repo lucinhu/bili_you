@@ -1,4 +1,3 @@
-import 'package:bili_you/common/api/api_constants.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/pages/user_space/view.dart';
@@ -81,8 +80,7 @@ class _IntroductionPageState extends State<IntroductionPage>
             onTap: () {
               controller.pauseVideo();
               Get.to(
-                () => UserSpacePage(
-                    mid: controller.videoInfo.data?.owner?.mid ?? 0),
+                () => UserSpacePage(mid: controller.videoInfo.ownerMid),
               );
             },
             child: Row(
@@ -92,19 +90,18 @@ class _IntroductionPageState extends State<IntroductionPage>
                   decoration: const BoxDecoration(shape: BoxShape.circle),
                   child: //头像
                       CachedNetworkImage(
-                    width: 45,
-                    height: 45,
-                    fit: BoxFit.cover,
-                    filterQuality: FilterQuality.none,
-                    cacheManager: CacheManager(Config(CacheKeys.othersFaceKey)),
-                    imageUrl: controller.videoInfo.data?.owner?.face ??
-                        ApiConstants.noface,
-                  ),
+                          width: 45,
+                          height: 45,
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.none,
+                          cacheManager:
+                              CacheManager(Config(CacheKeys.othersFaceKey)),
+                          imageUrl: controller.videoInfo.ownerFace),
                 ),
                 Container(
                     padding: const EdgeInsets.only(left: 5),
                     child: Text(
-                      controller.videoInfo.data?.owner?.name ?? "",
+                      controller.videoInfo.ownerName,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 15,
@@ -129,7 +126,7 @@ class _IntroductionPageState extends State<IntroductionPage>
               color: Theme.of(context).hintColor,
             ),
             Text(
-              " ${StringFormatUtils.numFormat(controller.videoInfo.data?.stat?.view ?? 0)}  ",
+              " ${StringFormatUtils.numFormat(controller.videoInfo.playNum)}  ",
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).hintColor,
@@ -141,14 +138,14 @@ class _IntroductionPageState extends State<IntroductionPage>
               color: Theme.of(context).hintColor,
             ),
             Text(
-              " ${controller.videoInfo.data?.stat?.danmaku ?? 0}   ",
+              " ${controller.videoInfo.danmaukuNum}   ",
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).hintColor,
               ),
             ),
             Text(
-              "${StringFormatUtils.timeStampToDate(controller.videoInfo.data?.pubdate ?? 0)} ${StringFormatUtils.timeStampToTime(controller.videoInfo.data?.pubdate ?? 0)}",
+              "${StringFormatUtils.timeStampToDate(controller.videoInfo.pubDate)} ${StringFormatUtils.timeStampToTime(controller.videoInfo.pubDate)}",
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).hintColor,
@@ -162,7 +159,7 @@ class _IntroductionPageState extends State<IntroductionPage>
               Row(
             children: [
               Text(
-                "${controller.videoInfo.data?.bvid} 版权信息:${controller.videoInfo.data?.copyright}",
+                "${controller.videoInfo.bvid} 版权信息:${controller.videoInfo.copyRight}",
                 style: TextStyle(
                   fontSize: 12,
                   color: Theme.of(context).hintColor,
@@ -190,7 +187,7 @@ class _IntroductionPageState extends State<IntroductionPage>
                 _iconTextButton(
                     icon: const Icon(Icons.thumb_up_rounded),
                     text: StringFormatUtils.numFormat(
-                        controller.videoInfo.data?.stat?.like ?? 0)),
+                        controller.videoInfo.likeNum)),
                 const Spacer(),
                 _iconTextButton(
                     icon: const Icon(Icons.thumb_down_alt_rounded),
@@ -199,17 +196,17 @@ class _IntroductionPageState extends State<IntroductionPage>
                 _iconTextButton(
                     icon: const Icon(Icons.circle_rounded),
                     text: StringFormatUtils.numFormat(
-                        controller.videoInfo.data?.stat?.coin ?? 0)),
+                        controller.videoInfo.coinNum)),
                 const Spacer(),
                 _iconTextButton(
                     icon: const Icon(Icons.star_rounded),
                     text: StringFormatUtils.numFormat(
-                        controller.videoInfo.data?.stat?.favorite ?? 0)),
+                        controller.videoInfo.favariteNum)),
                 const Spacer(),
                 _iconTextButton(
                     icon: const Icon(Icons.share_rounded),
                     text: StringFormatUtils.numFormat(
-                        controller.videoInfo.data?.stat?.share ?? 0)),
+                        controller.videoInfo.shareNum)),
                 const Spacer(),
               ],
             )),

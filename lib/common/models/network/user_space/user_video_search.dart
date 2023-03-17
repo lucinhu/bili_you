@@ -121,8 +121,10 @@ class ListClass {
   String toRawJson() => json.encode(toJson());
 
   factory ListClass.fromJson(Map<String, dynamic> json) => ListClass(
-        tlist: Map.from(json["tlist"]!)
-            .map((k, v) => MapEntry<String, Tlist>(k, Tlist.fromJson(v))),
+        tlist: json["tlist"] == null
+            ? {}
+            : Map.from(json["tlist"]!)
+                .map((k, v) => MapEntry<String, Tlist>(k, Tlist.fromJson(v))),
         vlist: json["vlist"] == null
             ? []
             : List<Vlist>.from(json["vlist"]!.map((x) => Vlist.fromJson(x))),

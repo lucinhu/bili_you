@@ -149,11 +149,10 @@ class Dash {
   int? duration;
   double? minBufferTime;
   double? dashMinBufferTime;
-  List<Audio>? video;
-  List<Audio>? audio;
+  List<VideoOrAudioRaw>? video;
+  List<VideoOrAudioRaw>? audio;
   Dolby? dolby;
-  dynamic flac;
-
+  Flac? flac;
   factory Dash.fromRawJson(String str) => Dash.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
@@ -164,12 +163,14 @@ class Dash {
         dashMinBufferTime: json["min_buffer_time"]?.toDouble(),
         video: json["video"] == null
             ? []
-            : List<Audio>.from(json["video"]!.map((x) => Audio.fromJson(x))),
+            : List<VideoOrAudioRaw>.from(
+                json["video"]!.map((x) => VideoOrAudioRaw.fromJson(x))),
         audio: json["audio"] == null
             ? []
-            : List<Audio>.from(json["audio"]!.map((x) => Audio.fromJson(x))),
+            : List<VideoOrAudioRaw>.from(
+                json["audio"]!.map((x) => VideoOrAudioRaw.fromJson(x))),
         dolby: json["dolby"] == null ? null : Dolby.fromJson(json["dolby"]),
-        flac: json["flac"],
+        flac: json["flac"] == null ? null : Flac.fromJson(json["flac"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -183,111 +184,139 @@ class Dash {
             ? []
             : List<dynamic>.from(audio!.map((x) => x.toJson())),
         "dolby": dolby?.toJson(),
-        "flac": flac,
+        "flac": flac?.toJson(),
       };
 }
 
-class Audio {
-  Audio({
+class VideoOrAudioRaw {
+  VideoOrAudioRaw({
     this.id,
     this.baseUrl,
-    this.audioBaseUrl,
+    // this.audioBaseUrl,
     this.backupUrl,
-    this.audioBackupUrl,
+    // this.audioBackupUrl,
     this.bandwidth,
     this.mimeType,
-    this.audioMimeType,
+    // this.audioMimeType,
     this.codecs,
     this.width,
     this.height,
     this.frameRate,
-    this.audioFrameRate,
+    // this.audioFrameRate,
     this.sar,
     this.startWithSap,
-    this.audioStartWithSap,
+    // this.audioStartWithSap,
     this.segmentBase,
-    this.audioSegmentBase,
+    // this.audioSegmentBase,
     this.codecid,
   });
 
   int? id;
   String? baseUrl;
-  String? audioBaseUrl;
+  // String? audioBaseUrl;
   List<String>? backupUrl;
-  List<String>? audioBackupUrl;
+  // List<String>? audioBackupUrl;
   int? bandwidth;
   String? mimeType;
-  String? audioMimeType;
+  // String? audioMimeType;
   String? codecs;
   int? width;
   int? height;
   String? frameRate;
-  String? audioFrameRate;
+  // String? audioFrameRate;
   String? sar;
   int? startWithSap;
-  int? audioStartWithSap;
+  // int? audioStartWithSap;
   SegmentBase? segmentBase;
-  SegmentBaseClass? audioSegmentBase;
+  // SegmentBaseClass? audioSegmentBase;
   int? codecid;
 
-  factory Audio.fromRawJson(String str) => Audio.fromJson(json.decode(str));
+  factory VideoOrAudioRaw.fromRawJson(String str) =>
+      VideoOrAudioRaw.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory Audio.fromJson(Map<String, dynamic> json) => Audio(
+  factory VideoOrAudioRaw.fromJson(Map<String, dynamic> json) =>
+      VideoOrAudioRaw(
         id: json["id"],
         baseUrl: json["baseUrl"],
-        audioBaseUrl: json["base_url"],
+        // audioBaseUrl: json["base_url"],
         backupUrl: json["backupUrl"] == null
             ? []
             : List<String>.from(json["backupUrl"]!.map((x) => x)),
-        audioBackupUrl: json["backup_url"] == null
-            ? []
-            : List<String>.from(json["backup_url"]!.map((x) => x)),
+        // audioBackupUrl: json["backup_url"] == null
+        //     ? []
+        //     : List<String>.from(json["backup_url"]!.map((x) => x)),
         bandwidth: json["bandwidth"],
         mimeType: json["mimeType"],
-        audioMimeType: json["mime_type"],
+        // audioMimeType: json["mime_type"],
         codecs: json["codecs"],
         width: json["width"],
         height: json["height"],
         frameRate: json["frameRate"],
-        audioFrameRate: json["frame_rate"],
+        // audioFrameRate: json["frame_rate"],
         sar: json["sar"],
         startWithSap: json["startWithSap"],
-        audioStartWithSap: json["start_with_sap"],
+        // audioStartWithSap: json["start_with_sap"],
         segmentBase: json["SegmentBase"] == null
             ? null
             : SegmentBase.fromJson(json["SegmentBase"]),
-        audioSegmentBase: json["segment_base"] == null
-            ? null
-            : SegmentBaseClass.fromJson(json["segment_base"]),
+        // audioSegmentBase: json["segment_base"] == null
+        //     ? null
+        //     : SegmentBaseClass.fromJson(json["segment_base"]),
         codecid: json["codecid"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "baseUrl": baseUrl,
-        "base_url": audioBaseUrl,
+        // "base_url": audioBaseUrl,
         "backupUrl": backupUrl == null
             ? []
             : List<dynamic>.from(backupUrl!.map((x) => x)),
-        "backup_url": audioBackupUrl == null
-            ? []
-            : List<dynamic>.from(audioBackupUrl!.map((x) => x)),
+        // "backup_url": audioBackupUrl == null
+        //     ? []
+        //     : List<dynamic>.from(audioBackupUrl!.map((x) => x)),
         "bandwidth": bandwidth,
         "mimeType": mimeType,
-        "mime_type": audioMimeType,
+        // "mime_type": audioMimeType,
         "codecs": codecs,
         "width": width,
         "height": height,
         "frameRate": frameRate,
-        "frame_rate": audioFrameRate,
+        // "frame_rate": audioFrameRate,
         "sar": sar,
         "startWithSap": startWithSap,
-        "start_with_sap": audioStartWithSap,
+        // "start_with_sap": audioStartWithSap,
         "SegmentBase": segmentBase?.toJson(),
-        "segment_base": audioSegmentBase?.toJson(),
+        // "segment_base": audioSegmentBase?.toJson(),
         "codecid": codecid,
+      };
+}
+
+class Flac {
+  Flac({
+    this.display,
+    this.audio,
+  });
+
+  bool? display;
+  VideoOrAudioRaw? audio;
+
+  factory Flac.fromRawJson(String str) => Flac.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Flac.fromJson(Map<String, dynamic> json) => Flac(
+        display: json["display"],
+        audio: json["audio"] == null
+            ? null
+            : VideoOrAudioRaw.fromJson(json["audio"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "display": display,
+        "audio": audio?.toJson(),
       };
 }
 
@@ -349,7 +378,7 @@ class Dolby {
   });
 
   int? type;
-  dynamic audio;
+  List<VideoOrAudioRaw>? audio;
 
   factory Dolby.fromRawJson(String str) => Dolby.fromJson(json.decode(str));
 
@@ -357,12 +386,17 @@ class Dolby {
 
   factory Dolby.fromJson(Map<String, dynamic> json) => Dolby(
         type: json["type"],
-        audio: json["audio"],
+        audio: json["audio"] == null
+            ? []
+            : List<VideoOrAudioRaw>.from(
+                json["audio"]!.map((x) => VideoOrAudioRaw.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "type": type,
-        "audio": audio,
+        "audio": audio == null
+            ? []
+            : List<dynamic>.from(audio!.map((x) => x.toJson())),
       };
 }
 

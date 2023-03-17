@@ -62,7 +62,7 @@ class Data {
   CostTime? costTime;
   Map<String, bool>? expList;
   int? eggHit;
-  List<SearchBangumiResultItem>? result;
+  List<SearchBangumiResponseResultItem>? result;
   int? showColumn;
   int? inBlackKey;
   int? inWhiteKey;
@@ -87,8 +87,8 @@ class Data {
         eggHit: json["egg_hit"],
         result: json["result"] == null
             ? []
-            : List<SearchBangumiResultItem>.from(json["result"]!
-                .map((x) => SearchBangumiResultItem.fromJson(x))),
+            : List<SearchBangumiResponseResultItem>.from(json["result"]!
+                .map((x) => SearchBangumiResponseResultItem.fromJson(x))),
         showColumn: json["show_column"],
         inBlackKey: json["in_black_key"],
         inWhiteKey: json["in_white_key"],
@@ -172,8 +172,8 @@ class CostTime {
       };
 }
 
-class SearchBangumiResultItem {
-  SearchBangumiResultItem({
+class SearchBangumiResponseResultItem {
+  SearchBangumiResponseResultItem({
     this.type,
     this.mediaId,
     this.title,
@@ -245,13 +245,13 @@ class SearchBangumiResultItem {
   int? corner;
   String? indexShow;
 
-  factory SearchBangumiResultItem.fromRawJson(String str) =>
-      SearchBangumiResultItem.fromJson(json.decode(str));
+  factory SearchBangumiResponseResultItem.fromRawJson(String str) =>
+      SearchBangumiResponseResultItem.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory SearchBangumiResultItem.fromJson(Map<String, dynamic> json) =>
-      SearchBangumiResultItem(
+  factory SearchBangumiResponseResultItem.fromJson(Map<String, dynamic> json) =>
+      SearchBangumiResponseResultItem(
         type: json["type"],
         mediaId: json["media_id"],
         title: json["title"],

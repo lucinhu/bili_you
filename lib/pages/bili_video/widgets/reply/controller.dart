@@ -1,8 +1,7 @@
 import 'dart:developer';
-
-import 'package:bili_you/common/api/api_constants.dart';
-import 'package:bili_you/common/api/video_reply_api.dart';
-import 'package:bili_you/common/models/network/reply/reply.dart';
+import 'package:bili_you/common/api/reply_api.dart';
+import 'package:bili_you/common/models/local/reply/reply_info.dart';
+import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/pages/user_space/view.dart';
@@ -13,40 +12,38 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_reply_page.dart';
-// import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ReplyController extends GetxController {
   ReplyController({required this.bvid, required this.pauseVideoCallback});
   String bvid;
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
-  ReplyResponse? replyResponse;
   List<Widget> replyList = <Widget>[];
   int pageNum = 1;
   RxString sortTypeText = "按热度".obs;
   RxString sortInfoText = "热门评论".obs;
-  VideoReplySort _replySort = VideoReplySort.like;
+  ReplySort _replySort = ReplySort.like;
   final Function() pauseVideoCallback;
 
   //切换排列方式
   void toggleSort() {
-    if (_replySort == VideoReplySort.like) {
+    if (_replySort == ReplySort.like) {
       sortTypeText.value = "按时间";
       sortInfoText.value = "最新评论";
       //切换为按时间排列
-      _replySort = VideoReplySort.time;
+      _replySort = ReplySort.time;
     } else {
       sortTypeText.value = "按热度";
       sortInfoText.value = "热门评论";
       //切换为按热度排列
-      _replySort = VideoReplySort.like;
+      _replySort = ReplySort.like;
     }
     //刷新评论
     refreshController.callRefresh();
   }
 
 //添加评论条目到控件列表
-  addReplyItemWidget(List<Widget> list, ReplyItemRaw i,
+  addReplyItemWidget(List<Widget> list, ReplyInfo replyInfo, ReplyItem i,
       {bool frontDivider = true, bool isTop = false}) {
     Widget? subReplies;
     if (frontDivider) {
@@ -55,9 +52,9 @@ class ReplyController extends GetxController {
         thickness: 1,
       ));
     }
-    if (i.replies!.isNotEmpty) {
+    if (i.preReplies.isNotEmpty) {
       List<Widget> preSubReplies = []; //预显示在外的楼中楼
-      for (var j in i.replies!) {
+      for (var j in i.preReplies) {
         //添加预显示在外楼中楼评论条目
         preSubReplies.add(Padding(
             padding: const EdgeInsets.only(top: 8),
@@ -65,9 +62,9 @@ class ReplyController extends GetxController {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: "${j.member!.uname}: ",
+                    text: "${j.member.name}: ",
                   ),
-                  ReplyItemWidget.buildReplyItemContent(j.content!)
+                  ReplyItemWidget.buildReplyItemContent(j.content)
                 ],
               ),
               maxLines: 2,
@@ -92,7 +89,7 @@ class ReplyController extends GetxController {
               Get.bottomSheet(
                   ReplyReplyPage(
                     bvid: i.oid.toString(),
-                    rootId: i.rpid!,
+                    rootId: i.rpid,
                     pauseVideoCallback: pauseVideoCallback,
                   ),
                   backgroundColor: Theme.of(Get.context!).cardColor,
@@ -102,20 +99,20 @@ class ReplyController extends GetxController {
     }
     //添加评论条目
     list.add(ReplyItemWidget(
-      face: i.member?.avatar ?? ApiConstants.noface,
-      name: i.member?.uname ?? "",
-      content: i.content!,
-      like: i.like ?? 0,
-      timeStamp: i.ctime ?? 0,
+      face: i.member.avatarUrl,
+      name: i.member.name,
+      content: i.content,
+      like: i.likeCount,
+      timeStamp: i.replyTime,
       bottomWidget: subReplies,
-      location: i.replyControl?.location ?? "",
+      location: i.location,
       isTop: isTop,
-      cardLabels: i.cardLabels!,
-      isUp: int.parse(i.member!.mid!) == replyResponse!.data!.upper!.mid!,
+      tags: i.tags,
+      isUp: i.member.mid == replyInfo.upperMid,
       onTapUser: (context) {
         pauseVideoCallback();
         Get.to(
-          () => UserSpacePage(mid: i.mid!),
+          () => UserSpacePage(mid: i.member.mid),
         );
       },
     ));
@@ -123,69 +120,110 @@ class ReplyController extends GetxController {
 
 //加载评论区控件条目
   Future<bool> _addReplyItems() async {
+    late ReplyInfo replyInfo;
     try {
-      replyResponse = await VideoReplyApi.requestVideoReply(
-          bvid: bvid, pageNum: pageNum, sort: _replySort);
-
-      if (replyResponse!.code != 0) {
-        log(replyResponse!.code.toString());
-        log(replyResponse!.message!);
-        return false;
-      }
-
-      if (pageNum <= replyResponse!.data!.page!.count!) {
-        if (replyList.isEmpty) {
-          //当第一次时
-          //添加排列方式按钮
-          replyList.add(
-            Row(
-              children: [
-                Padding(
-                    padding: const EdgeInsets.only(left: 12, right: 12),
-                    child: Obx(
-                      () => Text(
-                          "${sortInfoText.value} ${StringFormatUtils.numFormat(replyResponse!.data!.page!.count!)}"),
-                    )),
-                const Spacer(),
-                //排列方式按钮
-                MaterialButton(
-                  child: Row(
-                    children: [
-                      Icon(Icons.sort_rounded,
-                          size: 16, color: Get.textTheme.bodyMedium!.color),
-                      Obx(
-                        () => Text(
-                          sortTypeText.value,
-                          style:
-                              TextStyle(color: Get.textTheme.bodyMedium!.color),
-                        ),
-                      )
-                    ],
-                  ),
-                  //点击切换评论排列方式
-                  onPressed: () {
-                    toggleSort();
-                  },
-                ),
-              ],
-            ),
-          );
-          //添加置顶评论(如果有的话)
-          for (var i in replyResponse!.data!.topReplies!) {
-            addReplyItemWidget(replyList, i, frontDivider: false, isTop: true);
-          }
-        }
-        //添加常规评论
-        for (var i in replyResponse!.data!.replies!) {
-          addReplyItemWidget(replyList, i, frontDivider: replyList.length != 1);
-        }
-        pageNum++;
-      }
-      return true;
+      replyInfo = await ReplyApi.getReply(
+          oid: bvid, pageNum: pageNum, type: ReplyType.video, sort: _replySort);
     } catch (e) {
-      log("评论区加载失败${e.toString()}");
+      log("评论区加载失败,_addReplyItems:$e");
       return false;
     }
+    if (replyList.isEmpty) {
+      //当第一次时
+      //添加排列方式按钮
+      replyList.add(
+        Row(
+          children: [
+            Padding(
+                padding: const EdgeInsets.only(left: 12, right: 12),
+                child: Obx(
+                  () => Text(
+                      "${sortInfoText.value} ${StringFormatUtils.numFormat(replyInfo.replyCount)}"),
+                )),
+            const Spacer(),
+            //排列方式按钮
+            MaterialButton(
+              child: Row(
+                children: [
+                  Icon(Icons.sort_rounded,
+                      size: 16, color: Get.textTheme.bodyMedium!.color),
+                  Obx(
+                    () => Text(
+                      sortTypeText.value,
+                      style: TextStyle(color: Get.textTheme.bodyMedium!.color),
+                    ),
+                  )
+                ],
+              ),
+              //点击切换评论排列方式
+              onPressed: () {
+                toggleSort();
+              },
+            ),
+          ],
+        ),
+      );
+      //添加置顶评论
+      for (var i in replyInfo.topReplies) {
+        addReplyItemWidget(replyList, replyInfo, i,
+            frontDivider: false, isTop: true);
+      }
+    }
+    //添加普通评论
+    for (var i in replyInfo.replies) {
+      addReplyItemWidget(replyList, replyInfo, i,
+          frontDivider: replyList.length != 1);
+    }
+    pageNum++;
+    // if (pageNum <= replyResponse!.data!.page!.count!) {
+    //   if (replyList.isEmpty) {
+    //     //当第一次时
+    //     //添加排列方式按钮
+    //     replyList.add(
+    //       Row(
+    //         children: [
+    //           Padding(
+    //               padding: const EdgeInsets.only(left: 12, right: 12),
+    //               child: Obx(
+    //                 () => Text(
+    //                     "${sortInfoText.value} ${StringFormatUtils.numFormat(replyResponse!.data!.page!.count!)}"),
+    //               )),
+    //           const Spacer(),
+    //           //排列方式按钮
+    //           MaterialButton(
+    //             child: Row(
+    //               children: [
+    //                 Icon(Icons.sort_rounded,
+    //                     size: 16, color: Get.textTheme.bodyMedium!.color),
+    //                 Obx(
+    //                   () => Text(
+    //                     sortTypeText.value,
+    //                     style:
+    //                         TextStyle(color: Get.textTheme.bodyMedium!.color),
+    //                   ),
+    //                 )
+    //               ],
+    //             ),
+    //             //点击切换评论排列方式
+    //             onPressed: () {
+    //               toggleSort();
+    //             },
+    //           ),
+    //         ],
+    //       ),
+    //     );
+    //     //添加置顶评论(如果有的话)
+    //     for (var i in replyResponse!.data!.topReplies!) {
+    //       addReplyItemWidget(replyList, i, frontDivider: false, isTop: true);
+    //     }
+    //   }
+    //   //添加常规评论
+    //   for (var i in replyResponse!.data!.replies!) {
+    //     addReplyItemWidget(replyList, i, frontDivider: replyList.length != 1);
+    //   }
+    //   pageNum++;
+    // }
+    return true;
   }
 
   //评论区刷新中

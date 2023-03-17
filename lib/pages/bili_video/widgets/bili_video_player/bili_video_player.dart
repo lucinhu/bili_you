@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bili_you/common/api/video_play_api.dart';
+import 'package:bili_you/common/models/local/video/audio_play_item.dart';
+import 'package:bili_you/common/models/local/video/video_play_info.dart';
+import 'package:bili_you/common/models/local/video/video_play_item.dart';
 import 'package:bili_you/common/utils/fullscreen.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
@@ -26,32 +29,50 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
   GlobalKey aspectRatioKey = GlobalKey();
   BiliDanmaku? danmaku;
   Widget? controllPanel;
+  VideoQuality? videoQuality;
+  AudioQuality? audioQuality;
   Future<bool> loadVideo(String bvid, int cid) async {
     if (widget.controller._videoAudioController != null) {
-      // log("not null");
       return true;
     }
+    late VideoPlayInfo videoPlayInfo;
     try {
-      var data = await VideoPlayApi.requestVideoPlay(
-          bvid: bvid, cid: cid, qn: 0, fnval: 80);
-      if (data.code != 0) {
-        return false;
-      }
-      widget.controller._videoAudioController = VideoAudioController(
-          videoUrl: data.data!.dash!.video![0].baseUrl!,
-          audioUrl: data.data!.dash!.audio![0].baseUrl!,
-          audioHeaders: VideoPlayApi.videoPlayerHttpHeaders,
-          videoHeaders: VideoPlayApi.videoPlayerHttpHeaders,
-          autoWakelock: true);
-      await widget.controller._videoAudioController!.ensureInitialized();
-      if (widget.controller._playWhenInitialize) {
-        await widget.controller._videoAudioController!.play();
-      }
-      return true;
+      //加载视频播放信息
+      videoPlayInfo = await VideoPlayApi.getVideoPlay(bvid: bvid, cid: cid);
     } catch (e) {
-      log("bili_video_player $e");
+      log("bili_video_player.loadVideo:$e");
       return false;
     }
+    //如果所选的画质/音质都没有初始化时，选视频播放信息的第一个画质/音质
+    videoQuality ??= videoPlayInfo.videos.first.quality;
+    audioQuality ??= videoPlayInfo.audios.first.quality;
+    //获取画质，音质对应的视频，音频url
+    String videoUrl = "";
+    String audioUrl = "";
+    for (var i in videoPlayInfo.videos) {
+      if (i.quality == videoQuality) {
+        videoUrl = i.urls.first;
+        break;
+      }
+    }
+    for (var i in videoPlayInfo.audios) {
+      if (i.quality == audioQuality) {
+        audioUrl = i.urls.first;
+        break;
+      }
+    }
+    //创建播放器
+    widget.controller._videoAudioController = VideoAudioController(
+        videoUrl: videoUrl,
+        audioUrl: audioUrl,
+        audioHeaders: VideoPlayApi.videoPlayerHttpHeaders,
+        videoHeaders: VideoPlayApi.videoPlayerHttpHeaders,
+        autoWakelock: true);
+    await widget.controller._videoAudioController!.ensureInitialized();
+    if (widget.controller._playWhenInitialize) {
+      await widget.controller._videoAudioController!.play();
+    }
+    return true;
   }
 
   updateWidget() {

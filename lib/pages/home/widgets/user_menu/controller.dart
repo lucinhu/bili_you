@@ -1,9 +1,8 @@
 import 'dart:developer';
 
-import 'package:bili_you/common/api/api_constants.dart';
-import 'package:bili_you/common/api/user_api.dart';
-import 'package:bili_you/common/models/network/user/user_info.dart';
-import 'package:bili_you/common/models/network/user/user_stat.dart';
+import 'package:bili_you/common/api/index.dart';
+import 'package:bili_you/common/models/local/login/login_user_info.dart';
+import 'package:bili_you/common/models/local/login/login_user_stat.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/utils/my_dio.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
@@ -23,21 +22,21 @@ class UserMenuController extends GetxController {
   RxInt followingCount = 0.obs;
   RxInt followerCount = 0.obs;
 
-  late UserInfoResponse userInfo;
-  late UserStatResponse userStat;
+  late LoginUserInfo userInfo;
+  late LoginUserStat userStat;
 
   _initData() async {
     try {
-      userInfo = await UserApi.requestUserInfo();
-      userStat = await UserApi.requestUserStat();
-      faceUrl.value = userInfo.data!.face!;
-      name.value = userInfo.data!.uname!;
-      level.value = userInfo.data!.levelInfo!.currentLevel!;
-      currentExp.value = userInfo.data!.levelInfo!.currentExp!;
-      nextExp.value = userInfo.data!.levelInfo!.nextExp!;
-      dynamicCount.value = userStat.data!.dynamicCount!;
-      followerCount.value = userStat.data!.follower!;
-      followingCount.value = userStat.data!.following!;
+      userInfo = await LoginApi.getLoginUserInfo();
+      userStat = await LoginApi.getLoginUserStat();
+      faceUrl.value = userInfo.avatarUrl;
+      name.value = userInfo.name;
+      level.value = userInfo.levelInfo.currentLevel;
+      currentExp.value = userInfo.levelInfo.currentExp;
+      nextExp.value = userInfo.levelInfo.nextExp;
+      dynamicCount.value = userStat.dynamicCount;
+      followerCount.value = userStat.followerCount;
+      followingCount.value = userStat.followingCount;
     } catch (e) {
       log(e.toString());
     }

@@ -342,9 +342,9 @@ class ReplyItemRaw {
   String? parentStr;
   int? like;
   int? action;
-  PurpleMember? member;
+  MemberElement? member;
   Content? content;
-  List<ReplyReply>? replies;
+  List<ReplyItemRaw>? replies;
   int? assist;
   UpAction? upAction;
   bool? invisible;
@@ -380,13 +380,13 @@ class ReplyItemRaw {
         action: json["action"],
         member: json["member"] == null
             ? null
-            : PurpleMember.fromJson(json["member"]),
+            : MemberElement.fromJson(json["member"]),
         content:
             json["content"] == null ? null : Content.fromJson(json["content"]),
         replies: json["replies"] == null
             ? []
-            : List<ReplyReply>.from(
-                json["replies"]!.map((x) => ReplyReply.fromJson(x))),
+            : List<ReplyItemRaw>.from(
+                json["replies"]!.map((x) => ReplyItemRaw.fromJson(x))),
         assist: json["assist"],
         upAction: json["up_action"] == null
             ? null
@@ -493,7 +493,7 @@ class Content {
   });
 
   String? message;
-  List<dynamic>? members;
+  List<MemberElement>? members;
   AvatarLayerClass? jumpUrl;
   int? maxLine;
   Map<String, EmoteValue>? emote;
@@ -507,7 +507,8 @@ class Content {
         message: json["message"],
         members: json["members"] == null
             ? []
-            : List<dynamic>.from(json["members"]!.map((x) => x)),
+            : List<MemberElement>.from(
+                json["members"]!.map((x) => MemberElement.fromJson(x))),
         jumpUrl: json["jump_url"] == null
             ? null
             : AvatarLayerClass.fromJson(json["jump_url"]),
@@ -524,8 +525,9 @@ class Content {
 
   Map<String, dynamic> toJson() => {
         "message": message,
-        "members":
-            members == null ? [] : List<dynamic>.from(members!.map((x) => x)),
+        "members": members == null
+            ? []
+            : List<MemberElement>.from(members!.map((x) => x.toJson())),
         "jump_url": jumpUrl?.toJson(),
         "max_line": maxLine,
         "emote": Map.from(emote!)

@@ -17,20 +17,32 @@ class ApiConstants {
 
   ///#### 获取首页推荐
   ///
-  ///[feed_version]:String, 若值为V4时，会有广告，所以将它设为V3比较好。
+  ///get请求
   ///
-  ///[ps]:int, 请求的推荐个数
+  ///[feed_version]:String 若值为V4时，会有广告，所以将它设为V3比较好。
+  ///
+  ///[ps]:int 请求的推荐个数
+  ///
+  ///[refresh_idx]:int 刷新的次数
+  ///
+  ///需要cookie才能根据喜好推荐
+  ///
+  ///test: https://api.bilibili.com/x/web-interface/index/top/feed/rcmd?feed_version=V3&ps=12&fresh_idx=1
   static const String recommendItems =
       "$apiBase/x/web-interface/index/top/feed/rcmd";
 
   ///申请人机验证验证码
   ///?source=main_web
+  ///test: http://passport.bilibili.com/x/passport-login/captcha
   static const String captcha = "$passportBase/x/passport-login/captcha";
 
   ///申请短信验证码
+  ///post请求
+  ///test: http://passtport.bilibili.com/x/passport-login/web/sms/send
   static const String smsCode = "$passportBase/x/passport-login/web/sms/send";
 
   ///短信验证码登陆
+  ///post请求
   static const String smsLogin = "$passportBase/x/passport-login/web/login/sms";
 
   ///生成二维码
@@ -56,18 +68,31 @@ class ApiConstants {
   static const String noface = 'http://i0.hdslb.com/bfs/face/member/noface.jpg';
 
   ///视频播放
+  ///test: https://api.bilibili.com/x/player/playurl?cid=1053323351&bvid=BV14L411k7zn&fnval=16
+  ///test: https://api.bilibili.com/x/player/playurl?cid=993730189&avid=351273106&fnval=16&fourk=1
   static const String videoPlay = '$apiBase/x/player/playurl';
 
   ///视频信息
+  ///test: https://api.bilibili.com/x/web-interface/view?aid=170001
   static const String videoInfo = '$apiBase/x/web-interface/view';
 
-  //视频分p信息
+  ///视频分p信息
+  ///test: https://api.bilibili.com/x/player/pagelist?aid=170001
   static const String videoParts = '$apiBase/x/player/pagelist';
 
   ///相关视频
+  ///
+  ///bvid, aid 任选其一
+  ///
+  ///[bvid]:String (不可以是aid转字符串，即不允许bvid=170001这种做法)
+  ///
+  ///[aid]:int
+  ///
+  ///test: https://api.bilibili.com/x/web-interface/archive/related?aid=170001
   static const String relatedVideo = '$apiBase/x/web-interface/archive/related';
 
   ///默认搜索词
+  ///test: http://api.bilibili.com/x/web-interface/wbi/search/default
   static const String defualtSearchWord =
       "$apiBase/x/web-interface/wbi/search/default";
 
@@ -75,12 +100,16 @@ class ApiConstants {
   static const String hotWordsWeb = "$sSearchBase/main/hotword";
 
   ///热搜手机版(现在使用的是这个)
+  ///test: http://app.bilibili.com/x/v2/search/trending/ranking
   static const String hotWordsMob = "$appBase/x/v2/search/trending/ranking";
 
   ///搜索建议
+  ///test: http://s.search.bilibili.com/main/suggest
   static const String searchSuggest = "$sSearchBase/main/suggest";
 
   ///分类搜索
+  ///test video: https://api.bilibili.com/x/web-interface/search/type?keyword=你好&search_type=video&page=5&page_size=45
+  ///test bangumi: https://api.bilibili.com/x/web-interface/search/type?keyword=三国&search_type=media_bangumi&page=1&page_size=45
   static const String searchWithType = "$apiBase/x/web-interface/search/type";
 
   ///评论

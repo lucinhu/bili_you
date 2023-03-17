@@ -1,14 +1,21 @@
+import 'package:bili_you/common/models/local/login/level_info.dart';
+import 'package:bili_you/common/models/local/login/login_user_info.dart';
+import 'package:bili_you/common/models/local/login/login_user_stat.dart';
+import 'package:bili_you/common/models/local/reply/official_verify.dart';
+import 'package:bili_you/common/models/local/reply/vip.dart';
+import 'package:bili_you/common/models/network/user/user_info.dart' as raw;
+import 'package:bili_you/common/models/network/user/user_stat.dart' as raw;
 import 'package:dio/dio.dart';
 import 'package:encrypt/encrypt.dart';
 
 import 'package:bili_you/common/utils/my_dio.dart';
 import 'api_constants.dart';
-import '../models/network/login/captcha_data.dart';
-import '../models/network/login/captcha_result.dart';
-import '../models/network/login/password_login_key_hash.dart';
-import '../models/network/login/password_login_result.dart';
-import '../models/network/login/post_sms_login.dart';
-import '../models/network/login/post_sms_require.dart';
+import '../models/network/login/captcha_data.dart' as raw;
+import '../models/network/login/captcha_result.dart' as raw;
+import '../models/network/login/password_login_key_hash.dart' as raw;
+import '../models/network/login/password_login_result.dart' as raw;
+import '../models/network/login/post_sms_login.dart' as raw;
+import '../models/network/login/post_sms_require.dart' as raw;
 
 ///b站登陆接口\
 ///设计原则：\
@@ -22,23 +29,26 @@ import '../models/network/login/post_sms_require.dart';
 ///2.其余错误请判断错误码(code)，配套有错误信息(message)
 abstract class LoginApi {
   ///获取登陆需要的key和hash
-  static Future<PasswordLoginKeyHashResponse>
+  ///TODO: 改造封装成getxxx
+  static Future<raw.PasswordLoginKeyHashResponse>
       requestPasswordLoginKeyHash() async {
     Dio dio = MyDio.dio;
     var response = await dio.get(ApiConstants.passwordPublicKeyHash);
-    return PasswordLoginKeyHashResponse.fromJson(response.data);
+    return raw.PasswordLoginKeyHashResponse.fromJson(response.data);
   }
 
   ///获取人机测试所需要的数据
-  static Future<CaptchaDataResponse> requestCaptchaData() async {
+  ///TODO: 改造封装成getxxx
+  static Future<raw.CaptchaDataResponse> requestCaptchaData() async {
     var dio = MyDio.dio;
     var response = await dio
         .get(ApiConstants.captcha, queryParameters: {"source": "main_web"});
-    return CaptchaDataResponse.fromJson(response.data);
+    return raw.CaptchaDataResponse.fromJson(response.data);
   }
 
   ///请求发送验证码信息到手机
-  static Future<PostSmsRequireResponse> postSendSmsToPhone(int cid, int tel,
+  ///TODO: 改造封装成getxxx
+  static Future<raw.PostSmsRequireResponse> postSendSmsToPhone(int cid, int tel,
       String token, String challenge, String validate, String seccode) async {
     var dio = MyDio.dio;
     var response = await dio.post(ApiConstants.smsCode,
@@ -52,11 +62,12 @@ abstract class LoginApi {
           "seccode": seccode
         },
         options: Options(contentType: Headers.formUrlEncodedContentType));
-    return PostSmsRequireResponse.fromJson(response.data);
+    return raw.PostSmsRequireResponse.fromJson(response.data);
   }
 
   ///短信登录
-  static Future<PostSmsLoginResponse> smsLogin(
+  ///TODO: 改造封装成getxxx
+  static Future<raw.PostSmsLoginResponse> smsLogin(
       int cid, int tel, int code, String captchaKey) async {
     Dio dio = MyDio.dio;
     var response = await dio.post(ApiConstants.smsLogin,
@@ -70,13 +81,14 @@ abstract class LoginApi {
           "go_url": ApiConstants.bilibiliBase
         },
         options: Options(contentType: Headers.formUrlEncodedContentType));
-    return PostSmsLoginResponse.fromJson(response.data);
+    return raw.PostSmsLoginResponse.fromJson(response.data);
   }
 
   ///密码登陆
-  static Future<PostPasswordLoginResponse> postPasswordLoginInfo(
-      CaptchaResultModel captchaResult,
-      PasswordLoginKeyHashResponse passwordLoginKeyHash,
+  ///TODO: 改造封装成getxxx
+  static Future<raw.PostPasswordLoginResponse> postPasswordLoginInfo(
+      raw.CaptchaResultModel captchaResult,
+      raw.PasswordLoginKeyHashResponse passwordLoginKeyHash,
       String username,
       String password) async {
     Dio dio = MyDio.dio;
@@ -102,6 +114,63 @@ abstract class LoginApi {
           'user-agent': ApiConstants.userAgent,
         }, contentType: Headers.formUrlEncodedContentType));
 
-    return PostPasswordLoginResponse.fromJson(response.data);
+    return raw.PostPasswordLoginResponse.fromJson(response.data);
+  }
+
+  static Future<raw.LoginUserInfoResponse> _requestLoginUserInfo() async {
+    var dio = MyDio.dio;
+    var response = await dio.get(ApiConstants.userInfo,
+        options: Options(responseType: ResponseType.plain));
+    return raw.LoginUserInfoResponse.fromRawJson(response.data);
+  }
+
+  ///获取当前cookie的用户信息
+  static Future<LoginUserInfo> getLoginUserInfo() async {
+    var response = await _requestLoginUserInfo();
+    if (response.code != 0) {
+      throw "getLoginUserInfo: code:${response.code}, message:${response.message}";
+    }
+    if (response.data == null) {
+      return LoginUserInfo.zero;
+    }
+    var data = response.data!;
+    return LoginUserInfo(
+        mid: data.mid ?? 0,
+        name: data.uname ?? "",
+        avatarUrl: data.face ?? "",
+        levelInfo: LevelInfo(
+            currentLevel: data.levelInfo?.currentLevel ?? 0,
+            currentExp: data.levelInfo?.currentExp ?? 0,
+            currentMin: data.levelInfo?.currentMin ?? 0,
+            nextExp: data.levelInfo?.nextExp ?? 0),
+        officialVerify: OfficialVerify(
+            type:
+                OfficialVerifyTypeCode.fromCode(data.officialVerify?.type ?? 0),
+            description: data.officialVerify?.desc ?? ""),
+        vip: Vip(
+            isVip: data.vip?.status == 1,
+            type: VipType.values[data.vip?.type ?? 0]));
+  }
+
+  ///获取当前cookie用户的状态：粉丝数，关注数，动态数
+  static Future<raw.LoginUserStatResponse> _requestLoginUserStat() async {
+    var dio = MyDio.dio;
+    var response = await dio.get(ApiConstants.userStat);
+    return raw.LoginUserStatResponse.fromJson(response.data);
+  }
+
+  static Future<LoginUserStat> getLoginUserStat() async {
+    var response = await _requestLoginUserStat();
+    if (response.code != 0) {
+      throw "getLoginUserStat: code:${response.code}, message:${response.message}";
+    }
+    if (response.data == null) {
+      return LoginUserStat.zero;
+    }
+    var data = response.data!;
+    return LoginUserStat(
+        followerCount: data.follower ?? 0,
+        followingCount: data.following ?? 0,
+        dynamicCount: data.dynamicCount ?? 0);
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-class UserInfoResponse {
-  UserInfoResponse({
+class LoginUserInfoResponse {
+  LoginUserInfoResponse({
     this.code,
     this.message,
     this.ttl,
@@ -13,13 +13,13 @@ class UserInfoResponse {
   int? ttl;
   UserInfoResponseData? data;
 
-  factory UserInfoResponse.fromRawJson(String str) =>
-      UserInfoResponse.fromJson(json.decode(str));
+  factory LoginUserInfoResponse.fromRawJson(String str) =>
+      LoginUserInfoResponse.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory UserInfoResponse.fromJson(Map<String, dynamic> json) =>
-      UserInfoResponse(
+  factory LoginUserInfoResponse.fromJson(Map<String, dynamic> json) =>
+      LoginUserInfoResponse(
         code: json["code"],
         message: json["message"],
         ttl: json["ttl"],

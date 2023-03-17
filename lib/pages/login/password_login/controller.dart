@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:bili_you/common/api/login_api.dart';
-import 'package:bili_you/common/api/user_api.dart';
 import 'package:bili_you/common/models/network/login/captcha_result.dart';
 import 'package:bili_you/common/models/network/login/password_login_result.dart';
 import 'package:bili_you/pages/login/sms_login/index.dart';
@@ -50,8 +49,8 @@ class PasswordLoginController extends GetxController {
         } else {
           if (passwordLoginResult.data!.status == 0) {
             Get.rawSnackbar(title: "登陆", message: "成功!");
-            await onLoginSuccess(await UserApi.requestUserInfo(),
-                await UserApi.requestUserStat());
+            await onLoginSuccess(await LoginApi.getLoginUserInfo(),
+                await LoginApi.getLoginUserStat());
             Get.back(closeOverlays: true);
           } else if (passwordLoginResult.data!.status == 2) {
             //提示当前环境有安全问题，需要手机验证或绑定

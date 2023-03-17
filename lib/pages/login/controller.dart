@@ -1,5 +1,5 @@
-import 'package:bili_you/common/models/network/user/user_info.dart';
-import 'package:bili_you/common/models/network/user/user_stat.dart';
+import 'package:bili_you/common/models/local/login/login_user_info.dart';
+import 'package:bili_you/common/models/local/login/login_user_stat.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/pages/home/index.dart';
@@ -59,17 +59,17 @@ startCaptcha(
 ///登录成功时设置登录状态
 ///清除头像缓存
 Future<void> onLoginSuccess(
-    UserInfoResponse userInfo, UserStatResponse userStat) async {
+    LoginUserInfo userInfo, LoginUserStat userStat) async {
   var box = BiliYouStorage.user;
   await CacheManager(Config(CacheKeys.userFaceKey)).emptyCache();
   await box.put(UserStorageKeys.hasLogin, true);
-  await box.put(UserStorageKeys.userFace, userInfo.data!.face!);
-  await box.put(UserStorageKeys.userName, userInfo.data!.uname!);
+  await box.put(UserStorageKeys.userFace, userInfo.avatarUrl);
+  await box.put(UserStorageKeys.userName, userInfo.name);
   // await box.put(UserStorageKeys.userLevel, userInfo.levelInfo.currentLevel);
   // await box.put(UserStorageKeys.userCurrentExp, userInfo.levelInfo.currentExp);
   // await box.put(UserStorageKeys.userNextExp, userInfo.levelInfo.nextExp);
   // await box.put(UserStorageKeys.userDynamicCount, userStat.dynamicCount);
   // await box.put(UserStorageKeys.userFollowerCount, userStat.followerCount);
   // await box.put(UserStorageKeys.userFollowingCount, userStat.followingCount);
-  Get.find<HomeController>().faceUrl.value = userInfo.data!.face!;
+  Get.find<HomeController>().faceUrl.value = userInfo.avatarUrl;
 }

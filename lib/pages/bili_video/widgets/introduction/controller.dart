@@ -3,9 +3,8 @@ import 'dart:developer';
 import 'package:bili_you/common/api/bangumi_api.dart';
 import 'package:bili_you/common/api/related_video_api.dart';
 import 'package:bili_you/common/api/video_info_api.dart';
-import 'package:bili_you/common/models/network/bangumi/bangumi_info.dart';
-import 'package:bili_you/common/models/network/related_video/related_video.dart';
-import 'package:bili_you/common/models/network/video_info/video_info.dart';
+import 'package:bili_you/common/models/local/related_video/related_video_info.dart';
+import 'package:bili_you/common/models/local/video/video_info.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/video_tile_item.dart';
@@ -26,12 +25,12 @@ class IntroductionController extends GetxController {
   String bvid;
   int? cid;
   int? ssid;
-  late RxString title = "".obs;
-  late RxString describe = "".obs;
+  RxString title = "".obs;
+  RxString describe = "".obs;
+
+  late VideoInfo videoInfo;
+
   final bool isBangumi;
-  late VideoInfoResponse videoInfo;
-  late BangumiInfoResponse bangumiInfo;
-  late RelatedVideoResponse? relatedVideoModel;
   final Function(String bvid, int cid) changePartCallback;
   final Function() refreshReply;
   final Function() pauseVideo;
@@ -41,39 +40,27 @@ class IntroductionController extends GetxController {
   final List<Widget> partButtons = []; //分p按钮列表
   final List<Widget> relatedVideos = []; //相关视频列表
 
-//加载相关视频
-  Future<void> _loadRelatedVideo() async {
-    try {
-      relatedVideoModel = await RelatedVideoApi.requestRelatedVideo(bvid: bvid);
-    } catch (e) {
-      log(e.toString());
-    }
-    return;
-  }
-
 //加载视频信息
   Future<bool> loadVideoInfo() async {
     try {
-      videoInfo = await VideoInfoApi.requestVideoInfo(bvid: bvid);
-      title.value = videoInfo.data?.title ?? "";
-      describe.value = videoInfo.data?.desc ?? "";
-      if (!isBangumi) {
-        //当是普通视频时
-        await _loadRelatedVideo(); //加载相关视频
-        //初始化时构造分p按钮
-        _loadVideoPartButtons();
-        //构造相关视频
-        _loadRelatedVideos();
-      } else {
-        //如果是番剧
-        bangumiInfo = await BangumiApi.requestBangumiInfo(ssid: ssid);
-        _loadBangumiPartButtons(bangumiInfo);
-      }
-      return true;
+      videoInfo = await VideoInfoApi.getVideoInfo(bvid: bvid);
     } catch (e) {
-      log(e.toString());
+      log("loadVideoInfo:$e");
       return false;
     }
+    title.value = videoInfo.title;
+    describe.value = videoInfo.title;
+    if (!isBangumi) {
+      //当是普通视频时
+      //初始化时构造分p按钮
+      _loadVideoPartButtons();
+      //构造相关视频
+      await _loadRelatedVideos();
+    } else {
+      //如果是番剧
+      await _loadBangumiPartButtons();
+    }
+    return true;
   }
 
   // _initData() {
@@ -81,7 +68,7 @@ class IntroductionController extends GetxController {
   // }
 
   //添加一个分p/剧集按钮
-  _addAButtion(String bvid, int cid, String text, int index) {
+  void _addAButtion(String bvid, int cid, String text, int index) {
     partButtons.add(
       Padding(
         padding: const EdgeInsets.all(2),
@@ -95,9 +82,9 @@ class IntroductionController extends GetxController {
               changePartCallback(bvid, cid);
               if (isBangumi) {
                 //如果是番剧的还，切换时还需要改变标题，简介
-                videoInfo = await VideoInfoApi.requestVideoInfo(bvid: bvid);
-                title.value = videoInfo.data?.title ?? "";
-                describe.value = videoInfo.data?.desc ?? "";
+                videoInfo = await VideoInfoApi.getVideoInfo(bvid: bvid);
+                title.value = videoInfo.title;
+                describe.value = videoInfo.describe;
                 //评论区也要刷新
                 refreshReply();
               }
@@ -108,53 +95,51 @@ class IntroductionController extends GetxController {
   }
 
   //构造分p按钮列表
-  _loadVideoPartButtons() {
-    if ((videoInfo.data?.pages ?? []).length > 1) {
-      for (int i = 0; i < (videoInfo.data?.pages ?? []).length; i++) {
-        _addAButtion(bvid, videoInfo.data!.pages![i].cid!,
-            videoInfo.data!.pages![i].pagePart ?? '', i);
+  void _loadVideoPartButtons() {
+    if (videoInfo.parts.length > 1) {
+      for (int i = 0; i < videoInfo.parts.length; i++) {
+        _addAButtion(bvid, videoInfo.parts[i].cid, videoInfo.parts[i].title, i);
       }
     }
   }
 
 //构造番剧剧集按钮
-  _loadBangumiPartButtons(BangumiInfoResponse bangumiInfoModel) {
-    for (int i = 0; i < bangumiInfoModel.result!.episodes!.length; i++) {
-      _addAButtion(
-          bangumiInfoModel.result!.episodes![i].bvid!,
-          bangumiInfoModel.result!.episodes![i].cid!,
-          bangumiInfoModel.result!.episodes![i].longTitle!,
-          i);
+  Future<void> _loadBangumiPartButtons() async {
+    var bangumiInfo = await BangumiApi.getBangumiInfo(ssid: ssid);
+    for (int i = 0; i < bangumiInfo.episodes.length; i++) {
+      _addAButtion(bangumiInfo.episodes[i].bvid, bangumiInfo.episodes[i].cid,
+          bangumiInfo.episodes[i].title, i);
     }
   }
 
 //构造相关视频
-  _loadRelatedVideos() {
-    if (relatedVideoModel != null) {
-      if (relatedVideoModel!.data == null || relatedVideoModel!.code != 0) {
-        return;
-      }
-      for (var i in relatedVideoModel!.data!) {
-        relatedVideos.add(VideoTileItem(
-          picUrl: i.pic!,
-          bvid: i.bvid!,
-          title: i.title!,
-          upName: i.owner!.name!,
-          duration: StringFormatUtils.timeLengthFormat(i.duration!),
-          playNum: i.stat!.view!,
-          pubDate: i.pubdate!,
-          cacheManager: cacheManager,
-          onTap: (context) {
-            pauseVideo();
-            Get.to(
-                () => BiliVideoPage(
-                      bvid: i.bvid!,
-                      cid: i.cid!,
-                    ),
-                preventDuplicates: false);
-          },
-        ));
-      }
+  Future<void> _loadRelatedVideos() async {
+    late List<RelatedVideoInfo> list;
+    try {
+      list = await RelatedVideoApi.getRelatedVideo(bvid: bvid);
+    } catch (e) {
+      log("构造相关视频失败:${e.toString()}");
+    }
+    for (var i in list) {
+      relatedVideos.add(VideoTileItem(
+        picUrl: i.coverUrl,
+        bvid: i.bvid,
+        title: i.title,
+        upName: i.upName,
+        duration: StringFormatUtils.timeLengthFormat(i.timeLength),
+        playNum: i.playNum,
+        pubDate: i.pubDate,
+        cacheManager: cacheManager,
+        onTap: (context) {
+          pauseVideo();
+          Get.to(
+              () => BiliVideoPage(
+                    bvid: i.bvid,
+                    cid: i.cid,
+                  ),
+              preventDuplicates: false);
+        },
+      ));
     }
   }
 
