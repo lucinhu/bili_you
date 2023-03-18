@@ -45,3 +45,12 @@
 <img src="assets/screenshot/v1.0.3/reply_reply.png" width = "200" />
 <img src="assets/screenshot/v1.0.3/about_page.png" width = "200" />
 </div>
+
+## 交流
+
+Discord：[https://discord.gg/tsFh7Hdb4s](https://discord.gg/tsFh7Hdb4s)  
+
+## 感谢
+
+- [bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect): 哔哩哔哩API收集，感谢@SocialSisterYi及各位贡献者的维护！
+- [flutter_ns_danmaku](https://github.com/xiaoyaocz/flutter_ns_danmaku): @xiaoyaocz大佬制作的flutter弹幕插件，非常感谢!  
