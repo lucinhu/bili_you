@@ -50,7 +50,7 @@ class IntroductionController extends GetxController {
       return false;
     }
     title.value = videoInfo.title;
-    describe.value = videoInfo.title;
+    describe.value = videoInfo.describe;
     if (!isBangumi) {
       //当是普通视频时
       //初始化时构造分p按钮

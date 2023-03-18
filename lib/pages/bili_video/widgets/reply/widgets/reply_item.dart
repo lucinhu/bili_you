@@ -2,6 +2,7 @@ import 'package:bili_you/common/models/local/reply/reply_content.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
+import 'package:bili_you/common/widget/foldable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -34,6 +35,9 @@ class ReplyItemWidget extends StatelessWidget {
       CacheManager(Config(CacheKeys.emoteKey));
 
   static TextSpan buildReplyItemContent(ReplyContent content) {
+    if (content.emotes.isEmpty) {
+      return TextSpan(text: content.message);
+    }
     List<InlineSpan> spans = [];
     content.message.splitMapJoin(RegExp(r"\[.*?\]"), onMatch: (match) {
       //匹配到是[]的位置时,有可能是表情
@@ -48,16 +52,16 @@ class ReplyItemWidget extends StatelessWidget {
       }
       if (emote != null) {
         //有的话就放表情进去
-        spans.add(
-          WidgetSpan(
-              child: SizedBox(
-                  width: 20.0 * emote.size.code,
-                  height: 20.0 * emote.size.code,
-                  child: CachedNetworkImage(
-                    cacheManager: emoteCacheManager,
-                    imageUrl: emote.url,
-                  ))),
-        );
+        spans.add(WidgetSpan(
+          child: SizedBox(
+            width: emote.size == EmoteSize.small ? 20 : 50,
+            height: emote.size == EmoteSize.small ? 20 : 50,
+            child: CachedNetworkImage(
+              cacheManager: emoteCacheManager,
+              imageUrl: emote.url,
+            ),
+          ),
+        ));
       } else {
         spans.add(TextSpan(text: matched));
       }
@@ -175,7 +179,18 @@ class ReplyItemWidget extends StatelessWidget {
                       padding: const EdgeInsets.all(10),
                       child:
                           //评论内容
-                          SelectableText.rich(buildReplyItemContent(content)),
+                          //TODO: 有表情的评论暂时无法折叠
+                          content.emotes.isEmpty
+                              ? FoldableText.rich(
+                                  buildReplyItemContent(content),
+                                  maxLines: 6,
+                                  folderTextStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                )
+                              : SelectableText.rich(
+                                  buildReplyItemContent(content)),
                     ),
                     Row(
                       children: [

@@ -46,6 +46,7 @@ class _ReplyPageState extends State<ReplyPage>
         ),
         controller: controller.refreshController,
         childBuilder: (context, physics) => ListView.builder(
+              shrinkWrap: true,
               controller: controller.scrollController,
               padding: const EdgeInsets.all(0),
               physics: physics,

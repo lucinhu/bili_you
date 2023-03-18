@@ -1,6 +1,7 @@
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
+import 'package:bili_you/common/widget/foldable_text.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -170,15 +171,23 @@ class _IntroductionPageState extends State<IntroductionPage>
           ),
         ),
 
-        Obx(
-          () => SelectableText(
-            controller.describe.value,
-            style: TextStyle(
-              fontSize: 12,
-              color: Theme.of(context).hintColor,
-            ),
-          ),
-        ),
+        SelectableRegion(
+            magnifierConfiguration: const TextMagnifierConfiguration(),
+            focusNode: FocusNode(),
+            selectionControls: MaterialTextSelectionControls(),
+            child: Obx(
+              () => FoldableText(
+                //简介详细
+                controller.describe.value,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context).hintColor,
+                ),
+                maxLines: 6,
+                folderTextStyle: TextStyle(
+                    fontSize: 12, color: Theme.of(context).colorScheme.primary),
+              ),
+            )),
         //TODO tags
         Padding(
             padding: const EdgeInsets.only(top: 10, bottom: 10),
