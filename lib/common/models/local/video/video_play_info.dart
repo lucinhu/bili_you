@@ -34,3 +34,27 @@ class VideoPlayInfo {
   Duration lastPlayTime;
   int lastPlayCid;
 }
+
+extension VideoPlayInfoMethods on VideoPlayInfo {
+  ///通过画质查找视频
+  List<VideoPlayItem> findVideoByVideoQuality(VideoQuality videoQuality) {
+    List<VideoPlayItem> list = [];
+    for (var i in videos) {
+      if (i.quality == videoQuality) {
+        list.add(i);
+      }
+    }
+    return list;
+  }
+
+  ///通过音质查找视频
+  List<AudioPlayItem> findAudioByAudioQuality(AudioQuality audioQuality) {
+    List<AudioPlayItem> list = [];
+    for (var i in audios) {
+      if (i.quality == audioQuality) {
+        list.add(i);
+      }
+    }
+    return list;
+  }
+}

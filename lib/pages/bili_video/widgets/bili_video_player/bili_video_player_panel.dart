@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:bili_you/common/models/local/video/video_play_item.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
@@ -80,6 +81,24 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
     widget.controller._biliVideoPlayerController
         .removeListener(playerListenerCallback);
     super.dispose();
+  }
+
+  List<RadioListTile> buildVideoQualityTiles() {
+    List<RadioListTile> list = [];
+    for (var i
+        in widget.controller._biliVideoPlayerController.videoPlayInfo!.videos) {
+      list.add(RadioListTile(
+        title: Text(i.quality.description),
+        subtitle: Text(i.codecs),
+        value: i,
+        groupValue: widget.controller._biliVideoPlayerController.videoPlayItem,
+        onChanged: (value) {
+          widget.controller._biliVideoPlayerController.changeVideoItem(value);
+          Navigator.of(context).pop();
+        },
+      ));
+    }
+    return list;
   }
 
   @override
@@ -199,7 +218,11 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                                       Text("播放速度")
                                     ],
                                   ),
-                                )
+                                ),
+                                PopupMenuItem(
+                                    value: "画质",
+                                    child: Text(
+                                        "画质: ${widget.controller._biliVideoPlayerController.videoPlayItem!.quality.description ?? "未知"}"))
                               ];
                             },
                             onSelected: (value) {
@@ -265,6 +288,32 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                                     }),
                                   );
 
+                                  break;
+                                case "画质":
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        scrollable: true,
+                                        title: const Text("选择画质"),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text(
+                                                "取消",
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .hintColor),
+                                              )),
+                                        ],
+                                        content: Column(
+                                          children: buildVideoQualityTiles(),
+                                        ),
+                                      );
+                                    },
+                                  );
                                   break;
                                 default:
                                   log(value);

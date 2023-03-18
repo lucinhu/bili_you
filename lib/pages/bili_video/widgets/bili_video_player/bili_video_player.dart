@@ -29,38 +29,31 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
   GlobalKey aspectRatioKey = GlobalKey();
   BiliDanmaku? danmaku;
   Widget? controllPanel;
-  VideoQuality? videoQuality;
-  AudioQuality? audioQuality;
+
   Future<bool> loadVideo(String bvid, int cid) async {
     if (widget.controller._videoAudioController != null) {
       return true;
     }
-    late VideoPlayInfo videoPlayInfo;
     try {
       //加载视频播放信息
-      videoPlayInfo = await VideoPlayApi.getVideoPlay(bvid: bvid, cid: cid);
+      widget.controller.videoPlayInfo =
+          await VideoPlayApi.getVideoPlay(bvid: bvid, cid: cid);
     } catch (e) {
       log("bili_video_player.loadVideo:$e");
       return false;
     }
-    //如果所选的画质/音质都没有初始化时，选视频播放信息的第一个画质/音质
-    videoQuality ??= videoPlayInfo.videos.first.quality;
-    audioQuality ??= videoPlayInfo.audios.first.quality;
-    //获取画质，音质对应的视频，音频url
-    String videoUrl = "";
-    String audioUrl = "";
-    for (var i in videoPlayInfo.videos) {
-      if (i.quality == videoQuality) {
-        videoUrl = i.urls.first;
-        break;
-      }
-    }
-    for (var i in videoPlayInfo.audios) {
-      if (i.quality == audioQuality) {
-        audioUrl = i.urls.first;
-        break;
-      }
-    }
+
+    var videoPlayInfo = widget.controller.videoPlayInfo;
+    //如果所选的视频音频都没有初始化时获取第一个
+    widget.controller._videoPlayItem ??= videoPlayInfo!.videos.first;
+    widget.controller._audioPlayItem ??= videoPlayInfo!.audios.first;
+    //// 当前画质音质
+    // widget.controller._videoQuality = widget.controller._videoPlayItem!.quality;
+    // widget.controller._audioQuality = widget.controller._audioPlayItem!.quality;
+    //获取视频，音频的url
+    String videoUrl = widget.controller._videoPlayItem!.urls.first;
+    String audioUrl = widget.controller._audioPlayItem!.urls.first;
+
     //创建播放器
     widget.controller._videoAudioController = VideoAudioController(
         videoUrl: videoUrl,
@@ -72,6 +65,8 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
     if (widget.controller._playWhenInitialize) {
       await widget.controller._videoAudioController!.play();
     }
+    widget.controller._videoAudioController!
+        .seekTo(widget.controller._initVideoPosition);
     return true;
   }
 
@@ -183,6 +178,8 @@ class BiliVideoPlayerController {
   int cid;
   bool isFullScreen = false;
   bool _playWhenInitialize = true;
+  //初始进度
+  Duration _initVideoPosition = Duration.zero;
   late Size _size;
   late EdgeInsets _padding;
 
@@ -190,6 +187,20 @@ class BiliVideoPlayerController {
   late Function() _updateAsepectRatioWidget;
   VideoAudioController? _videoAudioController;
   BiliDanmakuController? biliDanmakuController;
+  VideoPlayInfo? videoPlayInfo;
+  //当前播放的视频信息
+  VideoPlayItem? _videoPlayItem;
+  //当前播放的音频信息
+  AudioPlayItem? _audioPlayItem;
+  // //当前的视频画质
+  // VideoQuality? _videoQuality;
+  // //当前的音质
+  // AudioQuality? _audioQuality;
+
+  VideoPlayItem? get videoPlayItem => _videoPlayItem;
+  AudioPlayItem? get audioPlayItem => _audioPlayItem;
+  // VideoQuality? get videoQuality => _videoQuality;
+  // AudioQuality? get audioQuality => _audioQuality;
 
   double _aspectRatio = 16 / 9;
 
@@ -207,9 +218,37 @@ class BiliVideoPlayerController {
   }
 
   void changeCid(String bvid, int cid) {
+    videoPlayInfo = null;
+    _videoPlayItem = null;
+    _audioPlayItem = null;
+    _initVideoPosition = Duration.zero;
     this.bvid = bvid;
     this.cid = cid;
     reloadWidget();
+  }
+
+  // void changeVideoQuality(VideoQuality videoQuality) {
+  //   _videoQuality = videoQuality;
+  //   position.then((value) {
+  //     //将初始播放位置设为当前未知再刷新，这样就刷新后就能继续播放
+  //     _initVideoPosition = value;
+  //     _playWhenInitialize = true;
+  //     reloadWidget();
+  //   });
+  // }
+
+  void changeVideoItem(VideoPlayItem videoPlayItem) {
+    _videoPlayItem = videoPlayItem;
+    // _videoQuality = videoPlayItem.quality;
+    position.then(
+      (value) {
+        //将初始播放位置设为当前未知再刷新，这样就刷新后就能接上
+        _initVideoPosition = value;
+        //刷新后是否播放
+        _playWhenInitialize = isPlaying;
+        reloadWidget();
+      },
+    );
   }
 
   void toggleFullScreen() {
