@@ -237,9 +237,24 @@ class BiliVideoPlayerController {
   //   });
   // }
 
+  ///切换视频播放源/视频画质
   void changeVideoItem(VideoPlayItem videoPlayItem) {
     _videoPlayItem = videoPlayItem;
     // _videoQuality = videoPlayItem.quality;
+    position.then(
+      (value) {
+        //将初始播放位置设为当前未知再刷新，这样就刷新后就能接上
+        _initVideoPosition = value;
+        //刷新后是否播放
+        _playWhenInitialize = isPlaying;
+        reloadWidget();
+      },
+    );
+  }
+
+  ///切换音频播放源/音质
+  void changeAudioItem(AudioPlayItem audioPlayItem) {
+    _audioPlayItem = audioPlayItem;
     position.then(
       (value) {
         //将初始播放位置设为当前未知再刷新，这样就刷新后就能接上
