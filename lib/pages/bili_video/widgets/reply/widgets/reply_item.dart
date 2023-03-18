@@ -1,7 +1,7 @@
 import 'package:bili_you/common/models/local/reply/reply_content.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -30,6 +30,8 @@ class ReplyItemWidget extends StatelessWidget {
   final bool isUp; //是否是up主
   final List<String> tags;
   final Function(BuildContext context)? onTapUser;
+  static final CacheManager emoteCacheManager =
+      CacheManager(Config(CacheKeys.emoteKey));
 
   static TextSpan buildReplyItemContent(ReplyContent content) {
     List<InlineSpan> spans = [];
@@ -52,8 +54,7 @@ class ReplyItemWidget extends StatelessWidget {
                   width: 20.0 * emote.size.code,
                   height: 20.0 * emote.size.code,
                   child: CachedNetworkImage(
-                    cacheKey: matched,
-                    cacheManager: CacheManager(Config(CacheKeys.emoteKey)),
+                    cacheManager: emoteCacheManager,
                     imageUrl: emote.url,
                   ))),
         );
@@ -94,7 +95,7 @@ class ReplyItemWidget extends StatelessWidget {
                       filterQuality: FilterQuality.none,
                       cacheManager:
                           CacheManager(Config(CacheKeys.othersFaceKey)),
-                      placeholder: (context, url) => Container(
+                      placeholder: (context) => Container(
                         color: Theme.of(context).colorScheme.primaryContainer,
                       ),
                     ),

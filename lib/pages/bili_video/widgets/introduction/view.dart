@@ -1,7 +1,7 @@
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/pages/user_space/view.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';

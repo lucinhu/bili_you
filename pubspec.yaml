@@ -38,7 +38,6 @@ dependencies:
   # cupertino_icons: ^1.0.2
   get: ^4.6.5
   dynamic_color: ^1.5.4
-  cached_network_image: ^3.2.3
   dio: ^5.0.0
   dio_cookie_manager: ^2.1.0
   path_provider: ^2.0.11

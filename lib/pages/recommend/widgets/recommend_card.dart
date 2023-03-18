@@ -1,5 +1,6 @@
+import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:bili_you/pages/bili_video/view.dart';
 import 'package:get/get.dart';
@@ -72,10 +73,10 @@ class RecommendCard extends StatelessWidget {
                           cacheManager: cacheManager,
                           fit: BoxFit.cover,
                           imageUrl: imageUrl,
-                          placeholder: (_, __) => Container(
+                          placeholder: (context) => Container(
                             color: Theme.of(context).colorScheme.surfaceVariant,
                           ),
-                          errorWidget: (_, __, ___) => const Center(
+                          errorWidget: (_) => const Center(
                             child: Icon(Icons.error),
                           ),
                           filterQuality: FilterQuality.none,

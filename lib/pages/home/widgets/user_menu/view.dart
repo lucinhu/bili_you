@@ -1,7 +1,7 @@
 import 'package:bili_you/common/utils/bili_you_storage.dart';
+import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/pages/about/about_page.dart';
 import 'package:bili_you/pages/settings_page/settings_page.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bili_you/pages/login/sms_login/view.dart';
@@ -41,7 +41,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                                 height: 80,
                                 imageUrl: value.get(UserStorageKeys.userFace,
                                     defaultValue: controller.faceUrl.value),
-                                placeholder: (context, url) => const SizedBox(
+                                placeholder: (context) => const SizedBox(
                                   width: 80,
                                   height: 80,
                                 ),

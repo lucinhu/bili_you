@@ -1,7 +1,7 @@
+import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/pages/recommend/controller.dart';
 import 'package:bili_you/pages/search_input/index.dart';
 import 'package:bili_you/pages/ui_test/index.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bili_you/pages/recommend/view.dart';
@@ -116,7 +116,7 @@ class HomeViewGetX extends GetView<HomeController> {
                               height: 32,
                               fit: BoxFit.fill,
                               imageUrl: controller.faceUrl.value,
-                              placeholder: (context, url) => placeHolder));
+                              placeholder: (context) => placeHolder));
                         } else {
                           return placeHolder;
                         }

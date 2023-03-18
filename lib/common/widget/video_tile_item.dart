@@ -1,6 +1,6 @@
 import 'package:bili_you/common/utils/string_format_utils.dart';
+import 'package:bili_you/common/widget/cached_network_image.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -56,7 +56,7 @@ class VideoTileItem extends StatelessWidget {
                         fit: BoxFit.cover,
                         imageUrl: picUrl,
                         cacheManager: cacheManager,
-                        placeholder: (context, url) => Container(
+                        placeholder: (context) => Container(
                           color: Theme.of(context).colorScheme.surfaceVariant,
                         ),
                       ),
