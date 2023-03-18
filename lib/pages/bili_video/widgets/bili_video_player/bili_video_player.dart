@@ -34,13 +34,16 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
     if (widget.controller._videoAudioController != null) {
       return true;
     }
-    try {
-      //加载视频播放信息
-      widget.controller.videoPlayInfo =
-          await VideoPlayApi.getVideoPlay(bvid: bvid, cid: cid);
-    } catch (e) {
-      log("bili_video_player.loadVideo:$e");
-      return false;
+
+    if (widget.controller.videoPlayInfo == null) {
+      try {
+        //加载视频播放信息
+        widget.controller.videoPlayInfo =
+            await VideoPlayApi.getVideoPlay(bvid: bvid, cid: cid);
+      } catch (e) {
+        log("bili_video_player.loadVideo:$e");
+        return false;
+      }
     }
 
     var videoPlayInfo = widget.controller.videoPlayInfo;
