@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'index.dart';
+import 'widgets/reply/controller.dart';
 
 class BiliVideoPage extends StatefulWidget {
   const BiliVideoPage({
@@ -25,6 +26,8 @@ class BiliVideoPage extends StatefulWidget {
 }
 
 class _BiliVideoPageState extends State<BiliVideoPage> {
+  int currentTabIndex = 0;
+
   // 主视图
   Widget _player(BiliVideoController controller) {
     return controller.biliVideoPlayer;
@@ -34,14 +37,41 @@ class _BiliVideoPageState extends State<BiliVideoPage> {
     return Column(
       children: [
         TabBar(
-            controller: controller.tabController,
-            splashFactory: NoSplash.splashFactory,
-            tabs: const [
-              Tab(
-                text: "简介",
-              ),
-              Tab(text: "评论")
-            ]),
+          controller: controller.tabController,
+          splashFactory: NoSplash.splashFactory,
+          tabs: const [
+            Tab(
+              text: "简介",
+            ),
+            Tab(text: "评论")
+          ],
+          onTap: (value) {
+            if (value == currentTabIndex) {
+              //当按下的tab和当前的一样，就滚动到顶部
+              switch (value) {
+                case 0:
+                  Get.find<IntroductionController>(
+                          tag: "IntroductionPage:${widget.bvid}")
+                      .scrollController
+                      .animateTo(0,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.linear);
+                  break;
+                case 1:
+                  Get.find<ReplyController>(tag: "ReplyPage:${widget.bvid}")
+                      .scrollController
+                      .animateTo(0,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.linear);
+                  break;
+                default:
+                  break;
+              }
+            } else {
+              currentTabIndex = value;
+            }
+          },
+        ),
         Expanded(
           child: TabBarView(
             controller: controller.tabController,

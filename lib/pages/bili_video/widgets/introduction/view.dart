@@ -71,6 +71,7 @@ class _IntroductionPageState extends State<IntroductionPage>
   // 主视图
   Widget _buildView(BuildContext context, IntroductionController controller) {
     return ListView(
+      controller: controller.scrollController,
       shrinkWrap: true,
       padding: const EdgeInsets.all(10),
       children: [

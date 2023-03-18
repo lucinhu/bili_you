@@ -36,6 +36,7 @@ class IntroductionController extends GetxController {
   final Function() pauseVideo;
   final CacheManager cacheManager =
       CacheManager(Config(CacheKeys.relatedVideosItemCoverKey));
+  final ScrollController scrollController = ScrollController();
 
   final List<Widget> partButtons = []; //分p按钮列表
   final List<Widget> relatedVideos = []; //相关视频列表

@@ -18,6 +18,7 @@ class ReplyController extends GetxController {
   String bvid;
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
+  ScrollController scrollController = ScrollController();
   List<Widget> replyList = <Widget>[];
   int pageNum = 1;
   RxString sortTypeText = "按热度".obs;
@@ -175,54 +176,6 @@ class ReplyController extends GetxController {
           frontDivider: replyList.length != 1);
     }
     pageNum++;
-    // if (pageNum <= replyResponse!.data!.page!.count!) {
-    //   if (replyList.isEmpty) {
-    //     //当第一次时
-    //     //添加排列方式按钮
-    //     replyList.add(
-    //       Row(
-    //         children: [
-    //           Padding(
-    //               padding: const EdgeInsets.only(left: 12, right: 12),
-    //               child: Obx(
-    //                 () => Text(
-    //                     "${sortInfoText.value} ${StringFormatUtils.numFormat(replyResponse!.data!.page!.count!)}"),
-    //               )),
-    //           const Spacer(),
-    //           //排列方式按钮
-    //           MaterialButton(
-    //             child: Row(
-    //               children: [
-    //                 Icon(Icons.sort_rounded,
-    //                     size: 16, color: Get.textTheme.bodyMedium!.color),
-    //                 Obx(
-    //                   () => Text(
-    //                     sortTypeText.value,
-    //                     style:
-    //                         TextStyle(color: Get.textTheme.bodyMedium!.color),
-    //                   ),
-    //                 )
-    //               ],
-    //             ),
-    //             //点击切换评论排列方式
-    //             onPressed: () {
-    //               toggleSort();
-    //             },
-    //           ),
-    //         ],
-    //       ),
-    //     );
-    //     //添加置顶评论(如果有的话)
-    //     for (var i in replyResponse!.data!.topReplies!) {
-    //       addReplyItemWidget(replyList, i, frontDivider: false, isTop: true);
-    //     }
-    //   }
-    //   //添加常规评论
-    //   for (var i in replyResponse!.data!.replies!) {
-    //     addReplyItemWidget(replyList, i, frontDivider: replyList.length != 1);
-    //   }
-    //   pageNum++;
-    // }
     return true;
   }
 
