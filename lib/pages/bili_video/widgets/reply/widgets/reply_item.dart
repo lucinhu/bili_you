@@ -57,6 +57,7 @@ class ReplyItemWidget extends StatelessWidget {
             width: emote.size == EmoteSize.small ? 20 : 50,
             height: emote.size == EmoteSize.small ? 20 : 50,
             child: CachedNetworkImage(
+              semanticLabel: matched,
               cacheManager: emoteCacheManager,
               imageUrl: emote.url,
             ),
@@ -181,14 +182,20 @@ class ReplyItemWidget extends StatelessWidget {
                           //评论内容
                           //TODO: 有表情的评论暂时无法折叠
                           content.emotes.isEmpty
-                              ? FoldableText.rich(
-                                  buildReplyItemContent(content),
-                                  maxLines: 6,
-                                  folderTextStyle: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary),
-                                )
+                              ? SelectableRegion(
+                                  magnifierConfiguration:
+                                      const TextMagnifierConfiguration(),
+                                  focusNode: FocusNode(),
+                                  selectionControls:
+                                      MaterialTextSelectionControls(),
+                                  child: FoldableText.rich(
+                                    buildReplyItemContent(content),
+                                    maxLines: 6,
+                                    folderTextStyle: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
+                                  ))
                               : SelectableText.rich(
                                   buildReplyItemContent(content)),
                     ),
