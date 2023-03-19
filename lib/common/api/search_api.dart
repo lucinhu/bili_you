@@ -145,7 +145,8 @@ class SearchApi {
     for (var i in response.data!.result!) {
       list.add(SearchVideoItem(
           coverUrl: "http:${i.pic ?? ""}",
-          title: i.title ?? "",
+          title: StringFormatUtils.replaceAllHtmlEntitiesToCharacter(
+              StringFormatUtils.keyWordTitleToRawTitle(i.title ?? "")),
           bvid: i.bvid ?? "",
           upName: i.author ?? "",
           timeLength: Duration(
@@ -182,7 +183,8 @@ class SearchApi {
     for (var i in response.data!.result!) {
       list.add(SearchBangumiItem(
           coverUrl: i.cover ?? "",
-          title: StringFormatUtils.keyWordTitleToRawTitle(i.title ?? ""),
+          title: StringFormatUtils.replaceAllHtmlEntitiesToCharacter(
+              StringFormatUtils.keyWordTitleToRawTitle(i.title ?? "")),
           describe: "${i.areas}\n${i.styles}",
           score: i.mediaScore?.score ?? 0,
           ssid: i.seasonId!));

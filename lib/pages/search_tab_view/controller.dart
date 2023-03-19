@@ -50,7 +50,7 @@ class SearchTabViewController extends GetxController {
       searchItemWidgetList.add(VideoTileItem(
         picUrl: i.coverUrl,
         bvid: i.bvid,
-        title: StringFormatUtils.keyWordTitleToRawTitle(i.title),
+        title: i.title,
         upName: i.upName,
         duration: StringFormatUtils.timeLengthFormat(i.timeLength),
         playNum: i.playNum,

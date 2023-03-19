@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bili_you/common/api/api_constants.dart';
 import 'package:bili_you/common/models/local/reply/reply_content.dart';
 import 'package:bili_you/common/models/local/reply/reply_info.dart';
@@ -8,6 +10,7 @@ import 'package:bili_you/common/models/local/reply/vip.dart';
 import 'package:bili_you/common/models/network/reply/reply.dart' as reply_raw;
 import 'package:bili_you/common/models/network/reply/reply_reply.dart'
     as reply_reply_raw;
+import 'package:bili_you/common/utils/index.dart';
 import 'package:bili_you/common/utils/my_dio.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -54,6 +57,9 @@ class ReplyApi {
 
   ///原始评论数据转评论数据
   static ReplyItem _replyItemRawToReplyItem(reply_raw.ReplyItemRaw raw) {
+    //将message中html字符实体改为对应的文字符号
+    raw.content?.message = StringFormatUtils.replaceAllHtmlEntitiesToCharacter(
+        raw.content?.message ?? "");
     List<ReplyItem> preReplies = [];
     for (var i in raw.replies ?? <reply_raw.ReplyItemRaw>[]) {
       preReplies.add(_replyItemRawToReplyItem(i));

@@ -102,4 +102,58 @@ class StringFormatUtils {
       return "${byteNum}byte";
     }
   }
+
+  ///将字符串中html字符实体改为对应的文字符号
+  static String replaceAllHtmlEntitiesToCharacter(String str) {
+    return str.replaceAllMapped(RegExp(r'\&.*?\;'), (match) {
+      switch (match[0]) {
+        case '&lt;':
+          return '<';
+        case '&gt;':
+          return '>';
+        case '&amp;':
+          return '&';
+        case '&quot;':
+          return '"';
+        case '&apos;':
+          return '\'';
+        // case '&cent;':
+        //   return '¢';
+        // case '&pound;':
+        //   return '£';
+        // case '&yen;':
+        //   return '¥';
+        // case '&euro;':
+        //   return '€';
+        // case '&copy;':
+        //   return '©';
+        // case '&reg;':
+        //   return '®';
+        case '&#60;':
+          return '<';
+        case '&#62;':
+          return '>';
+        case '&#38;':
+          return '&';
+        case '&#34;':
+          return '"';
+        case '&#39;':
+          return '\'';
+        // case '&#162;':
+        //   return '¢';
+        // case '&#163;':
+        //   return '£';
+        // case '&#165;':
+        //   return '¥';
+        // case '&#8364;':
+        //   return '€';
+        // case '&#169;':
+        //   return '©';
+        // case '&#174;':
+        //   return '®';
+        default:
+          return match[0] ?? '';
+      }
+    });
+  }
 }
