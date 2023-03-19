@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 
 //可展开的文本
 class FoldableText extends StatefulWidget {
@@ -113,23 +112,22 @@ class _FoldableTextState extends State<FoldableText> {
       return widget.text != null
           ? Text(
               widget.text!,
-              maxLines: widget.maxLines,
               style: widget.style,
               textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
             )
           : Text.rich(
               widget.textSpan!,
-              maxLines: widget.maxLines,
               style: widget.style,
               textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
             );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return _richText(Get.size.width, Get.size.width);
+    return LayoutBuilder(
+      builder: (context, constraints) =>
+          _richText(constraints.maxWidth, constraints.minWidth),
+    );
   }
 }
