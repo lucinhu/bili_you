@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bili_you/common/api/api_constants.dart';
 import 'package:bili_you/common/models/local/user_space/user_video_search.dart';
 import 'package:bili_you/common/models/network/user_space/user_video_search.dart';

@@ -126,4 +126,9 @@ class ApiConstants {
 
   ///用户投稿视频&查询
   static const String userVideoSearch = "$apiBase/x/space/wbi/arc/search";
+
+  ///动态页面
+  ///test: https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all?type=all&page=1
+  static const String dynamicFeed =
+      "$apiBase/x/polymer/web-dynamic/v1/feed/all";
 }

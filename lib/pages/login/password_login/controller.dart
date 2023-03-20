@@ -59,7 +59,9 @@ class PasswordLoginController extends GetxController {
             Get.off(() => const PhoneLoginPage());
           } else {
             Get.rawSnackbar(
-                title: "登陆", message: "错误!,${passwordLoginResult.message}}");
+                title: "登陆",
+                message:
+                    "错误!,message:${passwordLoginResult.message},code:${passwordLoginResult.data!.status}");
           }
         }
       },

@@ -8,3 +8,11 @@ class Vip {
 
 ///Vip类型
 enum VipType { none, month, year }
+
+extension VipTypeCode on VipType {
+  static VipType fromCode(int code) {
+    return VipType.values[code];
+  }
+
+  int get code => [0, 1, 2][index];
+}
