@@ -285,7 +285,6 @@ class _IntroductionPageState extends State<IntroductionPage>
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           addAutomaticKeepAlives: false,
-          addRepaintBoundaries: false,
           cacheExtent: 100,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: controller.relatedVideos.length,

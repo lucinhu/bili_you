@@ -56,12 +56,15 @@ class ReplyItemWidget extends StatelessWidget {
           child: SizedBox(
               width: emote.size == EmoteSize.small ? 20 : 50,
               height: emote.size == EmoteSize.small ? 20 : 50,
-              child: CachedNetworkImage(
-                cacheWidth: 200,
-                cacheHeight: 200,
-                semanticLabel: matched,
-                cacheManager: emoteCacheManager,
-                imageUrl: emote.url,
+              child: RepaintBoundary(
+                key: ValueKey('emote:${emote.url}'),
+                child: CachedNetworkImage(
+                  cacheWidth: 200,
+                  cacheHeight: 200,
+                  semanticLabel: matched,
+                  cacheManager: emoteCacheManager,
+                  imageUrl: emote.url,
+                ),
               )),
         ));
       } else {
