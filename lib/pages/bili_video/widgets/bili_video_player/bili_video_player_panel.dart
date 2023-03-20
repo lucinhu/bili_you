@@ -180,9 +180,21 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                       decoration: panelDecoration,
                       child: Row(
                         children: [
+                          //返回按钮
                           const BackButton(
                             color: Colors.white,
                           ),
+                          //主页面按钮
+                          IconButton(
+                              onPressed: () {
+                                //回到主页面
+                                Navigator.popUntil(
+                                    context, (route) => route.isFirst);
+                              },
+                              icon: const Icon(
+                                Icons.home_outlined,
+                                color: Colors.white,
+                              )),
                           const Spacer(),
                           PopupMenuButton(
                             icon: const Icon(
@@ -225,11 +237,11 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                                     ],
                                   ),
                                 ),
-                                PopupMenuItem(
+                                const PopupMenuItem(
                                   padding: EdgeInsets.zero,
                                   value: "播放速度",
                                   child: Row(
-                                    children: const [
+                                    children: [
                                       Padding(
                                           padding: EdgeInsets.all(12),
                                           child: Icon(
