@@ -33,6 +33,8 @@ class BangumiTileItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(5))),
                 clipBehavior: Clip.antiAlias,
                 child: CachedNetworkImage(
+                  cacheWidth: 300,
+                  cacheHeight: 400,
                   imageUrl: coverUrl,
                   height: _height,
                   width: _height * (3 / 4),

@@ -111,6 +111,8 @@ class HomeViewGetX extends GetView<HomeController> {
                         if (snapshot.connectionState == ConnectionState.done) {
                           //头像
                           return Obx(() => CachedNetworkImage(
+                              cacheWidth: 100,
+                              cacheHeight: 100,
                               cacheManager: controller.cacheManager,
                               width: 32,
                               height: 32,

@@ -35,6 +35,8 @@ class UserMenuPage extends GetView<UserMenuController> {
                                 .listenable(keys: [UserStorageKeys.userFace]),
                             builder: (context, value, child) {
                               return CachedNetworkImage(
+                                cacheWidth: 100,
+                                cacheHeight: 100,
                                 //头像
                                 cacheManager: controller.cacheManager,
                                 width: 80,

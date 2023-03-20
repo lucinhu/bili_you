@@ -16,7 +16,9 @@ class CachedNetworkImage extends StatelessWidget {
       this.fit,
       this.placeholder,
       this.errorWidget,
-      this.filterQuality = FilterQuality.low})
+      this.filterQuality = FilterQuality.low,
+      this.cacheWidth,
+      this.cacheHeight})
       : _cachedNetworkImage =
             _CachedNetworkImage(imageUrl, cacheManager: cacheManager);
   final String imageUrl;
@@ -28,43 +30,50 @@ class CachedNetworkImage extends StatelessWidget {
   final Widget Function(BuildContext context)? placeholder;
   final Widget Function(BuildContext context)? errorWidget;
   final FilterQuality filterQuality;
+  final int? cacheWidth;
+  final int? cacheHeight;
   final _CachedNetworkImage _cachedNetworkImage;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      width: width,
+      height: height,
+      child: Image(
+        image: ResizeImage.resizeIfNeeded(
+          cacheWidth,
+          cacheHeight,
+          _cachedNetworkImage,
+        ),
+        semanticLabel: semanticLabel,
         width: width,
         height: height,
-        child: Image(
-          image: _cachedNetworkImage,
-          semanticLabel: semanticLabel,
-          width: width,
-          height: height,
-          fit: fit,
-          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-            return AnimatedSwitcher(
-              duration: const Duration(milliseconds: 500),
-              child: frame != null
-                  ? child
-                  : placeholder?.call(context) ?? const SizedBox(),
-              layoutBuilder: (currentChild, previousChildren) => Stack(
-                fit: StackFit.expand,
-                alignment: Alignment.center,
-                children: <Widget>[
-                  placeholder?.call(context) ??
-                      const SizedBox(), //placeholder放在最底层，防止背景颜色突变过渡不自然
-                  ...previousChildren,
-                  if (currentChild != null) currentChild,
-                ],
-              ),
-            );
-          },
-          errorBuilder: errorWidget == null
-              ? null
-              : (context, error, stackTrace) =>
-                  errorWidget?.call(context) ?? const SizedBox(),
-          filterQuality: filterQuality,
-        ));
+        fit: fit,
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 500),
+            child: frame != null
+                ? child
+                : placeholder?.call(context) ?? const SizedBox(),
+            layoutBuilder: (currentChild, previousChildren) => Stack(
+              fit: StackFit.expand,
+              alignment: Alignment.center,
+              children: <Widget>[
+                placeholder?.call(context) ??
+                    const SizedBox(), //placeholder放在最底层，防止背景颜色突变过渡不自然
+                ...previousChildren,
+                if (currentChild != null) currentChild,
+              ],
+            ),
+          );
+        },
+        errorBuilder: errorWidget == null
+            ? null
+            : (context, error, stackTrace) =>
+                errorWidget?.call(context) ?? const SizedBox(),
+        filterQuality: filterQuality,
+      ),
+    );
   }
 }
 

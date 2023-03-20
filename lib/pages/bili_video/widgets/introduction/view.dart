@@ -88,18 +88,19 @@ class _IntroductionPageState extends State<IntroductionPage>
             child: Row(
               children: [
                 Container(
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(shape: BoxShape.circle),
-                  child: //头像
-                      CachedNetworkImage(
-                          width: 45,
-                          height: 45,
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.none,
-                          cacheManager:
-                              CacheManager(Config(CacheKeys.othersFaceKey)),
-                          imageUrl: controller.videoInfo.ownerFace),
-                ),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(shape: BoxShape.circle),
+                    child: //头像
+                        CachedNetworkImage(
+                            cacheWidth: 200,
+                            cacheHeight: 200,
+                            width: 45,
+                            height: 45,
+                            fit: BoxFit.cover,
+                            filterQuality: FilterQuality.none,
+                            cacheManager:
+                                CacheManager(Config(CacheKeys.othersFaceKey)),
+                            imageUrl: controller.videoInfo.ownerFace)),
                 Container(
                     padding: const EdgeInsets.only(left: 5),
                     child: Text(
@@ -283,6 +284,9 @@ class _IntroductionPageState extends State<IntroductionPage>
         ListView.builder(
           padding: EdgeInsets.zero,
           shrinkWrap: true,
+          addAutomaticKeepAlives: false,
+          addRepaintBoundaries: false,
+          cacheExtent: 100,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: controller.relatedVideos.length,
           itemBuilder: (context, index) {

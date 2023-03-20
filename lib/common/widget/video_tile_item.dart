@@ -49,17 +49,25 @@ class VideoTileItem extends StatelessWidget {
                   children: [
                     Hero(
                       tag: "BiliVideoPlayer:$bvid",
-                      child: CachedNetworkImage(
-                        filterQuality: FilterQuality.none,
-                        width: 160,
-                        height: 90,
-                        fit: BoxFit.cover,
-                        imageUrl: picUrl,
-                        cacheManager: cacheManager,
-                        placeholder: (context) => Container(
-                          color: Theme.of(context).colorScheme.surfaceVariant,
-                        ),
-                      ),
+                      child: LayoutBuilder(builder: (context, box) {
+                        return CachedNetworkImage(
+                          cacheWidth: (box.maxWidth *
+                                  MediaQuery.of(context).devicePixelRatio)
+                              .toInt(),
+                          cacheHeight: (box.maxHeight *
+                                  MediaQuery.of(context).devicePixelRatio)
+                              .toInt(),
+                          filterQuality: FilterQuality.none,
+                          width: 160,
+                          height: 90,
+                          fit: BoxFit.cover,
+                          imageUrl: picUrl,
+                          cacheManager: cacheManager,
+                          placeholder: (context) => Container(
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                          ),
+                        );
+                      }),
                     ),
                     Container(
                       alignment: Alignment.bottomRight,

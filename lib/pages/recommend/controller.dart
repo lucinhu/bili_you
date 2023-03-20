@@ -40,6 +40,7 @@ class RecommendController extends GetxController {
     }
     for (var i in list) {
       recommendViewList.add(RecommendCard(
+          key: ValueKey("${i.bvid}:RecommendCard"),
           cacheManager: cacheManager,
           imageUrl: i.coverUrl,
           playNum: StringFormatUtils.numFormat(i.playNum),

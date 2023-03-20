@@ -69,18 +69,28 @@ class RecommendCard extends StatelessWidget {
                       tag: "BiliVideoPlayer:$bvid",
                       child: AspectRatio(
                         aspectRatio: 16 / 9,
-                        child: CachedNetworkImage(
-                          cacheManager: cacheManager,
-                          fit: BoxFit.cover,
-                          imageUrl: imageUrl,
-                          placeholder: (context) => Container(
-                            color: Theme.of(context).colorScheme.surfaceVariant,
-                          ),
-                          errorWidget: (_) => const Center(
-                            child: Icon(Icons.error),
-                          ),
-                          filterQuality: FilterQuality.none,
-                        ),
+                        child:
+                            LayoutBuilder(builder: (context, boxConstraints) {
+                          return CachedNetworkImage(
+                            cacheWidth: (boxConstraints.maxWidth *
+                                    MediaQuery.of(context).devicePixelRatio)
+                                .toInt(),
+                            cacheHeight: (boxConstraints.maxHeight *
+                                    MediaQuery.of(context).devicePixelRatio)
+                                .toInt(),
+                            cacheManager: cacheManager,
+                            fit: BoxFit.cover,
+                            imageUrl: imageUrl,
+                            placeholder: (context) => Container(
+                              color:
+                                  Theme.of(context).colorScheme.surfaceVariant,
+                            ),
+                            errorWidget: (_) => const Center(
+                              child: Icon(Icons.error),
+                            ),
+                            filterQuality: FilterQuality.none,
+                          );
+                        }),
                       ),
                     ),
                     Container(

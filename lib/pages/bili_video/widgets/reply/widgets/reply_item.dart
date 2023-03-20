@@ -54,14 +54,15 @@ class ReplyItemWidget extends StatelessWidget {
         //有的话就放表情进去
         spans.add(WidgetSpan(
           child: SizedBox(
-            width: emote.size == EmoteSize.small ? 20 : 50,
-            height: emote.size == EmoteSize.small ? 20 : 50,
-            child: CachedNetworkImage(
-              semanticLabel: matched,
-              cacheManager: emoteCacheManager,
-              imageUrl: emote.url,
-            ),
-          ),
+              width: emote.size == EmoteSize.small ? 20 : 50,
+              height: emote.size == EmoteSize.small ? 20 : 50,
+              child: CachedNetworkImage(
+                cacheWidth: 200,
+                cacheHeight: 200,
+                semanticLabel: matched,
+                cacheManager: emoteCacheManager,
+                imageUrl: emote.url,
+              )),
         ));
       } else {
         spans.add(TextSpan(text: matched));
@@ -90,21 +91,22 @@ class ReplyItemWidget extends StatelessWidget {
                     onTapUser?.call(context);
                   },
                   child: Container(
-                    clipBehavior: Clip.antiAlias,
-                    decoration: const BoxDecoration(shape: BoxShape.circle),
-                    child: CachedNetworkImage(
-                      imageUrl: face,
-                      width: 45,
-                      height: 45,
-                      fit: BoxFit.cover,
-                      filterQuality: FilterQuality.none,
-                      cacheManager:
-                          CacheManager(Config(CacheKeys.othersFaceKey)),
-                      placeholder: (context) => Container(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                      ),
-                    ),
-                  ),
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
+                      child: CachedNetworkImage(
+                        cacheWidth: 200,
+                        cacheHeight: 200,
+                        imageUrl: face,
+                        width: 45,
+                        height: 45,
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.none,
+                        cacheManager:
+                            CacheManager(Config(CacheKeys.othersFaceKey)),
+                        placeholder: (context) => Container(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                        ),
+                      )),
                 ),
                 const SizedBox(
                   height: 10,
