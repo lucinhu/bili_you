@@ -1,11 +1,11 @@
+import 'dart:developer';
+
+import 'package:bili_you/common/api/video_operation_api.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
-import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/avatar.dart';
-import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 
 import 'index.dart';
@@ -47,6 +47,7 @@ class _IntroductionPageState extends State<IntroductionPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  GlobalKey operationButtonKey = GlobalKey();
 
   //带有图标,及图标底下有标题的按钮
   Widget _iconTextButton(
@@ -184,35 +185,74 @@ class _IntroductionPageState extends State<IntroductionPage>
         //TODO tags
         Padding(
             padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: Row(
-              children: [
-                const Spacer(),
-                _iconTextButton(
-                    icon: const Icon(Icons.thumb_up_rounded),
-                    text: StringFormatUtils.numFormat(
-                        controller.videoInfo.likeNum)),
-                const Spacer(),
-                _iconTextButton(
-                    icon: const Icon(Icons.thumb_down_alt_rounded),
-                    text: "不喜欢"),
-                const Spacer(),
-                _iconTextButton(
-                    icon: const Icon(Icons.circle_rounded),
-                    text: StringFormatUtils.numFormat(
-                        controller.videoInfo.coinNum)),
-                const Spacer(),
-                _iconTextButton(
-                    icon: const Icon(Icons.star_rounded),
-                    text: StringFormatUtils.numFormat(
-                        controller.videoInfo.favariteNum)),
-                const Spacer(),
-                _iconTextButton(
-                    icon: const Icon(Icons.share_rounded),
-                    text: StringFormatUtils.numFormat(
-                        controller.videoInfo.shareNum)),
-                const Spacer(),
-              ],
-            )),
+            child: StatefulBuilder(
+                key: operationButtonKey,
+                builder: (context, setState) {
+                  controller.refreshOperationButton = () {
+                    operationButtonKey.currentState?.setState(() {});
+                  };
+                  return Row(
+                    children: [
+                      const Spacer(),
+                      _iconTextButton(
+                          icon: Icon(
+                            Icons.thumb_up_rounded,
+                            color: controller.videoInfo.hasLike
+                                ? Theme.of(context).colorScheme.inversePrimary
+                                : null,
+                          ),
+                          text: StringFormatUtils.numFormat(
+                              controller.videoInfo.likeNum),
+                          onPressed: () async {
+                            var result = await VideoOperationApi.clickLike(
+                                bvid: controller.videoInfo.bvid,
+                                likeOrCancelLike:
+                                    !controller.videoInfo.hasLike);
+                            if (result.isSuccess) {
+                              controller.videoInfo.hasLike = result.haslike;
+                              if (result.haslike) {
+                                log('${result.haslike}');
+                                controller.videoInfo.likeNum++;
+                              } else {
+                                log('${result.haslike}');
+                                controller.videoInfo.likeNum--;
+                              }
+                            } else {
+                              Get.showSnackbar(GetSnackBar(
+                                message: "失败:${result.error}",
+                                duration: const Duration(milliseconds: 1000),
+                              ));
+                            }
+                            controller.refreshOperationButton!.call();
+                            // Get.showSnackbar(GetSnackBar(
+                            //   message:
+                            //       'isSuccess:${result.isSuccess}, error:${result.error}, haslike:${result.haslike}',
+                            //   duration: const Duration(milliseconds: 1000),
+                            // ));
+                          }),
+                      const Spacer(),
+                      _iconTextButton(
+                          icon: const Icon(Icons.thumb_down_alt_rounded),
+                          text: "不喜欢"),
+                      const Spacer(),
+                      _iconTextButton(
+                          icon: const Icon(Icons.circle_rounded),
+                          text: StringFormatUtils.numFormat(
+                              controller.videoInfo.coinNum)),
+                      const Spacer(),
+                      _iconTextButton(
+                          icon: const Icon(Icons.star_rounded),
+                          text: StringFormatUtils.numFormat(
+                              controller.videoInfo.favariteNum)),
+                      const Spacer(),
+                      _iconTextButton(
+                          icon: const Icon(Icons.share_rounded),
+                          text: StringFormatUtils.numFormat(
+                              controller.videoInfo.shareNum)),
+                      const Spacer(),
+                    ],
+                  );
+                })),
 
         Builder(
           builder: (context) {

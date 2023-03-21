@@ -34,6 +34,7 @@ class IntroductionController extends GetxController {
   final Function(String bvid, int cid) changePartCallback;
   final Function() refreshReply;
   final Function() pauseVideo;
+  Function()? refreshOperationButton; //刷新操作按钮(如点赞之类的按钮)
   final CacheManager cacheManager =
       CacheManager(Config(CacheKeys.relatedVideosItemCoverKey));
   final ScrollController scrollController = ScrollController();
@@ -84,6 +85,8 @@ class IntroductionController extends GetxController {
               if (isBangumi) {
                 //如果是番剧的还，切换时还需要改变标题，简介
                 videoInfo = await VideoInfoApi.getVideoInfo(bvid: bvid);
+                //刷新操作按钮(如点赞之类的按钮)
+                refreshOperationButton?.call();
                 title.value = videoInfo.title;
                 describe.value = videoInfo.describe;
                 //评论区也要刷新

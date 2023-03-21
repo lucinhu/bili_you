@@ -1,4 +1,5 @@
 import 'package:bili_you/common/api/api_constants.dart';
+import 'package:bili_you/common/api/video_operation_api.dart';
 import 'package:bili_you/common/models/local/video/part_info.dart';
 import 'package:bili_you/common/models/local/video/video_info.dart';
 import 'package:bili_you/common/models/network/video_info/video_info.dart';
@@ -57,7 +58,8 @@ class VideoInfoApi {
         ownerFace: response.data!.owner?.face ?? "",
         ownerMid: response.data!.owner?.mid ?? 0,
         ownerName: response.data!.owner?.name ?? "",
-        parts: parts);
+        parts: parts,
+        hasLike: await VideoOperationApi.hasLike(bvid: bvid));
   }
 
   static Future<VideoPartsResponse> _requestVideoParts(

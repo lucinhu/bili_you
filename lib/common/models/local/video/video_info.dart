@@ -17,7 +17,8 @@ class VideoInfo {
       required this.ownerFace,
       required this.ownerMid,
       required this.ownerName,
-      required this.parts});
+      required this.parts,
+      required this.hasLike});
   static VideoInfo get zero => VideoInfo(
       title: "",
       describe: "",
@@ -34,7 +35,8 @@ class VideoInfo {
       ownerFace: "",
       ownerMid: 0,
       ownerName: "",
-      parts: []);
+      parts: [],
+      hasLike: false);
   String title;
   String describe;
   String bvid;
@@ -51,4 +53,5 @@ class VideoInfo {
   String ownerName;
   int ownerMid;
   List<PartInfo> parts;
+  bool hasLike;
 }

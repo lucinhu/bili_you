@@ -131,4 +131,10 @@ class ApiConstants {
   ///test: https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all?type=all&page=1
   static const String dynamicFeed =
       "$apiBase/x/polymer/web-dynamic/v1/feed/all";
+
+  ///点赞
+  static const String like = "$apiBase/x/web-interface/archive/like";
+
+  ///判断视频是否已经点赞
+  static const String hasLike = "$apiBase/x/web-interface/archive/has/like";
 }
