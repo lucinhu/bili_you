@@ -11,18 +11,21 @@ class LoginUserInfo {
       required this.avatarUrl,
       required this.levelInfo,
       required this.officialVerify,
-      required this.vip});
+      required this.vip,
+      required this.isLogin});
   static LoginUserInfo get zero => LoginUserInfo(
       mid: 0,
       name: "",
       avatarUrl: "",
       levelInfo: LevelInfo.zero,
       officialVerify: OfficialVerify.zero,
-      vip: Vip.zero);
+      vip: Vip.zero,
+      isLogin: false);
   int mid;
   String name;
   String avatarUrl;
   LevelInfo levelInfo;
   OfficialVerify officialVerify;
   Vip vip;
+  bool isLogin;
 }

@@ -3,15 +3,15 @@ class ApiConstants {
       'https://api.github.com/repos/lucinhu/bili_you/releases/latest';
 
   static const String userAgent =
-      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46';
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.0.0';
 
-  static const String bilibiliBase = "http://www.bilibili.com";
+  static const String bilibiliBase = "https://www.bilibili.com";
 
   static const String apiBase = "https://api.bilibili.com";
 
   static const String passportBase = "https://passport.bilibili.com";
 
-  static const String sSearchBase = "http://s.search.bilibili.com";
+  static const String sSearchBase = "https://s.search.bilibili.com";
 
   static const String appBase = "https://app.bilibili.com";
 

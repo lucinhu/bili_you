@@ -21,6 +21,7 @@ abstract class MyDio {
       cookieManager =
           CookieManager(PersistCookieJar(storage: FileStorage(cookiePath)));
     }
+    dio.options.headers = {'user-agent': ApiConstants.userAgent};
     dio.transformer = BackgroundTransformer();
     dio.options.contentType = Headers.jsonContentType;
     dio.interceptors.add(cookieManager);

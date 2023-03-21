@@ -33,7 +33,8 @@ abstract class LoginApi {
   static Future<raw.PasswordLoginKeyHashResponse>
       requestPasswordLoginKeyHash() async {
     Dio dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.passwordPublicKeyHash);
+    var response = await dio.get(ApiConstants.passwordPublicKeyHash,
+        options: Options(headers: {'user-agent': ApiConstants.userAgent}));
     return raw.PasswordLoginKeyHashResponse.fromJson(response.data);
   }
 
@@ -41,8 +42,9 @@ abstract class LoginApi {
   ///TODO: 改造封装成getxxx
   static Future<raw.CaptchaDataResponse> requestCaptchaData() async {
     var dio = MyDio.dio;
-    var response = await dio
-        .get(ApiConstants.captcha, queryParameters: {"source": "main_web"});
+    var response = await dio.get(ApiConstants.captcha,
+        queryParameters: {"source": "main_web"},
+        options: Options(headers: {'user-agent': ApiConstants.userAgent}));
     return raw.CaptchaDataResponse.fromJson(response.data);
   }
 
@@ -61,7 +63,9 @@ abstract class LoginApi {
           "validate": validate,
           "seccode": seccode
         },
-        options: Options(contentType: Headers.formUrlEncodedContentType));
+        options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+            headers: {'user-agent': ApiConstants.userAgent}));
     return raw.PostSmsRequireResponse.fromJson(response.data);
   }
 
@@ -80,7 +84,9 @@ abstract class LoginApi {
           "captcha_key": captchaKey,
           "go_url": ApiConstants.bilibiliBase
         },
-        options: Options(contentType: Headers.formUrlEncodedContentType));
+        options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+            headers: {'user-agent': ApiConstants.userAgent}));
     return raw.PostSmsLoginResponse.fromJson(response.data);
   }
 
@@ -93,7 +99,8 @@ abstract class LoginApi {
       String password) async {
     Dio dio = MyDio.dio;
     //先获取cookie
-    await dio.get(ApiConstants.bilibiliBase);
+    await dio.get(ApiConstants.bilibiliBase,
+        options: Options(headers: {'user-agent': ApiConstants.userAgent}));
     //加密密码
     dynamic publicKey = RSAKeyParser().parse(passwordLoginKeyHash.data!.key!);
     String passwordEncryptyed = Encrypter(RSA(publicKey: publicKey))
@@ -149,7 +156,8 @@ abstract class LoginApi {
             description: data.officialVerify?.desc ?? ""),
         vip: Vip(
             isVip: data.vip?.status == 1,
-            type: VipType.values[data.vip?.type ?? 0]));
+            type: VipType.values[data.vip?.type ?? 0]),
+        isLogin: data.isLogin ?? false);
   }
 
   ///获取当前cookie用户的状态：粉丝数，关注数，动态数

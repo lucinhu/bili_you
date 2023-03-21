@@ -28,15 +28,15 @@ class PhoneLoginController extends GetxController {
 //点击登陆
   void startLogin() async {
     await startCaptcha(
-      onSuccess: (captchaResult) {
+      onSuccess: (captchaResult) async {
         _captchaResult = captchaResult;
-        _startRequireSms();
+        await _startRequireSms();
       },
     );
   }
 
 //请求短信验证码
-  void _startRequireSms() async {
+  Future<void> _startRequireSms() async {
     if (_captchaResult!.captchaData.code != 0) {
       Get.rawSnackbar(title: "获取验证码错误", message: "未进行人机测试或人机测试失败");
       return;
@@ -89,7 +89,7 @@ class PhoneLoginController extends GetxController {
   }
 
   //短信验证码登录操作
-  void startSmsLogin() async {
+  Future<void> startSmsLogin() async {
     if (smsRequestResult == null) {
       Get.rawSnackbar(title: "登录错误", message: "验证码未获取或获取失败");
       return;
@@ -111,7 +111,8 @@ class PhoneLoginController extends GetxController {
       message = "成功登录";
       await onLoginSuccess(
           await LoginApi.getLoginUserInfo(), await LoginApi.getLoginUserStat());
-      Get.back(closeOverlays: true);
+      // Get.back(closeOverlays: true);
+      Navigator.of(Get.context!).popUntil((route) => route.isFirst);
       //请求错误
     } else if (code == 1006) {
       //请输入正确的短信验证码
@@ -122,6 +123,17 @@ class PhoneLoginController extends GetxController {
     } else {
       //其他错误
       message = "发生错误，code:$code，message:${smsLoginResult.message}";
+    }
+    try {
+      if ((await LoginApi.getLoginUserInfo()).isLogin) {
+        //成功登录
+        message = "成功登录";
+        await onLoginSuccess(await LoginApi.getLoginUserInfo(),
+            await LoginApi.getLoginUserStat());
+        Navigator.of(Get.context!).popUntil((route) => route.isFirst);
+      }
+    } catch (e) {
+      log(e.toString());
     }
     Get.rawSnackbar(title: title, message: message);
   }

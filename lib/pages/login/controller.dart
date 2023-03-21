@@ -15,12 +15,13 @@ import '../../common/models/network/login/captcha_result.dart';
 ///人机测试
 ///必须在回调函数里面处理成功事件
 ///错误已处理
-startCaptcha(
+Future<void> startCaptcha(
     {required Function(CaptchaResultModel captchaResult) onSuccess}) async {
   late CaptchaResultModel captchaResult;
   Gt3CaptchaConfig config = Gt3CaptchaConfig();
-  config.language = WidgetsBinding.instance.window.locale.countryCode;
-  config.timeout = 5.0;
+  // config.language = WidgetsBinding.instance.window.locale.countryCode;
+  config.timeout = 240;
+  config.serviceNode = 1;
   var captcha = Gt3FlutterPlugin(config);
   try {
     captchaResult =

@@ -4,6 +4,7 @@ import 'package:bili_you/common/api/login_api.dart';
 import 'package:bili_you/common/models/network/login/captcha_result.dart';
 import 'package:bili_you/common/models/network/login/password_login_result.dart';
 import 'package:bili_you/pages/login/sms_login/index.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:bili_you/common/models/network/login/password_login_key_hash.dart';
@@ -17,7 +18,7 @@ class PasswordLoginController extends GetxController {
   late CaptchaResultModel _captchaResult;
 
   void startLogin() async {
-    startCaptcha(
+    await startCaptcha(
       onSuccess: (captchaResult) async {
         _captchaResult = captchaResult;
 
@@ -47,11 +48,17 @@ class PasswordLoginController extends GetxController {
               title: "登陆", message: "错误，${passwordLoginResult.message}");
           return;
         } else {
-          if (passwordLoginResult.data!.status == 0) {
+          late bool hasLogin;
+          try {
+            hasLogin = (await LoginApi.getLoginUserInfo()).isLogin;
+          } catch (e) {
+            Get.rawSnackbar(title: "登陆", message: "失败!");
+          }
+          if (passwordLoginResult.data!.status == 0 || hasLogin) {
             Get.rawSnackbar(title: "登陆", message: "成功!");
             await onLoginSuccess(await LoginApi.getLoginUserInfo(),
                 await LoginApi.getLoginUserStat());
-            Get.back(closeOverlays: true);
+            Navigator.of(Get.context!).popUntil((route) => route.isFirst);
           } else if (passwordLoginResult.data!.status == 2) {
             //提示当前环境有安全问题，需要手机验证或绑定
             Get.rawSnackbar(
