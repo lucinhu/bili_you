@@ -1,6 +1,7 @@
 import 'package:bili_you/common/models/local/reply/reply_content.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
 import 'package:flutter/material.dart';
@@ -89,27 +90,11 @@ class ReplyItemWidget extends StatelessWidget {
           children: [
             Column(
               children: [
-                GestureDetector(
-                  onTap: () {
-                    onTapUser?.call(context);
-                  },
-                  child: Container(
-                      clipBehavior: Clip.antiAlias,
-                      decoration: const BoxDecoration(shape: BoxShape.circle),
-                      child: CachedNetworkImage(
-                        cacheWidth: 200,
-                        cacheHeight: 200,
-                        imageUrl: face,
-                        width: 45,
-                        height: 45,
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.none,
-                        cacheManager:
-                            CacheManager(Config(CacheKeys.othersFaceKey)),
-                        placeholder: () => Container(
-                          color: Theme.of(context).colorScheme.primaryContainer,
-                        ),
-                      )),
+                AvatarWidget(
+                  avatarUrl: face,
+                  radius: 45 / 2,
+                  onPressed: () => onTapUser?.call(context),
+                  cacheWidthHeight: 200,
                 ),
                 const SizedBox(
                   height: 10,
