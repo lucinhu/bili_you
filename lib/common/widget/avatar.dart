@@ -29,7 +29,7 @@ class AvatarWidget extends StatelessWidget {
                 fit: BoxFit.cover,
                 cacheWidth: cacheWidthHeight,
                 cacheHeight: cacheWidthHeight,
-                placeholder: (context) => Container(
+                placeholder: () => Container(
                       color: Theme.of(context).colorScheme.primaryContainer,
                     ),
                 imageUrl: avatarUrl,

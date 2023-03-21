@@ -106,7 +106,7 @@ class ReplyItemWidget extends StatelessWidget {
                         filterQuality: FilterQuality.none,
                         cacheManager:
                             CacheManager(Config(CacheKeys.othersFaceKey)),
-                        placeholder: (context) => Container(
+                        placeholder: () => Container(
                           color: Theme.of(context).colorScheme.primaryContainer,
                         ),
                       )),

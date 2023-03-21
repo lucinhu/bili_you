@@ -5,83 +5,64 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-class CachedNetworkImage extends StatelessWidget {
+class CachedNetworkImage extends Image {
   CachedNetworkImage(
       {super.key,
-      required this.imageUrl,
-      required this.cacheManager,
-      this.semanticLabel,
-      this.width,
-      this.height,
-      this.fit,
-      this.placeholder,
-      this.errorWidget,
-      this.filterQuality = FilterQuality.low,
-      this.cacheWidth,
-      this.cacheHeight})
-      : _cachedNetworkImage =
-            _CachedNetworkImage(imageUrl, cacheManager: cacheManager);
-  final String imageUrl;
-  final CacheManager cacheManager;
-  final String? semanticLabel;
-  final double? width;
-  final double? height;
-  final BoxFit? fit;
-  final Widget Function(BuildContext context)? placeholder;
-  final Widget Function(BuildContext context)? errorWidget;
-  final FilterQuality filterQuality;
-  final int? cacheWidth;
-  final int? cacheHeight;
-  final _CachedNetworkImage _cachedNetworkImage;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: Image(
-        image: ResizeImage.resizeIfNeeded(
-          cacheWidth,
-          cacheHeight,
-          _cachedNetworkImage,
-        ),
-        semanticLabel: semanticLabel,
-        width: width,
-        height: height,
-        fit: fit,
-        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            child: frame != null
-                ? child
-                : placeholder?.call(context) ?? const SizedBox(),
-            layoutBuilder: (currentChild, previousChildren) => Stack(
-              fit: StackFit.expand,
-              alignment: Alignment.center,
-              children: <Widget>[
-                placeholder?.call(context) ??
-                    const SizedBox(), //placeholder放在最底层，防止背景颜色突变过渡不自然
-                ...previousChildren,
-                if (currentChild != null) currentChild,
-              ],
-            ),
-          );
-        },
-        errorBuilder: errorWidget == null
-            ? null
-            : (context, error, stackTrace) =>
-                errorWidget?.call(context) ?? const SizedBox(),
-        filterQuality: filterQuality,
-      ),
-    );
-  }
+      required String imageUrl,
+      required CacheManager cacheManager,
+      final Map<String, String>? headers,
+      super.semanticLabel,
+      super.width,
+      super.height,
+      super.fit,
+      super.filterQuality,
+      double scale = 1.0,
+      Widget Function()? placeholder,
+      Widget Function()? errorWidget,
+      int? cacheWidth,
+      int? cacheHeight})
+      : super(
+          image: ResizeImage.resizeIfNeeded(
+            cacheWidth,
+            cacheHeight,
+            _CachedNetworkImage(imageUrl,
+                cacheManager: cacheManager, scale: scale, headers: headers),
+          ),
+          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+            return SizedBox(
+              width: width,
+              height: height,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: frame != null
+                    ? child
+                    : placeholder?.call() ?? const SizedBox(),
+                layoutBuilder: (currentChild, previousChildren) => Stack(
+                  fit: StackFit.expand,
+                  alignment: Alignment.center,
+                  children: [
+                    placeholder?.call() ??
+                        const SizedBox(), //placeholder放在最底层，防止背景颜色突变过渡不自然
+                    ...previousChildren,
+                    if (currentChild != null) currentChild,
+                  ],
+                ),
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) => SizedBox(
+            width: width,
+            height: height,
+            child: errorWidget?.call(),
+          ),
+        );
 }
 
 class _CachedNetworkImage extends ImageProvider<NetworkImage>
     implements NetworkImage {
-  /// Creates an object that fetches the image at the given URL.
-  ///
-  /// The arguments [url] and [scale] must not be null.
+  // /// Creates an object that fetches the image at the given URL.
+  // ///
+  // /// The arguments [url] and [scale] must not be null.
   const _CachedNetworkImage(
     this.url, {
     this.scale = 1.0,
@@ -114,7 +95,7 @@ class _CachedNetworkImage extends ImageProvider<NetworkImage>
         StreamController<ImageChunkEvent>();
 
     return MultiFrameImageStreamCompleter(
-      codec: _loadAsync(key, chunkEvents, null, decode),
+      codec: _loadAsync(key, chunkEvents, decodeDeprecated: decode),
       chunkEvents: chunkEvents.stream,
       scale: key.scale,
       debugLabel: key.url,
@@ -135,7 +116,28 @@ class _CachedNetworkImage extends ImageProvider<NetworkImage>
         StreamController<ImageChunkEvent>();
 
     return MultiFrameImageStreamCompleter(
-      codec: _loadAsync(key, chunkEvents, decode, null),
+      codec: _loadAsync(key, chunkEvents, decodeBufferDeprecated: decode),
+      chunkEvents: chunkEvents.stream,
+      scale: key.scale,
+      debugLabel: key.url,
+      informationCollector: () => <DiagnosticsNode>[
+        DiagnosticsProperty<ImageProvider>('Image provider', this),
+        DiagnosticsProperty<NetworkImage>('Image key', key),
+      ],
+    );
+  }
+
+  @override
+  ImageStreamCompleter loadImage(
+      NetworkImage key, ImageDecoderCallback decode) {
+    // Ownership of this controller is handed off to [_loadAsync]; it is that
+    // method's responsibility to close the controller's stream when the image
+    // has been loaded or an error is thrown.
+    final StreamController<ImageChunkEvent> chunkEvents =
+        StreamController<ImageChunkEvent>();
+
+    return MultiFrameImageStreamCompleter(
+      codec: _loadAsync(key, chunkEvents, decode: decode),
       chunkEvents: chunkEvents.stream,
       scale: key.scale,
       debugLabel: key.url,
@@ -148,10 +150,11 @@ class _CachedNetworkImage extends ImageProvider<NetworkImage>
 
   Future<Codec> _loadAsync(
     NetworkImage key,
-    StreamController<ImageChunkEvent> chunkEvents,
-    DecoderBufferCallback? decode,
-    DecoderCallback? decodeDepreacted,
-  ) async {
+    StreamController<ImageChunkEvent> chunkEvents, {
+    ImageDecoderCallback? decode,
+    DecoderBufferCallback? decodeBufferDeprecated,
+    DecoderCallback? decodeDeprecated,
+  }) async {
     try {
       assert(key == this);
       final Uint8List bytes =
@@ -170,8 +173,8 @@ class _CachedNetworkImage extends ImageProvider<NetworkImage>
             await ImmutableBuffer.fromUint8List(bytes);
         return decode(buffer);
       } else {
-        assert(decodeDepreacted != null);
-        return decodeDepreacted!(bytes);
+        assert(decodeDeprecated != null);
+        return decodeDeprecated!(bytes);
       }
     } catch (e) {
       // Depending on where the exception was thrown, the image cache may not

@@ -81,11 +81,11 @@ class RecommendCard extends StatelessWidget {
                             cacheManager: cacheManager,
                             fit: BoxFit.cover,
                             imageUrl: imageUrl,
-                            placeholder: (context) => Container(
+                            placeholder: () => Container(
                               color:
                                   Theme.of(context).colorScheme.surfaceVariant,
                             ),
-                            errorWidget: (_) => const Center(
+                            errorWidget: () => const Center(
                               child: Icon(Icons.error),
                             ),
                             filterQuality: FilterQuality.none,

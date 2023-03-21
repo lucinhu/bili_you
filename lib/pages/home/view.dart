@@ -118,7 +118,7 @@ class HomeViewGetX extends GetView<HomeController> {
                               height: 32,
                               fit: BoxFit.fill,
                               imageUrl: controller.faceUrl.value,
-                              placeholder: (context) => placeHolder));
+                              placeholder: () => placeHolder));
                         } else {
                           return placeHolder;
                         }
