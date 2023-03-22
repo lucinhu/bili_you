@@ -62,7 +62,6 @@ class ReplyItemWidget extends StatelessWidget {
                 child: CachedNetworkImage(
                   cacheWidth: 200,
                   cacheHeight: 200,
-                  semanticLabel: matched,
                   cacheManager: emoteCacheManager,
                   imageUrl: emote.url,
                 ),

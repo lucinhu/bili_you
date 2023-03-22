@@ -52,111 +52,113 @@ class RecommendCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                clipBehavior: Clip.antiAlias,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(12)),
-                child: Stack(
-                  alignment: Alignment.bottomLeft,
-                  children: [
-                    Hero(
-                      tag: "BiliVideoPlayer:$bvid",
-                      child: AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child:
-                            LayoutBuilder(builder: (context, boxConstraints) {
-                          return CachedNetworkImage(
-                            cacheWidth: (boxConstraints.maxWidth *
-                                    MediaQuery.of(context).devicePixelRatio)
-                                .toInt(),
-                            cacheHeight: (boxConstraints.maxHeight *
-                                    MediaQuery.of(context).devicePixelRatio)
-                                .toInt(),
-                            cacheManager: cacheManager,
-                            fit: BoxFit.cover,
-                            imageUrl: imageUrl,
-                            placeholder: () => Container(
-                              color:
-                                  Theme.of(context).colorScheme.surfaceVariant,
-                            ),
-                            errorWidget: () => const Center(
-                              child: Icon(Icons.error),
-                            ),
-                            filterQuality: FilterQuality.none,
-                          );
-                        }),
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.black38,
-                              blurRadius: 12,
-                              spreadRadius: 10,
-                              offset: Offset(0, 12)),
-                        ],
-                      ),
-                      padding:
-                          const EdgeInsets.only(left: 6, right: 6, bottom: 3),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.slideshow_rounded,
-                            color: Colors.white,
-                            size: 14,
-                          ),
-                          Text(
-                            " $playNum  ",
-                            style: playInfoTextStyle,
-                          ),
-                          const Icon(
-                            Icons.format_list_bulleted_rounded,
-                            color: Colors.white,
-                            size: 14,
-                          ),
-                          Text(
-                            " $danmakuNum",
-                            style: playInfoTextStyle,
-                          ),
-                          const Spacer(),
-                          Text(
-                            timeLength,
-                            style: playInfoTextStyle,
-                          )
-                        ],
-                      ),
-                    )
-                  ],
+        child: Stack(children: [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Stack(
+              alignment: Alignment.bottomLeft,
+              children: [
+                Hero(
+                  tag: "BiliVideoPlayer:$bvid",
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: LayoutBuilder(builder: (context, boxConstraints) {
+                      return CachedNetworkImage(
+                        cacheWidth: (boxConstraints.maxWidth *
+                                MediaQuery.of(context).devicePixelRatio)
+                            .toInt(),
+                        cacheHeight: (boxConstraints.maxHeight *
+                                MediaQuery.of(context).devicePixelRatio)
+                            .toInt(),
+                        cacheManager: cacheManager,
+                        fit: BoxFit.cover,
+                        imageUrl: imageUrl,
+                        placeholder: () => Container(
+                          color: Theme.of(context).colorScheme.surfaceVariant,
+                        ),
+                        errorWidget: () => const Center(
+                          child: Icon(Icons.error),
+                        ),
+                        filterQuality: FilterQuality.none,
+                      );
+                    }),
+                  ),
                 ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.only(
-                      top: 8, left: 5, right: 5, bottom: 2),
-                  child: Text(
-                    title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    // style: const TextStyle(fontWeight: FontWeight.bold),
-                  )),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(left: 10, bottom: 6),
-                child: Text(
-                  upName,
-                  style: TextStyle(
-                      fontSize: 11, color: Theme.of(context).hintColor),
-                ),
-              )
-            ],
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.black38,
+                          blurRadius: 12,
+                          spreadRadius: 10,
+                          offset: Offset(0, 12)),
+                    ],
+                  ),
+                  padding: const EdgeInsets.only(left: 6, right: 6, bottom: 3),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.slideshow_rounded,
+                        color: Colors.white,
+                        size: 14,
+                      ),
+                      Text(
+                        " $playNum  ",
+                        style: playInfoTextStyle,
+                      ),
+                      const Icon(
+                        Icons.format_list_bulleted_rounded,
+                        color: Colors.white,
+                        size: 14,
+                      ),
+                      Text(
+                        " $danmakuNum",
+                        style: playInfoTextStyle,
+                      ),
+                      const Spacer(),
+                      Text(
+                        timeLength,
+                        style: playInfoTextStyle,
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-        ));
+          Expanded(
+            child: Padding(
+              padding:
+                  const EdgeInsets.only(top: 8, left: 5, right: 5, bottom: 2),
+              child: Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10, bottom: 6),
+            child: Text(
+              upName,
+              style: TextStyle(
+                fontSize: 11,
+                color: Theme.of(context).hintColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+      Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: onTap,
+          ))
+    ]));
   }
 }

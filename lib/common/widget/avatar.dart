@@ -18,23 +18,21 @@ class AvatarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: radius * 2,
-      height: radius * 2,
-      child: GestureDetector(
-        onTap: onPressed,
-        child: CircleAvatar(
-          child: ClipOval(
-            child: CachedNetworkImage(
-                fit: BoxFit.cover,
-                cacheWidth: cacheWidthHeight,
-                cacheHeight: cacheWidthHeight,
-                placeholder: () => Container(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                    ),
-                imageUrl: avatarUrl,
-                cacheManager: CacheManager(Config(CacheKeys.othersFaceKey))),
-          ),
+    return GestureDetector(
+      onTap: onPressed,
+      child: SizedBox(
+        width: radius * 2,
+        height: radius * 2,
+        child: ClipOval(
+          child: CachedNetworkImage(
+              fit: BoxFit.cover,
+              cacheWidth: cacheWidthHeight,
+              cacheHeight: cacheWidthHeight,
+              placeholder: () => Container(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+              imageUrl: avatarUrl,
+              cacheManager: CacheManager(Config(CacheKeys.othersFaceKey))),
         ),
       ),
     );

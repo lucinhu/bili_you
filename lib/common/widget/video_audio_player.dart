@@ -334,18 +334,20 @@ class VideoAudioController {
   }
 
   Future<void> dispose() async {
-    _videoPlayerController!.removeListener(_videoPlayerControllerCallback);
-    _audioPlayerController!.removeListener(_audioPlayerControllerCallback);
-    removeStateChangedListener(autoWakelockCallback);
+    timer.cancel();
     value.isPlaying = false;
     value.isBuffering = false;
-    timer.cancel();
+    _videoPlayerController?.removeListener(_videoPlayerControllerCallback);
+    _audioPlayerController?.removeListener(_audioPlayerControllerCallback);
+    removeStateChangedListener(autoWakelockCallback);
     _stateChangedListeners.clear();
     _listeners.clear();
-    await _videoPlayerController!.pause();
-    await _audioPlayerController!.pause();
-    await _videoPlayerController!.dispose();
-    await _audioPlayerController!.dispose();
+    await _videoPlayerController?.pause();
+    await _audioPlayerController?.pause();
+    await _videoPlayerController?.dispose();
+    _videoPlayerController = null;
+    await _audioPlayerController?.dispose();
+    _audioPlayerController = null;
   }
 }
 

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bili_you/common/api/bangumi_api.dart';
 import 'package:bili_you/common/api/related_video_api.dart';
 import 'package:bili_you/common/api/video_info_api.dart';
+import 'package:bili_you/common/api/video_operation_api.dart';
 import 'package:bili_you/common/models/local/related_video/related_video_info.dart';
 import 'package:bili_you/common/models/local/video/video_info.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
@@ -147,7 +148,32 @@ class IntroductionController extends GetxController {
     }
   }
 
-  void onTap() {}
+  ///点赞按钮点击时
+  Future<void> onLikePressed() async {
+    var result = await VideoOperationApi.clickLike(
+        bvid: videoInfo.bvid, likeOrCancelLike: !videoInfo.hasLike);
+    if (result.isSuccess) {
+      videoInfo.hasLike = result.haslike;
+      if (result.haslike) {
+        log('${result.haslike}');
+        videoInfo.likeNum++;
+      } else {
+        log('${result.haslike}');
+        videoInfo.likeNum--;
+      }
+    } else {
+      Get.showSnackbar(GetSnackBar(
+        message: "失败:${result.error}",
+        duration: const Duration(milliseconds: 1000),
+      ));
+    }
+    refreshOperationButton!.call();
+    // Get.showSnackbar(GetSnackBar(
+    //   message:
+    //       'isSuccess:${result.isSuccess}, error:${result.error}, haslike:${result.haslike}',
+    //   duration: const Duration(milliseconds: 1000),
+    // ));
+  }
 
   // @override
   // void onInit() {

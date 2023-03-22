@@ -41,10 +41,8 @@ class VideoTileItem extends StatelessWidget {
             SizedBox(
               width: 160,
               height: 90,
-              child: Container(
-                clipBehavior: Clip.hardEdge,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(5)),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
                 child: Stack(
                   children: [
                     Hero(

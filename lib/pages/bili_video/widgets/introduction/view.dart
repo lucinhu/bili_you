@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:bili_you/common/api/video_operation_api.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
@@ -47,29 +44,8 @@ class _IntroductionPageState extends State<IntroductionPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  GlobalKey operationButtonKey = GlobalKey();
-
-  //带有图标,及图标底下有标题的按钮
-  Widget _iconTextButton(
-      {required Icon icon, required String text, Function()? onPressed}) {
-    return ElevatedButton(
-      style: const ButtonStyle(
-        elevation: MaterialStatePropertyAll(0),
-        padding: MaterialStatePropertyAll(EdgeInsets.all(5)),
-      ),
-      onPressed: onPressed ?? () {},
-      child: Column(
-        children: [
-          icon,
-          Text(
-            text,
-            maxLines: 1,
-            style: const TextStyle(fontSize: 10),
-          )
-        ],
-      ),
-    );
-  }
+  final GlobalKey operationButtonKey = GlobalKey();
+  final TextStyle operationButtonTextStyle = const TextStyle(fontSize: 10);
 
   // 主视图
   Widget _buildView(BuildContext context, IntroductionController controller) {
@@ -191,64 +167,74 @@ class _IntroductionPageState extends State<IntroductionPage>
                   controller.refreshOperationButton = () {
                     operationButtonKey.currentState?.setState(() {});
                   };
+                  var buttonWidth = (MediaQuery.of(context).size.width) / 6;
+                  var buttonHeight =
+                      (MediaQuery.of(context).size.width) / 6 * 0.8;
                   return Row(
                     children: [
                       const Spacer(),
-                      _iconTextButton(
-                          icon: Icon(
-                            Icons.thumb_up_rounded,
-                            color: controller.videoInfo.hasLike
-                                ? Theme.of(context).colorScheme.inversePrimary
-                                : null,
+                      SizedBox(
+                        width: buttonWidth,
+                        height: buttonHeight,
+                        child: IconTextButton(
+                          selected: controller.videoInfo.hasLike,
+                          icon: const Icon(Icons.thumb_up_rounded),
+                          text: Text(
+                            StringFormatUtils.numFormat(
+                                controller.videoInfo.likeNum),
+                            style: operationButtonTextStyle,
                           ),
-                          text: StringFormatUtils.numFormat(
-                              controller.videoInfo.likeNum),
-                          onPressed: () async {
-                            var result = await VideoOperationApi.clickLike(
-                                bvid: controller.videoInfo.bvid,
-                                likeOrCancelLike:
-                                    !controller.videoInfo.hasLike);
-                            if (result.isSuccess) {
-                              controller.videoInfo.hasLike = result.haslike;
-                              if (result.haslike) {
-                                log('${result.haslike}');
-                                controller.videoInfo.likeNum++;
-                              } else {
-                                log('${result.haslike}');
-                                controller.videoInfo.likeNum--;
-                              }
-                            } else {
-                              Get.showSnackbar(GetSnackBar(
-                                message: "失败:${result.error}",
-                                duration: const Duration(milliseconds: 1000),
-                              ));
-                            }
-                            controller.refreshOperationButton!.call();
-                            // Get.showSnackbar(GetSnackBar(
-                            //   message:
-                            //       'isSuccess:${result.isSuccess}, error:${result.error}, haslike:${result.haslike}',
-                            //   duration: const Duration(milliseconds: 1000),
-                            // ));
-                          }),
+                          onPressed: controller.onLikePressed,
+                        ),
+                      ),
+                      // const Spacer(),
+                      // SizedBox(
+                      //     width: buttonWidth,
+                      //   height: buttonHeight,
+                      //     child: IconTextButton(
+                      //       icon: const Icon(Icons.thumb_down_alt_rounded),
+                      //       text: Text(
+                      //         "不喜欢",
+                      //         style: operationButtonTextStyle,
+                      //       ),
+                      //       onPressed: () {},
+                      //     )),
                       const Spacer(),
-                      _iconTextButton(
-                          icon: const Icon(Icons.thumb_down_alt_rounded),
-                          text: "不喜欢"),
+                      SizedBox(
+                          width: buttonWidth,
+                          height: buttonHeight,
+                          child: IconTextButton(
+                            icon: const Icon(Icons.circle_rounded),
+                            text: Text(
+                                StringFormatUtils.numFormat(
+                                    controller.videoInfo.coinNum),
+                                style: operationButtonTextStyle),
+                            onPressed: () {},
+                          )),
                       const Spacer(),
-                      _iconTextButton(
-                          icon: const Icon(Icons.circle_rounded),
-                          text: StringFormatUtils.numFormat(
-                              controller.videoInfo.coinNum)),
+                      SizedBox(
+                          width: buttonWidth,
+                          height: buttonHeight,
+                          child: IconTextButton(
+                            icon: const Icon(Icons.star_rounded),
+                            text: Text(
+                                StringFormatUtils.numFormat(
+                                    controller.videoInfo.favariteNum),
+                                style: operationButtonTextStyle),
+                            onPressed: () {},
+                          )),
                       const Spacer(),
-                      _iconTextButton(
-                          icon: const Icon(Icons.star_rounded),
-                          text: StringFormatUtils.numFormat(
-                              controller.videoInfo.favariteNum)),
-                      const Spacer(),
-                      _iconTextButton(
-                          icon: const Icon(Icons.share_rounded),
-                          text: StringFormatUtils.numFormat(
-                              controller.videoInfo.shareNum)),
+                      SizedBox(
+                          width: buttonWidth,
+                          height: buttonHeight,
+                          child: IconTextButton(
+                            icon: const Icon(Icons.share_rounded),
+                            text: Text(
+                                StringFormatUtils.numFormat(
+                                    controller.videoInfo.shareNum),
+                                style: operationButtonTextStyle),
+                            onPressed: () {},
+                          )),
                       const Spacer(),
                     ],
                   );
@@ -365,5 +351,43 @@ class _IntroductionPageState extends State<IntroductionPage>
                 }
               },
             ));
+  }
+}
+
+class IconTextButton extends StatelessWidget {
+  const IconTextButton({
+    super.key,
+    required this.onPressed,
+    required this.icon,
+    required this.text,
+    this.selected = false,
+  });
+  final Function()? onPressed;
+  final Icon icon;
+  final Text text;
+
+  ///是否被选上
+  final bool selected;
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ButtonStyle(
+        foregroundColor: selected
+            ? MaterialStatePropertyAll(Theme.of(context).colorScheme.onPrimary)
+            : null,
+        backgroundColor: selected
+            ? MaterialStatePropertyAll(Theme.of(context).colorScheme.primary)
+            : null,
+        elevation: const MaterialStatePropertyAll(0),
+        padding: const MaterialStatePropertyAll(EdgeInsets.all(5)),
+      ),
+      onPressed: onPressed ?? () {},
+      child: FittedBox(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [icon, text],
+        ),
+      ),
+    );
   }
 }

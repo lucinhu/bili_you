@@ -9,6 +9,7 @@ class MainPage extends GetView<MainController> {
   // 主视图
   Widget _buildView() {
     return Obx(() => Scaffold(
+          extendBody: true, extendBodyBehindAppBar: true, primary: true,
           //IndexedStack，使"首页，动态， 频道"这三个页面互相切换的时候保持状态
           body: IndexedStack(
             index: controller.selectedIndex.value,

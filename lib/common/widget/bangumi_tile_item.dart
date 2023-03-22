@@ -27,11 +27,8 @@ class BangumiTileItem extends StatelessWidget {
         child: SizedBox(
             height: _height,
             child: Row(children: [
-              Container(
-                decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5))),
-                clipBehavior: Clip.antiAlias,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(5),
                 child: CachedNetworkImage(
                   cacheWidth: 300,
                   cacheHeight: 400,

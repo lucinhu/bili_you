@@ -99,31 +99,30 @@ class HomeViewGetX extends GetView<HomeController> {
                     builder: (context) => const UserMenuPage(),
                   );
                 },
-                child: Container(
-                    clipBehavior: Clip.antiAlias,
-                    decoration: const BoxDecoration(shape: BoxShape.circle),
-                    child: FutureBuilder(
-                      future: controller.loadOldFace(),
-                      builder: (context, snapshot) {
-                        Widget placeHolder = Container(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        );
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          //头像
-                          return Obx(() => CachedNetworkImage(
-                              cacheWidth: 100,
-                              cacheHeight: 100,
-                              cacheManager: controller.cacheManager,
-                              width: 32,
-                              height: 32,
-                              fit: BoxFit.fill,
-                              imageUrl: controller.faceUrl.value,
-                              placeholder: () => placeHolder));
-                        } else {
-                          return placeHolder;
-                        }
-                      },
-                    )),
+                child: ClipOval(
+                  child: FutureBuilder(
+                    future: controller.loadOldFace(),
+                    builder: (context, snapshot) {
+                      Widget placeHolder = Container(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      );
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        //头像
+                        return Obx(() => CachedNetworkImage(
+                            cacheWidth: 100,
+                            cacheHeight: 100,
+                            cacheManager: controller.cacheManager,
+                            width: 32,
+                            height: 32,
+                            fit: BoxFit.fill,
+                            imageUrl: controller.faceUrl.value,
+                            placeholder: () => placeHolder));
+                      } else {
+                        return placeHolder;
+                      }
+                    },
+                  ),
+                ),
               ),
             ],
           ),
