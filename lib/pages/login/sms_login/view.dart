@@ -1,4 +1,5 @@
 import 'package:bili_you/pages/login/password_login/index.dart';
+import 'package:bili_you/pages/login/web_login/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -145,7 +146,12 @@ class PhoneLoginPage extends GetView<PhoneLoginController> {
                   onPressed: () {
                     Get.off(() => const PasswordLoginPage());
                   },
-                  child: const Text("密码登录"))
+                  child: const Text("密码登录")),
+              TextButton(
+                  onPressed: () {
+                    Get.off(() => const WebLoginPage());
+                  },
+                  child: const Text("网站登录"))
             ],
           ),
           body: _buildView(context),

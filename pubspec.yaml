@@ -60,6 +60,8 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   cached_network_image: ^3.2.3
+  webview_flutter: ^4.0.7
+  webview_cookie_manager: ^2.0.6
   
 
 dev_dependencies:
