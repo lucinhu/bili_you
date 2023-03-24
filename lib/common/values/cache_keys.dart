@@ -5,4 +5,5 @@ class CacheKeys {
   static const String searchResultItemCoverKey = 'searchResultItemCover';
   static const String relatedVideosItemCoverKey = 'relatedVideosItemCover';
   static const String emoteKey = 'emote';
+  static const String replyImageKey = 'replyImage';
 }

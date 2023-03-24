@@ -2,9 +2,14 @@ import 'package:bili_you/common/models/local/reply/reply_member.dart';
 
 class ReplyContent {
   ReplyContent(
-      {required this.message, required this.atMembers, required this.emotes});
+      {required this.message,
+      required this.atMembers,
+      required this.emotes,
+      required this.jumpUrls,
+      required this.pictures});
   static get zero {
-    return ReplyContent(message: "", atMembers: [], emotes: []);
+    return ReplyContent(
+        message: "", atMembers: [], emotes: [], jumpUrls: [], pictures: []);
   }
 
   ///评论
@@ -15,6 +20,33 @@ class ReplyContent {
 
   ///需要渲染的表情转义和所表示的表情信息
   List<Emote> emotes;
+
+  ///跳转链接
+  List<ReplyJumpUrl> jumpUrls;
+
+  ///图片
+  List<ReplyPicture> pictures;
+}
+
+class ReplyJumpUrl {
+  ReplyJumpUrl({required this.url, required this.title});
+  static ReplyJumpUrl get zero => ReplyJumpUrl(url: '', title: '');
+  String url;
+  String title;
+}
+
+class ReplyPicture {
+  ReplyPicture(
+      {required this.url,
+      required this.width,
+      required this.height,
+      required this.size});
+  static ReplyPicture get zero =>
+      ReplyPicture(url: '', width: 0, height: 0, size: 1);
+  String url;
+  int width;
+  int height;
+  double size;
 }
 
 class Emote {

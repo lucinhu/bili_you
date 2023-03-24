@@ -494,7 +494,7 @@ class Content {
 
   String? message;
   List<MemberElement>? members;
-  AvatarLayerClass? jumpUrl;
+  Map<String, JumpUrlValue>? jumpUrl;
   int? maxLine;
   Map<String, EmoteValue>? emote;
   List<Picture>? pictures;
@@ -509,9 +509,8 @@ class Content {
             ? []
             : List<MemberElement>.from(
                 json["members"]!.map((x) => MemberElement.fromJson(x))),
-        jumpUrl: json["jump_url"] == null
-            ? null
-            : AvatarLayerClass.fromJson(json["jump_url"]),
+        jumpUrl: Map.from(json["jump_url"]!).map((k, v) =>
+            MapEntry<String, JumpUrlValue>(k, JumpUrlValue.fromJson(v))),
         maxLine: json["max_line"],
         emote: json["emote"] == null
             ? {}
@@ -528,13 +527,83 @@ class Content {
         "members": members == null
             ? []
             : List<MemberElement>.from(members!.map((x) => x.toJson())),
-        "jump_url": jumpUrl?.toJson(),
+        "jump_url": Map.from(jumpUrl!)
+            .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
         "max_line": maxLine,
         "emote": Map.from(emote!)
             .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
         "pictures": pictures == null
             ? []
             : List<dynamic>.from(pictures!.map((x) => x.toJson())),
+      };
+}
+
+class JumpUrlValue {
+  JumpUrlValue({
+    this.title,
+    this.state,
+    this.prefixIcon,
+    this.appUrlSchema,
+    this.appName,
+    this.appPackageName,
+    this.clickReport,
+    this.isHalfScreen,
+    this.exposureReport,
+    this.underline,
+    this.matchOnce,
+    this.pcUrl,
+    this.iconPosition,
+  });
+
+  String? title;
+  int? state;
+  String? prefixIcon;
+  String? appUrlSchema;
+  String? appName;
+  String? appPackageName;
+  String? clickReport;
+  bool? isHalfScreen;
+  String? exposureReport;
+  bool? underline;
+  bool? matchOnce;
+  String? pcUrl;
+  int? iconPosition;
+
+  factory JumpUrlValue.fromRawJson(String str) =>
+      JumpUrlValue.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory JumpUrlValue.fromJson(Map<String, dynamic> json) => JumpUrlValue(
+        title: json["title"],
+        state: json["state"],
+        prefixIcon: json["prefix_icon"],
+        appUrlSchema: json["app_url_schema"],
+        appName: json["app_name"],
+        appPackageName: json["app_package_name"],
+        clickReport: json["click_report"],
+        isHalfScreen: json["is_half_screen"],
+        exposureReport: json["exposure_report"],
+        underline: json["underline"],
+        matchOnce: json["match_once"],
+        pcUrl: json["pc_url"],
+        iconPosition: json["icon_position"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "title": title,
+        "state": state,
+        "prefix_icon": prefixIcon,
+        "app_url_schema": appUrlSchema,
+        "app_name": appName,
+        "app_package_name": appPackageName,
+        "click_report": clickReport,
+        "is_half_screen": isHalfScreen,
+        "exposure_report": exposureReport,
+        "underline": underline,
+        "match_once": matchOnce,
+        "pc_url": pcUrl,
+        "icon_position": iconPosition,
       };
 }
 

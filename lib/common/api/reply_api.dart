@@ -57,14 +57,17 @@ class ReplyApi {
     //将message中html字符实体改为对应的文字符号
     raw.content?.message = StringFormatUtils.replaceAllHtmlEntitiesToCharacter(
         raw.content?.message ?? "");
+    //外显示评论
     List<ReplyItem> preReplies = [];
     for (var i in raw.replies ?? <reply_raw.ReplyItemRaw>[]) {
       preReplies.add(_replyItemRawToReplyItem(i));
     }
+    //at到的人
     List<ReplyMember> atMembers = [];
     for (var i in raw.content?.members ?? <reply_raw.MemberElement>[]) {
       atMembers.add(_replyMemberRawToReplyMember(i));
     }
+    //表情
     List<Emote> emotes = [];
     raw.content?.emote?.forEach(
       (key, value) {
@@ -74,10 +77,29 @@ class ReplyApi {
             size: value.meta?.size == 2 ? EmoteSize.big : EmoteSize.small));
       },
     );
+    //tag
     List<String> tags = [];
     for (var i in raw.cardLabels ?? <reply_raw.CardLabel>[]) {
       tags.add(i.textContent ?? "");
     }
+    //图片
+    List<ReplyPicture> pictures = [];
+    if (raw.content?.pictures != null) {
+      for (var i in raw.content!.pictures!) {
+        pictures.add(ReplyPicture(
+            size: i.imgSize ?? 1,
+            url: i.imgSrc ?? "",
+            width: i.imgWidth ?? 0,
+            height: i.imgHeight ?? 0));
+      }
+    }
+    //链接
+    List<ReplyJumpUrl> jumpUrls = [];
+    raw.content?.jumpUrl?.forEach(
+      (key, value) {
+        jumpUrls.add(ReplyJumpUrl(url: key, title: value.title ?? key));
+      },
+    );
     return ReplyItem(
         rpid: raw.rpid ?? 0,
         oid: raw.oid ?? 0,
@@ -97,7 +119,9 @@ class ReplyApi {
         content: ReplyContent(
             message: raw.content?.message ?? "",
             atMembers: atMembers,
-            emotes: emotes),
+            emotes: emotes,
+            pictures: pictures,
+            jumpUrls: jumpUrls),
         tags: tags);
   }
 

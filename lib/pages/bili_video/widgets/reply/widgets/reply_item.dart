@@ -4,8 +4,12 @@ import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
+import 'package:bili_you/pages/bili_video/widgets/reply/widgets/view_image.dart';
+import 'package:bili_you/pages/search_result/view.dart';
+import 'package:bili_you/pages/webview/browser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:get/get.dart';
 
 class ReplyItemWidget extends StatelessWidget {
   const ReplyItemWidget(
@@ -36,7 +40,9 @@ class ReplyItemWidget extends StatelessWidget {
       CacheManager(Config(CacheKeys.emoteKey));
 
   static TextSpan buildReplyItemContent(ReplyContent content) {
-    if (content.emotes.isEmpty) {
+    if (content.emotes.isEmpty &&
+        content.jumpUrls.isEmpty &&
+        content.pictures.isEmpty) {
       return TextSpan(text: content.message);
     }
     List<InlineSpan> spans = [];
@@ -76,6 +82,53 @@ class ReplyItemWidget extends StatelessWidget {
       spans.add(TextSpan(text: noMatch));
       return noMatch;
     });
+    if (content.jumpUrls.isNotEmpty) {
+      spans.add(const TextSpan(text: '\n'));
+    }
+    //添加跳转链接
+    for (var i in content.jumpUrls) {
+      spans.add(WidgetSpan(
+          child: GestureDetector(
+        child: Text(
+          i.title,
+          style: TextStyle(color: Get.theme.colorScheme.primary),
+        ),
+        onTap: () {
+          var url = Uri.tryParse(i.url);
+          if (url == null || !url.hasScheme) {
+            //若不是链接,去搜索
+            Get.to(() => SearchResultPage(keyWord: i.url));
+          } else {
+            //若是链接跳转到webview
+            Get.to(() => BiliBrowser(url: url, title: i.title));
+          }
+        },
+      )));
+    }
+    if (content.pictures.isNotEmpty) {
+      spans.add(const TextSpan(text: '\n'));
+    }
+    //添加图片
+    for (var i in content.pictures) {
+      spans.add(WidgetSpan(
+          child: GestureDetector(
+        onTap: () {
+          Get.to(ViewImage(url: i.url));
+        },
+        child: Hero(
+          tag: i.url,
+          child: CachedNetworkImage(
+            placeholder: () => Container(
+              color: Get.theme.colorScheme.primary,
+            ),
+            imageUrl: i.url,
+            width: 200,
+            cacheWidth: 200 * Get.pixelRatio.toInt(),
+            cacheManager: CacheManager(Config(CacheKeys.replyImageKey)),
+          ),
+        ),
+      )));
+    }
 
     return TextSpan(children: spans);
   }
@@ -170,8 +223,12 @@ class ReplyItemWidget extends StatelessWidget {
                       child:
                           //评论内容
                           //TODO: 有表情的评论暂时无法折叠
-                          content.emotes.isEmpty
-                              ? SelectableRegion(
+                          (content.emotes.isNotEmpty ||
+                                  content.pictures.isNotEmpty ||
+                                  content.jumpUrls.isNotEmpty)
+                              ? SelectableText.rich(
+                                  buildReplyItemContent(content))
+                              : SelectableRegion(
                                   magnifierConfiguration:
                                       const TextMagnifierConfiguration(),
                                   focusNode: FocusNode(),
@@ -184,9 +241,7 @@ class ReplyItemWidget extends StatelessWidget {
                                         color: Theme.of(context)
                                             .colorScheme
                                             .primary),
-                                  ))
-                              : SelectableText.rich(
-                                  buildReplyItemContent(content)),
+                                  )),
                     ),
                     Row(
                       children: [
