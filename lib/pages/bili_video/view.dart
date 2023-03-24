@@ -27,6 +27,20 @@ class BiliVideoPage extends StatefulWidget {
 
 class _BiliVideoPageState extends State<BiliVideoPage> {
   int currentTabIndex = 0;
+  late BiliVideoController biliVideoController;
+
+  @override
+  void initState() {
+    biliVideoController = Get.put(
+      BiliVideoController(
+          bvid: widget.bvid,
+          cid: widget.cid,
+          isBangumi: widget.isBangumi,
+          ssid: widget.ssid),
+      tag: widget.tag,
+    );
+    super.initState();
+  }
 
   // 主视图
   Widget _player(BiliVideoController controller) {
@@ -105,20 +119,13 @@ class _BiliVideoPageState extends State<BiliVideoPage> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: const SystemUiOverlayStyle(
             statusBarIconBrightness: Brightness.light),
-        child: GetBuilder(
-          init: BiliVideoController(
-              bvid: widget.bvid,
-              cid: widget.cid,
-              ssid: widget.ssid,
-              isBangumi: widget.isBangumi),
-          tag: widget.tag,
-          builder: (controller) => Scaffold(
-              body: Column(
+        child: Scaffold(
+          body: Column(
             children: [
-              _player(controller),
-              Expanded(child: _buildView(context, controller)),
+              _player(biliVideoController),
+              Expanded(child: _buildView(context, biliVideoController)),
             ],
-          )),
+          ),
         ));
   }
 }

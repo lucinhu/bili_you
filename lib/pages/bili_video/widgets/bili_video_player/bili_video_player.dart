@@ -9,6 +9,7 @@ import 'package:bili_you/common/utils/fullscreen.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class BiliVideoPlayer extends StatefulWidget {
   const BiliVideoPlayer(this.controller,
@@ -124,15 +125,18 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
                               ConnectionState.done) {
                             if (snapshot.data == true) {
                               return Stack(children: [
-                                Center(
-                                  child: AspectRatio(
-                                    aspectRatio: widget
-                                        .controller
-                                        ._videoAudioController!
-                                        .value
-                                        .aspectRatio,
-                                    child: VideoAudioPlayer(widget
-                                        .controller._videoAudioController!),
+                                PhotoView.customChild(
+                                  enableRotation: true,
+                                  child: Center(
+                                    child: AspectRatio(
+                                      aspectRatio: widget
+                                          .controller
+                                          ._videoAudioController!
+                                          .value
+                                          .aspectRatio,
+                                      child: VideoAudioPlayer(widget
+                                          .controller._videoAudioController!),
+                                    ),
                                   ),
                                 ),
                                 Center(
