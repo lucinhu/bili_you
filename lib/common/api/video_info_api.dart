@@ -59,7 +59,9 @@ class VideoInfoApi {
         ownerMid: response.data!.owner?.mid ?? 0,
         ownerName: response.data!.owner?.name ?? "",
         parts: parts,
-        hasLike: await VideoOperationApi.hasLike(bvid: bvid));
+        hasLike: await VideoOperationApi.hasLike(bvid: bvid),
+        hasAddCoin: await VideoOperationApi.hasAddCoin(bvid: bvid),
+        hasFavourite: await VideoOperationApi.hasFavourite(bvid: bvid));
   }
 
   static Future<VideoPartsResponse> _requestVideoParts(

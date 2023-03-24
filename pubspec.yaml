@@ -17,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.6
+version: 1.0.7
 
 environment:
   sdk: '>=2.19.0-444.2<4.0.0'
@@ -65,8 +65,11 @@ dependencies:
     git: 
       url: https://github.com/xiaoyaocz/flutter_ns_danmaku.git
   cached_network_image: ^3.2.3
+  photo_view: ^0.14.0
 
   # webview
+  webview_cookie_manager: ^2.0.6
+  webview_flutter: ^4.0.7
 
   # 保持常亮
   wakelock: ^0.6.2
@@ -81,9 +84,9 @@ dependencies:
   # hive
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  webview_cookie_manager: ^2.0.6
-  webview_flutter: ^4.0.7
-  photo_view: ^0.14.0
+
+  # 分享
+  share_plus: ^6.3.1
   
   
 

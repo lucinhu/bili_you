@@ -1,10 +1,11 @@
 import 'dart:developer';
 
-import 'package:bili_you/common/api/bangumi_api.dart';
-import 'package:bili_you/common/api/related_video_api.dart';
-import 'package:bili_you/common/api/video_info_api.dart';
+import 'package:bili_you/common/api/index.dart';
 import 'package:bili_you/common/api/video_operation_api.dart';
 import 'package:bili_you/common/models/local/related_video/related_video_info.dart';
+import 'package:bili_you/common/models/local/video/click_add_coin_result.dart';
+import 'package:bili_you/common/models/local/video/click_add_share_result.dart';
+import 'package:bili_you/common/models/local/video/click_like_result.dart';
 import 'package:bili_you/common/models/local/video/video_info.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
@@ -13,6 +14,7 @@ import 'package:bili_you/pages/bili_video/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 
 class IntroductionController extends GetxController {
   IntroductionController(
@@ -150,8 +152,18 @@ class IntroductionController extends GetxController {
 
   ///点赞按钮点击时
   Future<void> onLikePressed() async {
-    var result = await VideoOperationApi.clickLike(
-        bvid: videoInfo.bvid, likeOrCancelLike: !videoInfo.hasLike);
+    late ClickLikeResult result;
+    try {
+      result = await VideoOperationApi.clickLike(
+          bvid: videoInfo.bvid, likeOrCancelLike: !videoInfo.hasLike);
+    } catch (e) {
+      Get.showSnackbar(GetSnackBar(
+        message: "失败:${result.error}",
+        duration: const Duration(milliseconds: 1000),
+      ));
+      return;
+    }
+
     if (result.isSuccess) {
       videoInfo.hasLike = result.haslike;
       if (result.haslike) {
@@ -173,6 +185,44 @@ class IntroductionController extends GetxController {
     //       'isSuccess:${result.isSuccess}, error:${result.error}, haslike:${result.haslike}',
     //   duration: const Duration(milliseconds: 1000),
     // ));
+  }
+
+  Future<void> onAddCoinPressed() async {
+    late ClickAddCoinResult result;
+    try {
+      result = await VideoOperationApi.addCoin(bvid: bvid);
+      if (result.isSuccess) {
+        videoInfo.hasAddCoin = result.isSuccess;
+        videoInfo.coinNum++;
+        refreshOperationButton!.call();
+      } else {
+        Get.showSnackbar(GetSnackBar(
+          message: "失败:${result.error}",
+          duration: const Duration(milliseconds: 1000),
+        ));
+      }
+    } catch (e) {
+      log('onAddCoinPressed$e');
+      Get.showSnackbar(GetSnackBar(
+        message: "失败:${result.error}",
+        duration: const Duration(milliseconds: 1000),
+      ));
+    }
+  }
+
+  Future<void> onAddSharePressed() async {
+    try {
+      ClickAddShareResult result = await VideoOperationApi.share(bvid: bvid);
+      if (result.isSuccess) {
+        Share.share('${ApiConstants.bilibiliBase}/video/$bvid');
+        videoInfo.shareNum = result.currentShareNum;
+      } else {
+        Get.rawSnackbar(message: '分享失败:${result.error}');
+      }
+    } catch (e) {
+      Get.rawSnackbar(message: '分享失败:$e');
+    }
+    refreshOperationButton!.call();
   }
 
   // @override

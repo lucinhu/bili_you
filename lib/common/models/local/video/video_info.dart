@@ -18,7 +18,9 @@ class VideoInfo {
       required this.ownerMid,
       required this.ownerName,
       required this.parts,
-      required this.hasLike});
+      required this.hasLike,
+      required this.hasAddCoin,
+      required this.hasFavourite});
   static VideoInfo get zero => VideoInfo(
       title: "",
       describe: "",
@@ -36,7 +38,9 @@ class VideoInfo {
       ownerMid: 0,
       ownerName: "",
       parts: [],
-      hasLike: false);
+      hasLike: false,
+      hasAddCoin: false,
+      hasFavourite: false);
   String title;
   String describe;
   String bvid;
@@ -54,4 +58,6 @@ class VideoInfo {
   int ownerMid;
   List<PartInfo> parts;
   bool hasLike;
+  bool hasAddCoin;
+  bool hasFavourite;
 }

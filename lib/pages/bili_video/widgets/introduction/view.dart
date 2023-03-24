@@ -204,18 +204,19 @@ class _IntroductionPageState extends State<IntroductionPage>
                           width: buttonWidth,
                           height: buttonHeight,
                           child: IconTextButton(
-                            icon: const Icon(Icons.circle_rounded),
-                            text: Text(
-                                StringFormatUtils.numFormat(
-                                    controller.videoInfo.coinNum),
-                                style: operationButtonTextStyle),
-                            onPressed: () {},
-                          )),
+                              selected: controller.videoInfo.hasAddCoin,
+                              icon: const Icon(Icons.circle_rounded),
+                              text: Text(
+                                  StringFormatUtils.numFormat(
+                                      controller.videoInfo.coinNum),
+                                  style: operationButtonTextStyle),
+                              onPressed: controller.onAddCoinPressed)),
                       const Spacer(),
                       SizedBox(
                           width: buttonWidth,
                           height: buttonHeight,
                           child: IconTextButton(
+                            selected: controller.videoInfo.hasFavourite,
                             icon: const Icon(Icons.star_rounded),
                             text: Text(
                                 StringFormatUtils.numFormat(
@@ -233,7 +234,7 @@ class _IntroductionPageState extends State<IntroductionPage>
                                 StringFormatUtils.numFormat(
                                     controller.videoInfo.shareNum),
                                 style: operationButtonTextStyle),
-                            onPressed: () {},
+                            onPressed: controller.onAddSharePressed,
                           )),
                       const Spacer(),
                     ],

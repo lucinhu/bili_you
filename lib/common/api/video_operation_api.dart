@@ -1,5 +1,8 @@
 import 'package:bili_you/common/api/index.dart';
+import 'package:bili_you/common/models/local/video/click_add_coin_result.dart';
+import 'package:bili_you/common/models/local/video/click_add_share_result.dart';
 import 'package:bili_you/common/models/local/video/click_like_result.dart';
+import 'package:bili_you/common/utils/cookie_util.dart';
 import 'package:bili_you/common/utils/index.dart';
 import 'package:dio/dio.dart';
 
@@ -11,20 +14,11 @@ class VideoOperationApi {
     //点赞还是取消赞
     required bool likeOrCancelLike,
   }) async {
-    String csrf = "";
-    //从cookie中获取csrf需要的数据
-    for (var i in (await MyDio.cookieManager.cookieJar
-        .loadForRequest(Uri.parse(ApiConstants.bilibiliBase)))) {
-      if (i.name == 'bili_jct') {
-        csrf = i.value;
-        break;
-      }
-    }
     var response = await MyDio.dio.post(ApiConstants.like,
         queryParameters: {
           'bvid': bvid,
           'like': likeOrCancelLike ? 1 : 2,
-          'csrf': csrf
+          'csrf': await CookieUtils.getCsrf()
         },
         options: Options(responseType: ResponseType.json));
     return ClickLikeResult(
@@ -38,9 +32,62 @@ class VideoOperationApi {
   ///true已点赞
   ///false未点赞
   static Future<bool> hasLike({required String bvid}) async {
-    var response = await MyDio.dio.get(ApiConstants.hasLike,
-        queryParameters: {'bvid': bvid},
-        options: Options(responseType: ResponseType.json));
+    var response = await MyDio.dio.get(
+      ApiConstants.hasLike,
+      queryParameters: {'bvid': bvid},
+    );
     return response.data['data'] == 1;
+  }
+
+  ///判断是否已投币
+  static Future<bool> hasAddCoin({required String bvid}) async {
+    var response = await MyDio.dio
+        .get(ApiConstants.hasAddCoin, queryParameters: {'bvid': bvid});
+    return (response.data?['data']?['multiply'] ?? 0) > 0;
+  }
+
+  ///投币
+  static Future<ClickAddCoinResult> addCoin(
+      {required String bvid, int? num}) async {
+    var response = await MyDio.dio.post(ApiConstants.addCoin, queryParameters: {
+      'bvid': bvid,
+      'multiply': num ?? 1,
+      'csrf': await CookieUtils.getCsrf()
+    });
+    if (response.data['code'] == 0) {
+      return ClickAddCoinResult(isSuccess: true, error: '');
+    } else {
+      return ClickAddCoinResult(
+          isSuccess: false, error: response.data['message']);
+    }
+  }
+
+  ///判断是否已收藏
+  static Future<bool> hasFavourite({required String bvid}) async {
+    var response = await MyDio.dio
+        .get(ApiConstants.hasFavourite, queryParameters: {'bvid': bvid});
+    return response.data?['data']?['favoured'] == true;
+  }
+
+  ///收藏
+  // static Future<> addFavourite({required String rid}) async{
+
+  // }
+
+  ///分享
+  static Future<ClickAddShareResult> share({required String bvid}) async {
+    var response = await MyDio.dio.post(ApiConstants.share,
+        queryParameters: {'bvid': bvid, 'csrf': await CookieUtils.getCsrf()});
+    if (response.data['code'] == 0) {
+      return ClickAddShareResult(
+          isSuccess: true,
+          error: '',
+          currentShareNum: response.data['data'] ?? 0);
+    } else {
+      return ClickAddShareResult(
+          isSuccess: false,
+          error: response.data['message'],
+          currentShareNum: response.data['data'] ?? 0);
+    }
   }
 }
