@@ -4,7 +4,6 @@ import 'package:bili_you/common/api/reply_api.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/models/local/reply/reply_reply_info.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
-import 'package:bili_you/pages/user_space/view.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 import 'package:flutter/material.dart';
@@ -45,19 +44,9 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
       return false;
     }
     _rootReply = ReplyItemWidget(
-      face: replyReplyInfo.rootReply.member.avatarUrl,
-      name: replyReplyInfo.rootReply.member.name,
-      content: replyReplyInfo.rootReply.content,
-      location: replyReplyInfo.rootReply.location,
-      like: replyReplyInfo.rootReply.likeCount,
-      timeStamp: replyReplyInfo.rootReply.replyTime,
+      reply: replyReplyInfo.rootReply,
       isUp: replyReplyInfo.rootReply.member.mid == replyReplyInfo.upperMid,
-      onTapUser: (context) {
-        widget.pauseVideoCallback();
-        Get.to(
-          () => UserSpacePage(mid: replyReplyInfo.rootReply.member.mid),
-        );
-      },
+      pauseVideoPlayer: widget.pauseVideoCallback,
     );
     for (var i in replyReplyInfo.replies) {
       if (_replyReplies.isEmpty) {
@@ -75,83 +64,13 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
       }
 
       _replyReplies.add(ReplyItemWidget(
-          face: i.member.avatarUrl,
-          name: i.member.name,
-          content: i.content,
-          timeStamp: i.replyTime,
-          like: i.likeCount,
-          location: i.location,
-          isUp: i.member.mid == replyReplyInfo.upperMid,
-          onTapUser: (context) {
-            widget.pauseVideoCallback();
-            Get.to(
-              () => UserSpacePage(mid: i.member.mid),
-            );
-          }));
+        reply: i,
+        isUp: i.member.mid == replyReplyInfo.upperMid,
+        pauseVideoPlayer: widget.pauseVideoCallback,
+      ));
     }
     _pageNum.value++;
     return true;
-    // try {
-    //   var data = await ReplyApi.requestReplyReply(
-    //       oid: widget.bvid, rootId: widget.rootId, pageNum: _pageNum.value);
-    //   if (data.code != 0) {
-    //     return false;
-    //   }
-    //   if (_pageNum.value <= ((data.data?.page?.count) ?? 0)) {
-    //     _rootReply = ReplyItemWidget(
-    //         face: data.data!.root!.member!.avatar!,
-    //         name: data.data!.root!.member!.uname!,
-    //         content: data.data!.root!.content!,
-    //         timeStamp: data.data!.root!.ctime!,
-    //         like: data.data!.root!.like!,
-    //         location: data.data?.root?.replyControl?.location ?? "",
-    //         isUp: int.parse(data.data!.root!.member!.mid!) ==
-    //             data.data!.upper!.mid!,
-    //         onTapUser: (context) {
-    //           widget.pauseVideoCallback();
-    //           Get.to(
-    //             () => UserSpacePage(mid: data.data!.root!.mid!),
-    //           );
-    //         });
-
-    //     for (var i in data.data?.replies ?? <Reply>[]) {
-    //       if (_replyReplies.isEmpty) {
-    //         _replyReplies.add(Divider(
-    //           color: Theme.of(Get.context!).colorScheme.primaryContainer,
-    //           thickness: 2,
-    //         ));
-    //       } else {
-    //         _replyReplies.add(Divider(
-    //           color: Theme.of(Get.context!).colorScheme.secondaryContainer,
-    //           thickness: 1,
-    //           indent: 10,
-    //           endIndent: 10,
-    //         ));
-    //       }
-
-    //       _replyReplies.add(ReplyItemWidget(
-    //           face: i.member!.avatar!,
-    //           name: i.member!.uname!,
-    //           content: i.content!,
-    //           timeStamp: i.ctime!,
-    //           like: i.like!,
-    //           location: i.replyControl?.location ?? "",
-    //           isUp: int.parse(i.member!.mid!) == data.data!.upper!.mid!,
-    //           onTapUser: (context) {
-    //             widget.pauseVideoCallback();
-    //             Get.to(
-    //               () => UserSpacePage(mid: i.mid!),
-    //             );
-    //           }));
-    //     }
-    //     _pageNum.value++;
-    //   }
-
-    //   return true;
-    // } catch (e) {
-    //   log(e.toString());
-    //   return false;
-    // }
   }
 
   _onLoad() async {

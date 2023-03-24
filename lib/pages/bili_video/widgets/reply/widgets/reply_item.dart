@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:bili_you/common/api/reply_operation_api.dart';
 import 'package:bili_you/common/models/local/reply/reply_content.dart';
+import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/avatar.dart';
@@ -6,40 +10,30 @@ import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/view_image.dart';
 import 'package:bili_you/pages/search_result/view.dart';
+import 'package:bili_you/pages/user_space/view.dart';
 import 'package:bili_you/pages/webview/browser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 
+import 'reply_reply_page.dart';
+
 class ReplyItemWidget extends StatelessWidget {
   const ReplyItemWidget(
       {super.key,
-      required this.face,
-      required this.name,
-      required this.content,
-      required this.location,
-      required this.like,
-      required this.timeStamp,
-      this.bottomWidget,
+      required this.reply,
       this.isTop = false,
       this.isUp = false,
-      this.tags = const [],
-      this.onTapUser});
-  final String face;
-  final String name;
-  final ReplyContent content;
-  final String location;
-  final int like;
-  final int timeStamp;
-  final Widget? bottomWidget;
+      this.pauseVideoPlayer});
+  final ReplyItem reply;
   final bool isTop; //是否是置顶
   final bool isUp; //是否是up主
-  final List<String> tags;
-  final Function(BuildContext context)? onTapUser;
+  final Function()? pauseVideoPlayer;
+
   static final CacheManager emoteCacheManager =
       CacheManager(Config(CacheKeys.emoteKey));
 
-  static TextSpan buildReplyItemContent(ReplyContent content) {
+  TextSpan buildReplyItemContent(ReplyContent content) {
     if (content.emotes.isEmpty &&
         content.jumpUrls.isEmpty &&
         content.pictures.isEmpty) {
@@ -96,9 +90,11 @@ class ReplyItemWidget extends StatelessWidget {
         onTap: () {
           var url = Uri.tryParse(i.url);
           if (url == null || !url.hasScheme) {
+            pauseVideoPlayer?.call();
             //若不是链接,去搜索
             Get.to(() => SearchResultPage(keyWord: i.url));
           } else {
+            pauseVideoPlayer?.call();
             //若是链接跳转到webview
             Get.to(() => BiliBrowser(url: url, title: i.title));
           }
@@ -113,6 +109,7 @@ class ReplyItemWidget extends StatelessWidget {
       spans.add(WidgetSpan(
           child: GestureDetector(
         onTap: () {
+          pauseVideoPlayer?.call();
           Get.to(ViewImage(url: i.url));
         },
         child: Hero(
@@ -143,9 +140,12 @@ class ReplyItemWidget extends StatelessWidget {
             Column(
               children: [
                 AvatarWidget(
-                  avatarUrl: face,
+                  avatarUrl: reply.member.avatarUrl,
                   radius: 45 / 2,
-                  onPressed: () => onTapUser?.call(context),
+                  onPressed: () {
+                    pauseVideoPlayer?.call();
+                    Get.to(UserSpacePage(mid: reply.member.mid));
+                  },
                   cacheWidthHeight: 200,
                 ),
                 const SizedBox(
@@ -176,14 +176,17 @@ class ReplyItemWidget extends StatelessWidget {
                       padding:
                           const EdgeInsets.only(left: 10, top: 5, bottom: 5),
                       child: GestureDetector(
-                        onTap: () => onTapUser?.call(context),
+                        onTap: () {
+                          pauseVideoPlayer?.call();
+                          Get.to(UserSpacePage(mid: reply.member.mid));
+                        },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
                                 Text(
-                                  name,
+                                  reply.member.name,
                                   style: TextStyle(
                                       color:
                                           Theme.of(context).colorScheme.primary,
@@ -210,7 +213,7 @@ class ReplyItemWidget extends StatelessWidget {
                                 )
                               ],
                             ),
-                            Text(location,
+                            Text(reply.location,
                                 style: TextStyle(
                                     color: Theme.of(context).hintColor,
                                     fontSize: 12))
@@ -223,11 +226,11 @@ class ReplyItemWidget extends StatelessWidget {
                       child:
                           //评论内容
                           //TODO: 有表情的评论暂时无法折叠
-                          (content.emotes.isNotEmpty ||
-                                  content.pictures.isNotEmpty ||
-                                  content.jumpUrls.isNotEmpty)
+                          (reply.content.emotes.isNotEmpty ||
+                                  reply.content.pictures.isNotEmpty ||
+                                  reply.content.jumpUrls.isNotEmpty)
                               ? SelectableText.rich(
-                                  buildReplyItemContent(content))
+                                  buildReplyItemContent(reply.content))
                               : SelectableRegion(
                                   magnifierConfiguration:
                                       const TextMagnifierConfiguration(),
@@ -235,7 +238,7 @@ class ReplyItemWidget extends StatelessWidget {
                                   selectionControls:
                                       MaterialTextSelectionControls(),
                                   child: FoldableText.rich(
-                                    buildReplyItemContent(content),
+                                    buildReplyItemContent(reply.content),
                                     maxLines: 6,
                                     folderTextStyle: TextStyle(
                                         color: Theme.of(context)
@@ -245,31 +248,65 @@ class ReplyItemWidget extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        ElevatedButton(
-                            onPressed: () {},
-                            style: const ButtonStyle(
-                              elevation: MaterialStatePropertyAll(0),
-                              minimumSize:
-                                  MaterialStatePropertyAll(Size(10, 10)),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.thumb_up_rounded,
-                                  size: 15,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(StringFormatUtils.numFormat(like))
-                              ],
-                            )),
+                        StatefulBuilder(builder: (context, setState) {
+                          return ElevatedButton(
+                              onPressed: () async {
+                                try {
+                                  var result = await ReplyOperationApi.addLike(
+                                      type: reply.type,
+                                      oid: reply.oid,
+                                      rpid: reply.rpid,
+                                      likeOrUnlike: !reply.hasLike);
+                                  if (result.isSuccess) {
+                                    reply.hasLike = !reply.hasLike;
+                                    if (reply.hasLike) {
+                                      reply.likeCount++;
+                                    } else {
+                                      reply.likeCount--;
+                                    }
+                                    setState(() {});
+                                  } else {
+                                    Get.rawSnackbar(
+                                        message: '点赞失败:${result.error}');
+                                  }
+                                } catch (e) {
+                                  log(e.toString());
+                                  Get.rawSnackbar(message: '$e');
+                                }
+                              },
+                              style: ButtonStyle(
+                                foregroundColor: reply.hasLike == true
+                                    ? MaterialStatePropertyAll(
+                                        Theme.of(context).colorScheme.onPrimary)
+                                    : null,
+                                backgroundColor: reply.hasLike == true
+                                    ? MaterialStatePropertyAll(
+                                        Theme.of(context).colorScheme.primary)
+                                    : null,
+                                elevation: const MaterialStatePropertyAll(0),
+                                minimumSize: const MaterialStatePropertyAll(
+                                    Size(10, 10)),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.thumb_up_rounded,
+                                    size: 15,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(StringFormatUtils.numFormat(
+                                      reply.likeCount))
+                                ],
+                              ));
+                        }),
                         Expanded(
                           child: Builder(
                             builder: (context) {
                               List<Widget> list = [];
-                              if (tags.isNotEmpty) {
-                                for (var i in tags) {
+                              if (reply.tags.isNotEmpty) {
+                                for (var i in reply.tags) {
                                   list.add(
                                     Text(
                                       "$i ", //标签,如热评,up觉得很赞
@@ -294,13 +331,68 @@ class ReplyItemWidget extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          StringFormatUtils.timeStampToAgoDate(timeStamp),
+                          StringFormatUtils.timeStampToAgoDate(reply.replyTime),
                           style: TextStyle(
                               fontSize: 12, color: Theme.of(context).hintColor),
                         )
                       ],
                     ),
-                    bottomWidget ?? Container()
+                    Builder(
+                      builder: (context) {
+                        Widget? subReplies;
+                        if (reply.preReplies.isNotEmpty) {
+                          List<Widget> preSubReplies = []; //预显示在外的楼中楼
+                          for (var j in reply.preReplies) {
+                            //添加预显示在外楼中楼评论条目
+                            preSubReplies.add(Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: "${j.member.name}: ",
+                                      ),
+                                      buildReplyItemContent(j.content)
+                                    ],
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                )));
+                          }
+                          //预显示在外楼中楼控件
+                          subReplies = Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Theme.of(Get.context!)
+                                      .colorScheme
+                                      .surfaceVariant),
+                              padding: const EdgeInsets.only(
+                                  left: 8, right: 8, bottom: 8),
+                              child: GestureDetector(
+                                child: ListView(
+                                  padding: EdgeInsets.zero,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  children: preSubReplies,
+                                ),
+                                onTap: () {
+                                  //楼中楼点击后弹出详细楼中楼
+                                  Get.bottomSheet(
+                                      ReplyReplyPage(
+                                        bvid: reply.oid.toString(),
+                                        rootId: reply.rpid,
+                                        pauseVideoCallback:
+                                            pauseVideoPlayer ?? () {},
+                                      ),
+                                      backgroundColor:
+                                          Theme.of(Get.context!).cardColor,
+                                      clipBehavior: Clip.antiAlias);
+                                },
+                              ));
+                        }
+                        return subReplies ?? const SizedBox();
+                      },
+                    )
                   ]),
             )
           ],

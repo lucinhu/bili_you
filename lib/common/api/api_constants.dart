@@ -139,4 +139,22 @@ class ApiConstants {
 
   ///判断视频是否已经点赞
   static const String hasLike = "$apiBase/x/web-interface/archive/has/like";
+
+  ///投币
+  static const String addCoin = "$apiBase/x/web-interface/coin/add";
+
+  ///判断是否被投币
+  static const String hasAddCoin = "$apiBase/x/web-interface/archive/coins";
+
+  ///收藏
+  static const String addFavourite = "$apiBase/x/v3/fav/resource/deal";
+
+  ///判断是否已收藏
+  static const String hasFavourite = "$apiBase/x/v2/fav/video/favoured";
+
+  ///分享视频
+  static const String share = "$apiBase/x/web-interface/share/add";
+
+  ///评论点赞
+  static const String replyAddLike = "$apiBase/x/v2/reply/action";
 }

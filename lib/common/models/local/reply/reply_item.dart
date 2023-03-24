@@ -14,7 +14,7 @@ class ReplyItem {
       required this.replyTime,
       required this.preReplies,
       required this.likeCount,
-      required this.isLike,
+      required this.hasLike,
       required this.location,
       required this.content,
       required this.tags});
@@ -31,7 +31,7 @@ class ReplyItem {
       replyTime: 0,
       preReplies: [],
       likeCount: 0,
-      isLike: false,
+      hasLike: false,
       location: "",
       content: ReplyContent.zero,
       tags: []);
@@ -78,7 +78,7 @@ class ReplyItem {
   int likeCount;
 
   ///是否已点赞
-  bool isLike;
+  bool hasLike;
 
   ///评论内容
   ReplyContent content;

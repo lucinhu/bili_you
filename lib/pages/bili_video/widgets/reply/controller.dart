@@ -4,14 +4,12 @@ import 'package:bili_you/common/models/local/reply/reply_info.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
-import 'package:bili_you/pages/user_space/view.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
-import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_reply_page.dart';
 
 class ReplyController extends GetxController {
   ReplyController({required this.bvid, required this.pauseVideoCallback});
@@ -46,76 +44,19 @@ class ReplyController extends GetxController {
 //添加评论条目到控件列表
   addReplyItemWidget(List<Widget> list, ReplyInfo replyInfo, ReplyItem i,
       {bool frontDivider = true, bool isTop = false}) {
-    Widget? subReplies;
     if (frontDivider) {
       list.add(Divider(
         color: Theme.of(Get.context!).colorScheme.secondaryContainer,
         thickness: 1,
       ));
     }
-    if (i.preReplies.isNotEmpty) {
-      List<Widget> preSubReplies = []; //预显示在外的楼中楼
-      for (var j in i.preReplies) {
-        //添加预显示在外楼中楼评论条目
-        preSubReplies.add(Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: "${j.member.name}: ",
-                  ),
-                  ReplyItemWidget.buildReplyItemContent(j.content)
-                ],
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            )));
-      }
-      //预显示在外楼中楼控件
-      subReplies = Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: Theme.of(Get.context!).colorScheme.surfaceVariant),
-          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          child: GestureDetector(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: preSubReplies,
-            ),
-            onTap: () {
-              //楼中楼点击后弹出详细楼中楼
-              Get.bottomSheet(
-                  ReplyReplyPage(
-                    bvid: i.oid.toString(),
-                    rootId: i.rpid,
-                    pauseVideoCallback: pauseVideoCallback,
-                  ),
-                  backgroundColor: Theme.of(Get.context!).cardColor,
-                  clipBehavior: Clip.antiAlias);
-            },
-          ));
-    }
+
     //添加评论条目
     list.add(ReplyItemWidget(
-      face: i.member.avatarUrl,
-      name: i.member.name,
-      content: i.content,
-      like: i.likeCount,
-      timeStamp: i.replyTime,
-      bottomWidget: subReplies,
-      location: i.location,
+      reply: i,
       isTop: isTop,
-      tags: i.tags,
       isUp: i.member.mid == replyInfo.upperMid,
-      onTapUser: (context) {
-        pauseVideoCallback();
-        Get.to(
-          () => UserSpacePage(mid: i.member.mid),
-        );
-      },
+      pauseVideoPlayer: pauseVideoCallback,
     ));
   }
 

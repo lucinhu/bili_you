@@ -114,7 +114,7 @@ class ReplyApi {
         replyTime: raw.ctime ?? 0,
         preReplies: preReplies,
         likeCount: raw.like ?? 0,
-        isLike: raw.action == 1 ? true : false,
+        hasLike: raw.action == 1 ? true : false,
         location: raw.replyControl?.location ?? "",
         content: ReplyContent(
             message: raw.content?.message ?? "",
