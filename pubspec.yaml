@@ -36,32 +36,55 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   # cupertino_icons: ^1.0.2
+
+  # get
   get: ^4.6.5
+
+  # Material You 动态配色
   dynamic_color: ^1.5.4
+
+  # 网络相关 
   dio: ^5.0.0
   dio_cookie_manager: ^2.1.3
-  path_provider: ^2.0.11
   cookie_jar: ^3.0.0
   gt3_flutter_plugin: ^0.0.8
-  encrypt: ^5.0.1
-  reflectable: ^4.0.3
-  video_player: ^2.4.9
   flutter_cache_manager: ^3.3.0
-  wakelock: ^0.6.2
-  path: ^1.8.2
   protobuf: ^2.1.0
+
+  # 加解密
+  encrypt: ^5.0.1
+
+  # 文件路径
+  path: ^1.8.2
+  path_provider: ^2.0.11
   easy_refresh: ^3.3.0+1
-  package_info_plus: ^3.0.2
-  url_launcher: ^6.1.8
-  device_info_plus: ^8.0.0
+  
+  # 控件
+  video_player: ^2.4.9
   ns_danmaku:
     git: 
       url: https://github.com/xiaoyaocz/flutter_ns_danmaku.git
+  cached_network_image: ^3.2.3
+
+  # webview
+
+  # 保持常亮
+  wakelock: ^0.6.2
+
+  # 设备&包信息
+  device_info_plus: ^8.0.0
+  package_info_plus: ^3.0.2
+
+  # url跳转
+  url_launcher: ^6.1.8
+  
+  # hive
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  cached_network_image: ^3.2.3
-  webview_flutter: ^4.0.7
   webview_cookie_manager: ^2.0.6
+  webview_flutter: ^4.0.7
+  photo_view: ^0.14.0
+  
   
 
 dev_dependencies:
@@ -120,9 +143,9 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 
-targets:
-  $default:
-    builders:
+# targets:
+#   $default:
+#     builders:
       # dart_json_mapper:
       #   generate_for:
       #   # here should be listed entry point files having 'void main()' function

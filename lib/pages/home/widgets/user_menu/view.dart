@@ -83,7 +83,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                             width: 20,
                           ),
                           Obx(() => Text(
-                                "${controller.currentExp}/${controller.nextExp}",
+                                "${controller.currentExp}/${controller.level.value != 6 ? controller.nextExp : '--'}",
                                 style: TextStyle(
                                     fontSize: 10,
                                     color: Theme.of(context).hintColor),
@@ -95,7 +95,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                           child: Obx(
                             () => LinearProgressIndicator(
                               backgroundColor: Theme.of(context).highlightColor,
-                              value: controller.nextExp.value != 0
+                              value: controller.nextExp.value > 0
                                   ? controller.currentExp.value /
                                       controller.nextExp.value
                                   : 0,

@@ -50,6 +50,12 @@
 
 Discord：[https://discord.gg/tsFh7Hdb4s](https://discord.gg/tsFh7Hdb4s)  
 
+## 声明
+
+- 此项目是个人为了兴趣而开发, 仅供学习交流使用, 无任何商业用途.  
+- 资源版权仍归原网站或其作者所有.  
+- 所用API皆从官方网站收集, 不含任何非法及破解内容.  
+
 ## 感谢
 
 - [bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect): 哔哩哔哩API收集，感谢@SocialSisterYi及各位贡献者的维护！

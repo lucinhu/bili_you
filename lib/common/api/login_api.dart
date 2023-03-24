@@ -17,16 +17,6 @@ import '../models/network/login/password_login_result.dart' as raw;
 import '../models/network/login/post_sms_login.dart' as raw;
 import '../models/network/login/post_sms_require.dart' as raw;
 
-///b站登陆接口\
-///设计原则：\
-///1.不涉及任何UI控件\
-///2.不处理错误\
-///返回值设计原则(在model)：\
-///1.不为空，都有默认值，且某项为空时只将该项设为默认值，其余项不影响\
-///2.如果错误码默认值为-1，错误信息默认为"未知错误"，其余成员默认为""或0\
-///使用注意：\
-///1.请使用try-catch处理抛错，一般为网络错误
-///2.其余错误请判断错误码(code)，配套有错误信息(message)
 abstract class LoginApi {
   ///获取登陆需要的key和hash
   ///TODO: 改造封装成getxxx
@@ -128,7 +118,13 @@ abstract class LoginApi {
     var dio = MyDio.dio;
     var response = await dio.get(ApiConstants.userInfo,
         options: Options(responseType: ResponseType.plain));
-    return raw.LoginUserInfoResponse.fromRawJson(response.data);
+    raw.LoginUserInfoResponse ret;
+    try {
+      ret = raw.LoginUserInfoResponse.fromRawJson(response.data);
+    } catch (e) {
+      throw '$e, json:${response.data}';
+    }
+    return ret;
   }
 
   ///获取当前cookie的用户信息
