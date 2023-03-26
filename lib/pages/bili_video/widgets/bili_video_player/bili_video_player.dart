@@ -108,6 +108,7 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
     widget.controller._padding = MediaQuery.of(context).padding;
     return Hero(
       tag: "BiliVideoPlayer:${widget.controller.bvid}",
+      transitionOnUserGestures: true,
       child: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         color: Colors.black,

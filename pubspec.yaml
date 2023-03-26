@@ -87,6 +87,7 @@ dependencies:
 
   # 分享
   share_plus: ^6.3.1
+  floating: ^2.0.0
   
   
 

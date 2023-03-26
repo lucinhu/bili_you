@@ -115,6 +115,13 @@ class _BiliVideoPageState extends State<BiliVideoPage> {
   }
 
   @override
+  void dispose() {
+    biliVideoController.onClose();
+    biliVideoController.onDelete();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: const SystemUiOverlayStyle(

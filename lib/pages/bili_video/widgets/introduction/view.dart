@@ -46,6 +46,7 @@ class _IntroductionPageState extends State<IntroductionPage>
   bool get wantKeepAlive => true;
   final GlobalKey operationButtonKey = GlobalKey();
   final TextStyle operationButtonTextStyle = const TextStyle(fontSize: 10);
+  late IntroductionController controller;
 
   // 主视图
   Widget _buildView(BuildContext context, IntroductionController controller) {
@@ -59,9 +60,18 @@ class _IntroductionPageState extends State<IntroductionPage>
           child: GestureDetector(
             onTap: () {
               controller.pauseVideo();
-              Get.to(
-                () => UserSpacePage(mid: controller.videoInfo.ownerMid),
-              );
+              // Get.to(
+              //   () => UserSpacePage(
+              //       key: ValueKey(
+              //           'UserSpacePage:${controller.videoInfo.ownerMid}'),
+              //       mid: controller.videoInfo.ownerMid),
+              // );
+              Navigator.of(context).push(GetPageRoute(
+                page: () => UserSpacePage(
+                    key: ValueKey(
+                        'UserSpacePage:${controller.videoInfo.ownerMid}'),
+                    mid: controller.videoInfo.ownerMid),
+              ));
             },
             child: Row(
               children: [
@@ -316,10 +326,9 @@ class _IntroductionPageState extends State<IntroductionPage>
   }
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return GetBuilder(
-        init: IntroductionController(
+  void initState() {
+    controller = Get.put(
+        IntroductionController(
             changePartCallback: widget.changePartCallback,
             bvid: widget.bvid,
             refreshReply: widget.refreshReply ?? () {},
@@ -327,31 +336,43 @@ class _IntroductionPageState extends State<IntroductionPage>
             ssid: widget.ssid,
             isBangumi: widget.isBangumi,
             pauseVideo: widget.pauseVideoCallback),
-        tag: widget.tag,
-        id: "introduction",
-        builder: (controller) => FutureBuilder(
-              future: controller.loadVideoInfo(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.data == true) {
-                    return _buildView(context, controller);
-                  } else {
-                    return Center(
-                      child: IconButton(
-                        icon: const Icon(Icons.refresh),
-                        onPressed: () {
-                          controller.update(["introduction"]);
-                        },
-                      ),
-                    );
-                  }
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ));
+        tag: widget.tag);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.onClose();
+    controller.onDelete();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return FutureBuilder(
+      future: controller.loadVideoInfo(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.data == true) {
+            return _buildView(context, controller);
+          } else {
+            return Center(
+              child: IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  setState(() {});
+                },
+              ),
+            );
+          }
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
   }
 }
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -142,8 +143,8 @@ class AboutPage extends StatelessWidget {
           title: const Text("许可"),
           onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const LicensePage(
+              GetPageRoute(
+                page: () => const LicensePage(
                   applicationIcon: ImageIcon(
                     AssetImage("assets/icon/bili.png"),
                     size: 200,

@@ -22,6 +22,7 @@ class RecommendController extends GetxController {
   int refreshIdx = 0;
   CacheManager cacheManager =
       CacheManager(Config(CacheKeys.recommendItemCoverKey));
+  int recommendColumnCount = 2;
 
   void animateToTop() {
     scrollController.animateTo(0,

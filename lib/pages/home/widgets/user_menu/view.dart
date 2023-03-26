@@ -220,8 +220,8 @@ class UserMenuPage extends GetView<UserMenuController> {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const SettingsPage(),
+                  Navigator.of(context).push(GetPageRoute(
+                    page: () => const SettingsPage(),
                   ));
                 },
                 child: Padding(
@@ -243,8 +243,8 @@ class UserMenuPage extends GetView<UserMenuController> {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const AboutPage(),
+                  Navigator.of(context).push(GetPageRoute(
+                    page: () => const AboutPage(),
                   ));
                 },
                 child: Padding(

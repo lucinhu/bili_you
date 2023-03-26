@@ -58,29 +58,56 @@ class SearchTabViewController extends GetxController {
         cacheManager: cacheManager,
         onTap: (context) {
           late List<PartInfo> videoParts;
-          Get.to(() => FutureBuilder(
-                future: Future(() async {
-                  try {
-                    videoParts = await VideoInfoApi.getVideoParts(bvid: i.bvid);
-                  } catch (e) {
-                    log("加载cid失败,${e.toString()}");
-                  }
-                }),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return BiliVideoPage(
-                      bvid: i.bvid,
-                      cid: videoParts.first.cid,
-                    );
-                  } else {
-                    return const Scaffold(
-                      body: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-                },
-              ));
+          // Get.to(() => FutureBuilder(
+          //       future: Future(() async {
+          //         try {
+          //           videoParts = await VideoInfoApi.getVideoParts(bvid: i.bvid);
+          //         } catch (e) {
+          //           log("加载cid失败,${e.toString()}");
+          //         }
+          //       }),
+          //       builder: (context, snapshot) {
+          //         if (snapshot.connectionState == ConnectionState.done) {
+          //           return BiliVideoPage(
+          //             key: ValueKey('BiliVideoPage:${i.bvid}'),
+          //             bvid: i.bvid,
+          //             cid: videoParts.first.cid,
+          //           );
+          //         } else {
+          //           return const Scaffold(
+          //             body: Center(
+          //               child: CircularProgressIndicator(),
+          //             ),
+          //           );
+          //         }
+          //       },
+          //     ));
+          Navigator.of(context).push(GetPageRoute(
+              page: () => FutureBuilder(
+                    future: Future(() async {
+                      try {
+                        videoParts =
+                            await VideoInfoApi.getVideoParts(bvid: i.bvid);
+                      } catch (e) {
+                        log("加载cid失败,${e.toString()}");
+                      }
+                    }),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return BiliVideoPage(
+                          key: ValueKey('BiliVideoPage:${i.bvid}'),
+                          bvid: i.bvid,
+                          cid: videoParts.first.cid,
+                        );
+                      } else {
+                        return const Scaffold(
+                          body: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                    },
+                  )));
         },
       ));
     }
@@ -106,32 +133,64 @@ class SearchTabViewController extends GetxController {
         score: i.score,
         onTap: (context) async {
           late BangumiInfo bangumiInfo;
-          Get.to(() => FutureBuilder(
-                future: Future(() async {
-                  try {
-                    bangumiInfo = await BangumiApi.getBangumiInfo(ssid: i.ssid);
-                  } catch (e) {
-                    log("加载失败");
-                    rethrow;
-                  }
-                }),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return BiliVideoPage(
-                      bvid: bangumiInfo.episodes.first.bvid,
-                      cid: bangumiInfo.episodes.first.cid,
-                      ssid: bangumiInfo.ssid,
-                      isBangumi: true,
-                    );
-                  } else {
-                    return const Scaffold(
-                      body: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-                },
-              ));
+          // Get.to(() => FutureBuilder(
+          //       future: Future(() async {
+          //         try {
+          //           bangumiInfo = await BangumiApi.getBangumiInfo(ssid: i.ssid);
+          //         } catch (e) {
+          //           log("加载失败");
+          //           rethrow;
+          //         }
+          //       }),
+          //       builder: (context, snapshot) {
+          //         if (snapshot.connectionState == ConnectionState.done) {
+          //           return BiliVideoPage(
+          //             key: ValueKey(
+          //                 'BiliVideoPage:${bangumiInfo.episodes.first.bvid}'),
+          //             bvid: bangumiInfo.episodes.first.bvid,
+          //             cid: bangumiInfo.episodes.first.cid,
+          //             ssid: bangumiInfo.ssid,
+          //             isBangumi: true,
+          //           );
+          //         } else {
+          //           return const Scaffold(
+          //             body: Center(
+          //               child: CircularProgressIndicator(),
+          //             ),
+          //           );
+          //         }
+          //       },
+          //     ));
+          Navigator.of(context).push(GetPageRoute(
+              page: () => FutureBuilder(
+                    future: Future(() async {
+                      try {
+                        bangumiInfo =
+                            await BangumiApi.getBangumiInfo(ssid: i.ssid);
+                      } catch (e) {
+                        log("加载失败");
+                        rethrow;
+                      }
+                    }),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return BiliVideoPage(
+                          key: ValueKey(
+                              'BiliVideoPage:${bangumiInfo.episodes.first.bvid}'),
+                          bvid: bangumiInfo.episodes.first.bvid,
+                          cid: bangumiInfo.episodes.first.cid,
+                          ssid: bangumiInfo.ssid,
+                          isBangumi: true,
+                        );
+                      } else {
+                        return const Scaffold(
+                          body: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                    },
+                  )));
         },
       ));
     }

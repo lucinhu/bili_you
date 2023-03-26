@@ -33,7 +33,7 @@ class ReplyItemWidget extends StatelessWidget {
   static final CacheManager emoteCacheManager =
       CacheManager(Config(CacheKeys.emoteKey));
 
-  TextSpan buildReplyItemContent(ReplyContent content) {
+  TextSpan buildReplyItemContent(ReplyContent content, BuildContext context) {
     if (content.emotes.isEmpty &&
         content.jumpUrls.isEmpty &&
         content.pictures.isEmpty) {
@@ -92,11 +92,24 @@ class ReplyItemWidget extends StatelessWidget {
           if (url == null || !url.hasScheme) {
             pauseVideoPlayer?.call();
             //若不是链接,去搜索
-            Get.to(() => SearchResultPage(keyWord: i.url));
+            // Get.to(() => SearchResultPage(
+            //     key: ValueKey("SearchResultPage:${i.url}"), keyWord: i.url));
+            Navigator.of(context).push(GetPageRoute(
+                page: () => SearchResultPage(
+                    key: ValueKey("SearchResultPage:${i.url}"),
+                    keyWord: i.url)));
           } else {
             pauseVideoPlayer?.call();
             //若是链接跳转到webview
-            Get.to(() => BiliBrowser(url: url, title: i.title));
+            // Get.to(() => BiliBrowser(
+            //     key: ValueKey("BiliBrowser:${i.url}"),
+            //     url: url,
+            //     title: i.title));
+            Navigator.of(context).push(GetPageRoute(
+                page: () => BiliBrowser(
+                    key: ValueKey("BiliBrowser:${i.url}"),
+                    url: url,
+                    title: i.title)));
           }
         },
       )));
@@ -110,10 +123,15 @@ class ReplyItemWidget extends StatelessWidget {
           child: GestureDetector(
         onTap: () {
           pauseVideoPlayer?.call();
-          Get.to(ViewImage(url: i.url));
+          // Get.to(
+          //     () => ViewImage(key: ValueKey("ViewImage:${i.url}"), url: i.url));
+          Navigator.of(context).push(GetPageRoute(
+              page: () =>
+                  ViewImage(key: ValueKey("ViewImage:${i.url}"), url: i.url)));
         },
         child: Hero(
           tag: i.url,
+          transitionOnUserGestures: true,
           child: CachedNetworkImage(
             placeholder: () => Container(
               color: Get.theme.colorScheme.primary,
@@ -144,7 +162,13 @@ class ReplyItemWidget extends StatelessWidget {
                   radius: 45 / 2,
                   onPressed: () {
                     pauseVideoPlayer?.call();
-                    Get.to(UserSpacePage(mid: reply.member.mid));
+                    // Get.to(() => UserSpacePage(
+                    //     key: ValueKey("UserSpacePage:${reply.member.mid}"),
+                    //     mid: reply.member.mid));
+                    Navigator.of(context).push(GetPageRoute(
+                        page: () => UserSpacePage(
+                            key: ValueKey("UserSpacePage:${reply.member.mid}"),
+                            mid: reply.member.mid)));
                   },
                   cacheWidthHeight: 200,
                 ),
@@ -178,7 +202,15 @@ class ReplyItemWidget extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () {
                           pauseVideoPlayer?.call();
-                          Get.to(UserSpacePage(mid: reply.member.mid));
+                          // Get.to(() => UserSpacePage(
+                          //     key:
+                          //         ValueKey("UserSpacePage:${reply.member.mid}"),
+                          //     mid: reply.member.mid));
+                          Navigator.of(context).push(GetPageRoute(
+                              page: () => UserSpacePage(
+                                  key: ValueKey(
+                                      "UserSpacePage:${reply.member.mid}"),
+                                  mid: reply.member.mid)));
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,7 +262,7 @@ class ReplyItemWidget extends StatelessWidget {
                                   reply.content.pictures.isNotEmpty ||
                                   reply.content.jumpUrls.isNotEmpty)
                               ? SelectableText.rich(
-                                  buildReplyItemContent(reply.content))
+                                  buildReplyItemContent(reply.content, context))
                               : SelectableRegion(
                                   magnifierConfiguration:
                                       const TextMagnifierConfiguration(),
@@ -238,7 +270,8 @@ class ReplyItemWidget extends StatelessWidget {
                                   selectionControls:
                                       MaterialTextSelectionControls(),
                                   child: FoldableText.rich(
-                                    buildReplyItemContent(reply.content),
+                                    buildReplyItemContent(
+                                        reply.content, context),
                                     maxLines: 6,
                                     folderTextStyle: TextStyle(
                                         color: Theme.of(context)
@@ -352,7 +385,7 @@ class ReplyItemWidget extends StatelessWidget {
                                       TextSpan(
                                         text: "${j.member.name}: ",
                                       ),
-                                      buildReplyItemContent(j.content)
+                                      buildReplyItemContent(j.content, context)
                                     ],
                                   ),
                                   maxLines: 2,
@@ -363,7 +396,7 @@ class ReplyItemWidget extends StatelessWidget {
                           subReplies = Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
-                                  color: Theme.of(Get.context!)
+                                  color: Theme.of(context)
                                       .colorScheme
                                       .surfaceVariant),
                               padding: const EdgeInsets.only(
@@ -385,7 +418,7 @@ class ReplyItemWidget extends StatelessWidget {
                                             pauseVideoPlayer ?? () {},
                                       ),
                                       backgroundColor:
-                                          Theme.of(Get.context!).cardColor,
+                                          Theme.of(context).cardColor,
                                       clipBehavior: Clip.antiAlias);
                                 },
                               ));

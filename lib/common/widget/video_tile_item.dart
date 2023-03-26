@@ -45,28 +45,29 @@ class VideoTileItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
                 child: Stack(
                   children: [
-                    Hero(
-                      tag: "BiliVideoPlayer:$bvid",
-                      child: LayoutBuilder(builder: (context, box) {
-                        return CachedNetworkImage(
-                          cacheWidth: (box.maxWidth *
-                                  MediaQuery.of(context).devicePixelRatio)
-                              .toInt(),
-                          cacheHeight: (box.maxHeight *
-                                  MediaQuery.of(context).devicePixelRatio)
-                              .toInt(),
-                          filterQuality: FilterQuality.none,
-                          width: 160,
-                          height: 90,
-                          fit: BoxFit.cover,
-                          imageUrl: picUrl,
-                          cacheManager: cacheManager,
-                          placeholder: () => Container(
-                            color: Theme.of(context).colorScheme.surfaceVariant,
-                          ),
-                        );
-                      }),
-                    ),
+                    LayoutBuilder(builder: (context, box) {
+                      return Hero(
+                          tag: "BiliVideoPlayer:$bvid",
+                          transitionOnUserGestures: true,
+                          child: CachedNetworkImage(
+                            cacheWidth: (box.maxWidth *
+                                    MediaQuery.of(context).devicePixelRatio)
+                                .toInt(),
+                            cacheHeight: (box.maxHeight *
+                                    MediaQuery.of(context).devicePixelRatio)
+                                .toInt(),
+                            filterQuality: FilterQuality.none,
+                            width: 160,
+                            height: 90,
+                            fit: BoxFit.cover,
+                            imageUrl: picUrl,
+                            cacheManager: cacheManager,
+                            placeholder: () => Container(
+                              color:
+                                  Theme.of(context).colorScheme.surfaceVariant,
+                            ),
+                          ));
+                    }),
                     Container(
                       alignment: Alignment.bottomRight,
                       child: Text(

@@ -27,10 +27,16 @@ class UiTestController extends GetxController {
     _testPages.forEach((text, page) {
       listTiles.add(ListTile(
         title: Text(text),
-        onTap: () => Get.to(() => Scaffold(
-              appBar: AppBar(title: Text(text)),
-              body: page,
-            )),
+        onTap: () =>
+            // Get.to(() => Scaffold(
+            //       appBar: AppBar(title: Text(text)),
+            //       body: page,
+            //     ))
+            Navigator.of(Get.context!).push(GetPageRoute(
+                page: () => Scaffold(
+                      appBar: AppBar(title: Text(text)),
+                      body: page,
+                    ))),
       ));
     });
   }

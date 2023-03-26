@@ -27,7 +27,15 @@ class DynamicItemCard extends StatelessWidget {
                   radius: 45 / 2,
                   avatarUrl: dynamicItem.author.avatarUrl,
                   onPressed: () {
-                    Get.to(() => UserSpacePage(mid: dynamicItem.author.mid));
+                    // Get.to(() => UserSpacePage(
+                    //     key:
+                    //         ValueKey('UserSpacePage:${dynamicItem.author.mid}'),
+                    //     mid: dynamicItem.author.mid));
+                    Navigator.of(context).push(GetPageRoute(
+                        page: () => UserSpacePage(
+                            key: ValueKey(
+                                'UserSpacePage:${dynamicItem.author.mid}'),
+                            mid: dynamicItem.author.mid)));
                   },
                   cacheWidthHeight: 100,
                 ),

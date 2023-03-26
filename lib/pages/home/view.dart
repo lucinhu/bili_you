@@ -45,13 +45,24 @@ class HomeViewGetX extends GetView<HomeController> {
         title: MaterialButton(
           onLongPress: () {
             //长按进入测试界面
-            Get.to(() => const UiTestPage());
+            // Get.to(() => const UiTestPage());
+            Navigator.of(context)
+                .push(GetPageRoute(page: () => const UiTestPage()));
           },
           onPressed: () {
             //跳转到搜索页面
-            Get.to(() => SearchInputPage(
-                  defaultSearchWord: controller.defaultSearchWord.value,
-                ));
+            // Get.to(() => SearchInputPage(
+            //       key: ValueKey(
+            //           'SearchInputPage:${controller.defaultSearchWord.value}'),
+            //       defaultSearchWord: controller.defaultSearchWord.value,
+            //     ));
+            Navigator.of(context).push(GetPageRoute(
+                page: () => SearchInputPage(
+                      key: ValueKey(
+                          'SearchInputPage:${controller.defaultSearchWord.value}'),
+                      defaultSearchWord: controller.defaultSearchWord.value,
+                    )));
+
             //更新搜索框默认词
             controller.refreshDefaultSearchWord();
           },

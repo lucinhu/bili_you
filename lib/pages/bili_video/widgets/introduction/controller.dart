@@ -32,6 +32,7 @@ class IntroductionController extends GetxController {
   RxString describe = "".obs;
 
   late VideoInfo videoInfo;
+  bool isInitialized = false;
 
   final bool isBangumi;
   final Function(String bvid, int cid) changePartCallback;
@@ -47,6 +48,9 @@ class IntroductionController extends GetxController {
 
 //加载视频信息
   Future<bool> loadVideoInfo() async {
+    if (isInitialized) {
+      return true;
+    }
     try {
       videoInfo = await VideoInfoApi.getVideoInfo(bvid: bvid);
     } catch (e) {
@@ -65,6 +69,7 @@ class IntroductionController extends GetxController {
       //如果是番剧
       await _loadBangumiPartButtons();
     }
+    isInitialized = true;
     return true;
   }
 
@@ -139,12 +144,20 @@ class IntroductionController extends GetxController {
         cacheManager: cacheManager,
         onTap: (context) {
           pauseVideo();
-          Get.to(
-              () => BiliVideoPage(
-                    bvid: i.bvid,
-                    cid: i.cid,
-                  ),
-              preventDuplicates: false);
+          Navigator.of(context).push(GetPageRoute(
+            page: () => BiliVideoPage(
+              key: ValueKey("BiliVideoPage:${i.bvid}"),
+              bvid: i.bvid,
+              cid: i.cid,
+            ),
+          ));
+          // Get.to(
+          //   () => BiliVideoPage(
+          //     key: ValueKey("BiliVideoPage:${i.bvid}"),
+          //     bvid: i.bvid,
+          //     cid: i.cid,
+          //   ),
+          // );
         },
       ));
     }

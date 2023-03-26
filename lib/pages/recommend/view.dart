@@ -48,11 +48,14 @@ class _RecommendPageState extends State<RecommendPage>
         controller: controller.scrollController,
         physics: physics,
         padding: const EdgeInsets.all(8),
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          maxCrossAxisExtent: 340,
-        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: controller.recommendColumnCount,
+            mainAxisExtent: (MediaQuery.of(context).size.width /
+                        controller.recommendColumnCount) *
+                    9 /
+                    16 +
+                20 +
+                58),
         itemCount: controller.recommendViewList.length,
         itemBuilder: (context, index) {
           return controller.recommendViewList[index];

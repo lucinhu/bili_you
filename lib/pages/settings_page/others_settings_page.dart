@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'cache_management_page.dart';
 
@@ -24,8 +25,8 @@ class OthersSettingsPage extends StatelessWidget {
             "缓存管理",
           ),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const CacheManagementPage(),
+            Navigator.of(context).push(GetPageRoute(
+              page: () => const CacheManagementPage(),
             ));
           },
         )

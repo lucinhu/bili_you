@@ -43,31 +43,51 @@ class UserSpacePageController extends GetxController {
           cacheManager: cacheManager,
           onTap: (context) {
             late List<PartInfo> videoParts;
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) {
-                return FutureBuilder(future: Future(() async {
-                  try {
-                    videoParts =
-                        await VideoInfoApi.getVideoParts(bvid: item.bvid);
-                  } catch (e) {
-                    log("加载cid失败,${e.toString()}");
-                  }
-                }), builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return BiliVideoPage(
-                      bvid: item.bvid,
-                      cid: videoParts.first.cid,
-                    );
-                  } else {
-                    return const Scaffold(
-                      body: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-                });
-              },
-            ));
+            // Get.to(() => FutureBuilder(future: Future(() async {
+            //       try {
+            //         videoParts =
+            //             await VideoInfoApi.getVideoParts(bvid: item.bvid);
+            //       } catch (e) {
+            //         log("加载cid失败,${e.toString()}");
+            //       }
+            //     }), builder: (context, snapshot) {
+            //       if (snapshot.connectionState == ConnectionState.done) {
+            //         return BiliVideoPage(
+            //           key: ValueKey('BiliVideoPage:${item.bvid}'),
+            //           bvid: item.bvid,
+            //           cid: videoParts.first.cid,
+            //         );
+            //       } else {
+            //         return const Scaffold(
+            //           body: Center(
+            //             child: CircularProgressIndicator(),
+            //           ),
+            //         );
+            //       }
+            //     }));
+            Navigator.of(context).push(GetPageRoute(
+                page: () => FutureBuilder(future: Future(() async {
+                      try {
+                        videoParts =
+                            await VideoInfoApi.getVideoParts(bvid: item.bvid);
+                      } catch (e) {
+                        log("加载cid失败,${e.toString()}");
+                      }
+                    }), builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return BiliVideoPage(
+                          key: ValueKey('BiliVideoPage:${item.bvid}'),
+                          bvid: item.bvid,
+                          cid: videoParts.first.cid,
+                        );
+                      } else {
+                        return const Scaffold(
+                          body: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                    })));
           }));
     }
     currentPage++;
