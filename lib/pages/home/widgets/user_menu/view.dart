@@ -1,6 +1,7 @@
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/pages/about/about_page.dart';
+import 'package:bili_you/pages/login/web_login/view.dart';
 import 'package:bili_you/pages/settings_page/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -307,7 +308,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                           padding: const EdgeInsets.all(2),
                           child: TextButton(
                             onPressed: () {
-                              Get.off(() => const PhoneLoginPage());
+                              Get.off(() => const WebLoginPage());
                             },
                             child: const Text(
                               "登录",
