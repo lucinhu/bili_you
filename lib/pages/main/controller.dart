@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../home/view.dart';
 import '../dynamic/view.dart';
-import '../channel/view.dart';
 
 class MainController extends GetxController {
   MainController();
@@ -11,7 +10,6 @@ class MainController extends GetxController {
   List<Widget> pages = [
     const HomePage(),
     const DynamicPage(),
-    const ChannelPage()
   ];
 
   _initData() {
