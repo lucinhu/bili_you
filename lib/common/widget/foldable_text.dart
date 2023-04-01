@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get_utils/src/extensions/export.dart';
 
 //可展开的文本
 class FoldableText extends StatefulWidget {
@@ -125,10 +126,15 @@ class _FoldableTextState extends State<FoldableText> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => (widget.text?.isNotEmpty ?? false)
-          ? _richText(constraints.maxWidth, constraints.minWidth)
-          : const SizedBox(),
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      if (widget.text != null && widget.text!.isNotEmpty) {
+        return _richText(constraints.maxWidth, constraints.minWidth);
+      } else if (widget.textSpan != null &&
+          !(widget.textSpan!.isBlank ?? true)) {
+        return _richText(constraints.maxWidth, constraints.minWidth);
+      } else {
+        return const SizedBox();
+      }
+    });
   }
 }
