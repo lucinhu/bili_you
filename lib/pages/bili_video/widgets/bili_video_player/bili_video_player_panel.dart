@@ -68,6 +68,8 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
         widget.controller._biliVideoPlayerController.duration;
     widget.controller.asepectRatio =
         widget.controller._biliVideoPlayerController.videoAspectRatio;
+    widget.controller._danmakuOpened = widget
+        .controller._biliVideoPlayerController.biliDanmakuController!.visible;
     widget.controller._biliVideoPlayerController
         .addStateChangedListener(playStateChangedCallback);
     widget.controller._biliVideoPlayerController

@@ -34,4 +34,14 @@ class UserStorageKeys {
 class SettingsStorageKeys {
   static const String themeMode = "themeMode";
   static const String biliTheme = "biliTheme";
+  static const String autoCheckUpdate = "autoCheckUpdate";
+  static const String showSearchDefualtWord = "showSearchDefualtWord";
+  static const String showSearchHistory = "showSearchHistory";
+  static const String showHotSearch = "showHotSearch";
+  static const String defaultShowDanmaku = "defaultShowDanmaku";
+  static const String preferVideoQuality = "preferVideoQuality";
+
+  ///偏好视频编码（avc或hev）
+  static const String preferVideoCodec = "preferVideoCodec";
+  static const String preferAudioQuality = "preferAudioQuality";
 }

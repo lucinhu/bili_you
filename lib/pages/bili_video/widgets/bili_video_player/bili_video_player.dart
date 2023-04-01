@@ -5,7 +5,7 @@ import 'package:bili_you/common/api/video_play_api.dart';
 import 'package:bili_you/common/models/local/video/audio_play_item.dart';
 import 'package:bili_you/common/models/local/video/video_play_info.dart';
 import 'package:bili_you/common/models/local/video/video_play_item.dart';
-import 'package:bili_you/common/utils/fullscreen.dart';
+import 'package:bili_you/common/utils/index.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
 import 'package:flutter/material.dart';
@@ -48,12 +48,44 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
     }
 
     var videoPlayInfo = widget.controller.videoPlayInfo;
-    //如果所选的视频音频都没有初始化时获取第一个
-    widget.controller._videoPlayItem ??= videoPlayInfo!.videos.first;
-    widget.controller._audioPlayItem ??= videoPlayInfo!.audios.first;
-    //// 当前画质音质
-    // widget.controller._videoQuality = widget.controller._videoPlayItem!.quality;
-    // widget.controller._audioQuality = widget.controller._audioPlayItem!.quality;
+    if (widget.controller._videoPlayItem == null) {
+      //根据偏好选择画质
+      List<VideoPlayItem> tempMatchVideos = [];
+      //先匹配编码
+      for (var i in videoPlayInfo!.videos) {
+        if (i.codecs.contains(BiliYouStorage.settings
+            .get(SettingsStorageKeys.preferVideoCodec, defaultValue: 'hev'))) {
+          tempMatchVideos.add(i);
+        }
+      }
+      //如果编码没有匹配上，就只能不匹配编码了
+      if (tempMatchVideos.isEmpty) {
+        tempMatchVideos = videoPlayInfo.videos;
+      }
+      //根据VideoQuality下标判断最接近的画质
+      var matchedVideo = tempMatchVideos.first;
+      var preferVideoQualityIndex = SettingsUtil.getPreferVideoQuality().index;
+      for (var i in tempMatchVideos) {
+        if ((i.quality.index - preferVideoQualityIndex).abs() <
+            (matchedVideo.quality.index - preferVideoQualityIndex).abs()) {
+          matchedVideo = i;
+        }
+      }
+      widget.controller._videoPlayItem = matchedVideo;
+    }
+    if (widget.controller._audioPlayItem == null) {
+      //根据偏好选择音质
+      //根据AudioQuality下标判断最接近的音质
+      var matchedAudio = videoPlayInfo!.audios.first;
+      var preferAudioQualityIndex = SettingsUtil.getPreferAudioQuality().index;
+      for (var i in videoPlayInfo.audios) {
+        if ((i.quality.index - preferAudioQualityIndex).abs() <
+            (matchedAudio.quality.index - preferAudioQualityIndex).abs()) {
+          matchedAudio = i;
+        }
+      }
+      widget.controller._audioPlayItem = matchedAudio;
+    }
     //获取视频，音频的url
     String videoUrl = widget.controller._videoPlayItem!.urls.first;
     String audioUrl = widget.controller._audioPlayItem!.urls.first;

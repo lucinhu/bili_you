@@ -5,7 +5,6 @@ import 'package:bili_you/pages/login/web_login/view.dart';
 import 'package:bili_you/pages/settings_page/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:bili_you/pages/login/sms_login/view.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'index.dart';
 

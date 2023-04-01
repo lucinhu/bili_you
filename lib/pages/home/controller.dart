@@ -22,6 +22,12 @@ class HomeController extends GetxController {
 
   //刷新搜索框默认词
   refreshDefaultSearchWord() async {
+    if (!BiliYouStorage.settings
+        .get(SettingsStorageKeys.showSearchDefualtWord, defaultValue: true)) {
+      //如果没有开启默认词的话，就直接跳出
+      defaultSearchWord.value = "搜索";
+      return;
+    }
     try {
       defaultSearchWord.value =
           (await SearchApi.getDefaultSearchWords()).showName;

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/danmaku_api.dart';
 import 'package:bili_you/common/models/network/proto/danmaku/danmaku.pb.dart';
+import 'package:bili_you/common/utils/index.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
@@ -162,8 +163,11 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
   @override
   void initState() {
     var controller = widget.controller;
-    if (controller.dmSegList.isEmpty) {
-      _requestDanmaku();
+    if (BiliYouStorage.settings
+        .get(SettingsStorageKeys.defaultShowDanmaku, defaultValue: true)) {
+      controller._visible = true;
+    } else {
+      controller._visible = false;
     }
     addAllListeners();
     controller.updateWidget = () {
@@ -199,6 +203,11 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
           visible: widget.controller._visible,
           child: DanmakuView(
             createdController: (danmakuController) {
+              if (widget.controller.dmSegList.isEmpty &&
+                  widget.controller._visible) {
+                //如果弹幕列表还是空的话，而且是可见的，就进行请求获取弹幕
+                _requestDanmaku();
+              }
               this.danmakuController = danmakuController;
             },
             option: DanmakuOption(area: 0.5),

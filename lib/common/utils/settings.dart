@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:bili_you/common/api/github_api.dart';
+import 'package:bili_you/common/models/local/video/audio_play_item.dart';
+import 'package:bili_you/common/models/local/video/video_play_item.dart';
 import 'package:bili_you/common/models/network/github/github_releases_item.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -36,26 +38,28 @@ class SettingsUtil {
   }
 
   ///检查更新，并弹窗提示
-  static void chechUpdate(BuildContext context) async {
+  static void checkUpdate(BuildContext context,
+      {bool showSnackBar = true}) async {
     var packageInfo = await PackageInfo.fromPlatform();
     var data = await GithubApi.requestLatestRelease();
     var latestVersion = data.name?.replaceFirst(RegExp(r'v'), '');
     var currentVersion = packageInfo.version;
     // log(data.toRawJson());
     if (latestVersion == currentVersion) {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("已是最新版")));
+      if (showSnackBar) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("已是最新版")));
+      }
     } else {
       // ignore: use_build_context_synchronously
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
+              scrollable: true,
               title: Text("有新版本:$latestVersion"),
-              content: SingleChildScrollView(
-                child: Text(data.body!),
-              ),
+              content: SelectableText(data.body!),
               actions: [
                 TextButton(
                     onPressed: () {
@@ -110,6 +114,32 @@ class SettingsUtil {
             );
           });
     }
+  }
+
+  //获取偏好的视频画质
+  static VideoQuality getPreferVideoQuality() {
+    return VideoQualityCode.fromCode(BiliYouStorage.settings.get(
+        SettingsStorageKeys.preferVideoQuality,
+        defaultValue: VideoQuality.values.last.code));
+  }
+
+  //保存偏好视频画质
+  static Future<void> putPreferVideoQuality(VideoQuality quality) async {
+    await BiliYouStorage.settings
+        .put(SettingsStorageKeys.preferVideoQuality, quality.code);
+  }
+
+  //获取偏好的视频音质
+  static AudioQuality getPreferAudioQuality() {
+    return AudioQualityCode.fromCode(BiliYouStorage.settings.get(
+        SettingsStorageKeys.preferAudioQuality,
+        defaultValue: AudioQuality.values.last.code));
+  }
+
+  //保存偏好视频音质
+  static Future<void> putPreferAudioQuality(AudioQuality quality) async {
+    await BiliYouStorage.settings
+        .put(SettingsStorageKeys.preferAudioQuality, quality.code);
   }
 }
 

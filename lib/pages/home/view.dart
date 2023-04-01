@@ -157,7 +157,7 @@ class HomeViewGetX extends GetView<HomeController> {
         controller: tabController,
         children: [
           const Center(
-            child: Text("直播"),
+            child: Text("该功能暂无"),
           ),
           recommendPage
         ],

@@ -1,10 +1,29 @@
+import 'package:bili_you/common/utils/bili_you_storage.dart';
+import 'package:bili_you/common/utils/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'index.dart';
 
-class MainPage extends GetView<MainController> {
+class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  late MainController controller;
+  @override
+  void initState() {
+    //自动检查更新
+    if (BiliYouStorage.settings
+        .get(SettingsStorageKeys.autoCheckUpdate, defaultValue: true)) {
+      SettingsUtil.checkUpdate(context, showSnackBar: false);
+    }
+    controller = Get.put(MainController());
+    super.initState();
+  }
 
   // 主视图
   Widget _buildView() {

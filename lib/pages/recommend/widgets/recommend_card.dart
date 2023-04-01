@@ -36,9 +36,7 @@ class RecommendCard extends StatelessWidget {
   final int cid;
 
   final playInfoTextStyle = const TextStyle(
-    color: Colors.white,
-    fontSize: 12,
-  );
+      color: Colors.white, fontSize: 10, overflow: TextOverflow.ellipsis);
 
   void onTap(BuildContext context) {
     // Get.to(
@@ -106,13 +104,13 @@ class RecommendCard extends StatelessWidget {
                     ],
                   ),
                   padding: const EdgeInsets.only(left: 6, right: 6, bottom: 3),
-                  child: Row(children: [
-                    Row(
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(
                           Icons.slideshow_rounded,
                           color: Colors.white,
-                          size: 14,
+                          size: 11,
                         ),
                         Text(
                           " $playNum  ",
@@ -122,22 +120,20 @@ class RecommendCard extends StatelessWidget {
                         const Icon(
                           Icons.format_list_bulleted_rounded,
                           color: Colors.white,
-                          size: 14,
+                          size: 11,
                         ),
                         Text(
                           " $danmakuNum",
                           maxLines: 1,
                           style: playInfoTextStyle,
                         ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Text(
-                      timeLength,
-                      maxLines: 1,
-                      style: playInfoTextStyle,
-                    ),
-                  ]),
+                        const Spacer(),
+                        Text(
+                          timeLength,
+                          maxLines: 1,
+                          style: playInfoTextStyle,
+                        ),
+                      ]),
                 ),
               ],
             ),

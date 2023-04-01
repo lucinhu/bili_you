@@ -6,6 +6,8 @@ import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player_panel.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
+import 'package:bili_you/pages/login/password_login/index.dart';
+import 'package:bili_you/pages/login/sms_login/index.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -87,6 +89,9 @@ class UiTestController extends GetxController {
               for (var i in (await MyDio.cookieManager.cookieJar
                   .loadForRequest(Uri.parse(ApiConstants.bilibiliBase)))) {
                 log('name:${i.name},\tvalue:${i.value},\tmaxAge:${i.maxAge.toString()}');
+                Get.rawSnackbar(
+                    message:
+                        'name:${i.name},\tvalue:${i.value},\tmaxAge:${i.maxAge.toString()}');
               }
             }),
       ),
@@ -98,10 +103,10 @@ class UiTestController extends GetxController {
               onPressed: () async {
                 var result = (await VideoOperationApi.clickLike(
                     bvid: 'BV1Ex4y1F7LX', likeOrCancelLike: true));
-                Get.showSnackbar(GetSnackBar(
+                Get.rawSnackbar(
                   message:
                       'isSuccess:${result.isSuccess}, error:${result.error}, haslike:${result.haslike}',
-                ));
+                );
               },
             ),
             MaterialButton(
@@ -109,15 +114,17 @@ class UiTestController extends GetxController {
               onPressed: () async {
                 var result = (await VideoOperationApi.clickLike(
                     bvid: 'BV1Ex4y1F7LX', likeOrCancelLike: false));
-                Get.showSnackbar(GetSnackBar(
+                Get.rawSnackbar(
                   message:
                       'isSuccess:${result.isSuccess}, error:${result.error}, haslike:${result.haslike}',
-                ));
+                );
               },
             ),
           ],
         ),
-      )
+      ),
+      '密码登陆': const PasswordLoginPage(),
+      '短信登陆': const PhoneLoginPage()
     };
     //初始化构建测试页面项列表
     _buildListTiles();

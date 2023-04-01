@@ -31,7 +31,7 @@ class AboutPage extends StatelessWidget {
           trailing: TextButton(
               child: const Text("检查更新"),
               onPressed: () {
-                SettingsUtil.chechUpdate(context);
+                SettingsUtil.checkUpdate(context);
               }),
         ),
         ListTile(
