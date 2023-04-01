@@ -12,12 +12,14 @@ import 'package:get/get.dart';
 class ReplyReplyPage extends StatefulWidget {
   const ReplyReplyPage({
     super.key,
-    required this.bvid,
+    required this.replyId,
     required this.rootId,
+    required this.replyType,
     required this.pauseVideoCallback,
   });
-  final String bvid;
+  final String replyId;
   final int rootId;
+  final ReplyType replyType;
   final Function() pauseVideoCallback;
 
   @override
@@ -35,8 +37,8 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
     late ReplyReplyInfo replyReplyInfo;
     try {
       replyReplyInfo = await ReplyApi.getReplyReply(
-          type: ReplyType.video,
-          oid: widget.bvid,
+          type: widget.replyType,
+          oid: widget.replyId,
           rootId: widget.rootId,
           pageNum: _pageNum.value);
     } catch (e) {

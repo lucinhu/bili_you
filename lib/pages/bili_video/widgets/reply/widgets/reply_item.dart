@@ -412,7 +412,8 @@ class ReplyItemWidget extends StatelessWidget {
                                   //楼中楼点击后弹出详细楼中楼
                                   Get.bottomSheet(
                                       ReplyReplyPage(
-                                        bvid: reply.oid.toString(),
+                                        replyId: reply.oid.toString(),
+                                        replyType: reply.type,
                                         rootId: reply.rpid,
                                         pauseVideoCallback:
                                             pauseVideoPlayer ?? () {},
