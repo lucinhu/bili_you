@@ -1,18 +1,28 @@
+import 'package:bili_you/common/models/local/reply/reply_item.dart';
+
 import 'dynamic_author.dart';
 import 'dynamic_content.dart';
 import 'dynamic_stat.dart';
 
 class DynamicItem {
   DynamicItem(
-      {required this.author,
+      {required this.replyId,
+      required this.replyType,
+      required this.author,
       required this.type,
       required this.content,
       required this.stat});
   static DynamicItem get zero => DynamicItem(
+      replyId: '',
+      replyType: ReplyType.unkown,
       author: DynamicAuthor.zero,
       type: DynamicItemType.unkown,
-      content: DynamicContent.zero,
+      content: WordDynamicContent.zero,
       stat: DynamicStat.zero);
+
+  ///评论区id
+  String replyId;
+  ReplyType replyType;
   DynamicAuthor author;
   DynamicItemType type;
   DynamicContent content;

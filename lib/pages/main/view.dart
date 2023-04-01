@@ -1,8 +1,10 @@
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/utils/settings.dart';
+import 'package:bili_you/pages/dynamic/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../dynamic/controller.dart';
 import 'index.dart';
 
 class MainPage extends StatefulWidget {
@@ -49,6 +51,10 @@ class _MainPageState extends State<MainPage> {
             ],
             selectedIndex: controller.selectedIndex.value,
             onDestinationSelected: (value) {
+              if (value == controller.selectedIndex.value &&
+                  controller.pages[value] is DynamicPage) {
+                Get.find<DynamicController>().animateToTop();
+              }
               controller.selectedIndex.value = value;
             },
           ),

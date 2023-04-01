@@ -42,6 +42,8 @@ class DynamicPage extends GetView<DynamicController> {
             ),
             controller: controller.refreshController,
             childBuilder: (context, physics) => ListView.builder(
+              cacheExtent: MediaQuery.of(context).size.height,
+              controller: controller.scrollController,
               physics: physics,
               itemCount: controller.dynamicItemCards.length,
               itemBuilder: (context, index) =>

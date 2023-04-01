@@ -1,3 +1,4 @@
+import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/pages/bili_video/widgets/introduction/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/view.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,8 @@ class _BiliVideoPageState extends State<BiliVideoPage> {
               Builder(builder: (context) {
                 //Builder可以让ReplyPage在TabBarView显示到它的时候才取controller.bvid
                 return ReplyPage(
-                  bvid: controller.bvid,
+                  replyId: controller.bvid,
+                  replyType: ReplyType.video,
                   pauseVideoCallback:
                       controller.biliVideoPlayerController.pause,
                 );

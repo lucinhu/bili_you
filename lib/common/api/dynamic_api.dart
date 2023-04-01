@@ -4,6 +4,8 @@ import 'package:bili_you/common/models/local/dynamic/dynamic_content.dart';
 import 'package:bili_you/common/models/local/dynamic/dynamic_item.dart';
 import 'package:bili_you/common/models/local/dynamic/dynamic_stat.dart';
 import 'package:bili_you/common/models/local/reply/official_verify.dart';
+import 'package:bili_you/common/models/local/reply/reply_content.dart';
+import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/models/network/dynamic/dynamic.dart' as raw;
 import 'package:bili_you/common/utils/index.dart';
 import 'package:dio/dio.dart';
@@ -79,46 +81,71 @@ class DynamicApi {
       switch (DynamicItemTypeCode.fromCode(i.type ?? "")) {
         case DynamicItemType.word:
           //消息
-          dynamicContent = DynamicContent(
-              description: moduleDynamic?.desc?.text ?? "", imageUrls: []);
+          dynamicContent = _buildWordDynamicContent(moduleDynamic);
           break;
         case DynamicItemType.article:
           //文章
-          dynamicContent = DynamicContent(
-              description: moduleDynamic?.desc?.text ?? "", imageUrls: []);
+          dynamicContent = _buildWordDynamicContent(moduleDynamic);
           break;
         case DynamicItemType.av:
           //视频投稿
-          dynamicContent = DynamicContent(
-              description: moduleDynamic?.desc?.text ?? "", imageUrls: []);
+          dynamicContent = AVDynamicContent(
+              description: moduleDynamic?.desc?.text ?? '',
+              emotes: _buildEmoteList(
+                  moduleDynamic?.desc?.richTextNodes ?? <raw.RichTextNode>[]),
+              picUrl: moduleDynamic?.major?.archive?.cover ?? '',
+              bvid: moduleDynamic?.major?.archive?.bvid ?? '',
+              title: moduleDynamic?.major?.archive?.title ?? '',
+              subTitle: moduleDynamic?.major?.archive?.desc ?? '',
+              duration: moduleDynamic?.major?.archive?.durationText ?? '',
+              damakuCount: moduleDynamic?.major?.archive?.stat?.danmaku ?? '',
+              playCount: moduleDynamic?.major?.archive?.stat?.play ?? '');
+
           break;
         case DynamicItemType.draw:
           //抽奖&互动
-          dynamicContent = DynamicContent(
-              description: moduleDynamic?.desc?.text ?? "", imageUrls: []);
+          dynamicContent = _buildWordDynamicContent(moduleDynamic);
           break;
         case DynamicItemType.liveRecommend:
           //直播推荐
-          dynamicContent = DynamicContent(
-              description: moduleDynamic?.desc?.text ?? "", imageUrls: []);
+          dynamicContent = _buildWordDynamicContent(moduleDynamic);
           break;
         case DynamicItemType.forward:
           //转发
-          dynamicContent = DynamicContent(
-              description: moduleDynamic?.desc?.text ?? "", imageUrls: []);
+          dynamicContent = _buildWordDynamicContent(moduleDynamic);
           break;
         case DynamicItemType.unkown:
           //未知
-          dynamicContent = DynamicContent(
-              description: moduleDynamic?.desc?.text ?? "", imageUrls: []);
+          dynamicContent = _buildWordDynamicContent(moduleDynamic);
           break;
       }
       list.add(DynamicItem(
+          replyId: i.basic?.commentIdStr ?? '',
+          replyType: ReplyTypeCode.fromCode(i.basic?.commentType ?? 0),
           author: dynamicAuthor,
           type: DynamicItemTypeCode.fromCode(i.type ?? ""),
           content: dynamicContent,
           stat: dynamicStat));
     }
     return list;
+  }
+
+  static List<Emote> _buildEmoteList(List<raw.RichTextNode> richTextNodes) {
+    return [
+      for (var i in richTextNodes)
+        if (i.emoji != null)
+          Emote(
+              text: i.emoji?.text ?? '',
+              url: i.emoji?.iconUrl ?? '',
+              size: i.emoji?.size == 2 ? EmoteSize.big : EmoteSize.small)
+    ];
+  }
+
+  static DynamicContent _buildWordDynamicContent(
+      raw.ModuleDynamic? moduleDynamic) {
+    return WordDynamicContent(
+        description: moduleDynamic?.desc?.text ?? "",
+        emotes: _buildEmoteList(
+            moduleDynamic?.desc?.richTextNodes ?? <raw.RichTextNode>[]));
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bili_you/common/api/video_operation_api.dart';
+import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/pages/about/about_page.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player_panel.dart';
@@ -53,7 +54,8 @@ class UiTestController extends GetxController {
   void onInit() {
     _testPages = {
       "评论测试": ReplyPage(
-        bvid: "170001",
+        replyId: "170001",
+        replyType: ReplyType.video,
         pauseVideoCallback: () {},
       ),
       "许可": const LicensePage(

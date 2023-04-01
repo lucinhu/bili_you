@@ -1,3 +1,4 @@
+import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,13 +8,15 @@ import 'index.dart';
 class ReplyPage extends StatefulWidget {
   const ReplyPage({
     Key? key,
-    required this.bvid,
-    required this.pauseVideoCallback,
-  })  : tag = "ReplyPage:$bvid",
+    required this.replyId,
+    required this.replyType,
+    this.pauseVideoCallback,
+  })  : tag = "ReplyPage:$replyId",
         super(key: key);
-  final String bvid;
+  final String replyId;
+  final ReplyType replyType;
   final String tag;
-  final Function() pauseVideoCallback;
+  final Function()? pauseVideoCallback;
 
   @override
   State<ReplyPage> createState() => _ReplyPageState();
@@ -62,7 +65,9 @@ class _ReplyPageState extends State<ReplyPage>
     super.build(context);
     return GetBuilder(
       init: ReplyController(
-          bvid: widget.bvid, pauseVideoCallback: widget.pauseVideoCallback),
+          bvid: widget.replyId,
+          replyType: widget.replyType,
+          pauseVideoCallback: widget.pauseVideoCallback),
       tag: widget.tag,
       builder: (controller) => _buildView(controller),
       id: 'reply',

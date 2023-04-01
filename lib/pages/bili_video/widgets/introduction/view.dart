@@ -1,6 +1,7 @@
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
+import 'package:bili_you/common/widget/icon_text_button.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -372,44 +373,6 @@ class _IntroductionPageState extends State<IntroductionPage>
           );
         }
       },
-    );
-  }
-}
-
-class IconTextButton extends StatelessWidget {
-  const IconTextButton({
-    super.key,
-    required this.onPressed,
-    required this.icon,
-    required this.text,
-    this.selected = false,
-  });
-  final Function()? onPressed;
-  final Icon icon;
-  final Text text;
-
-  ///是否被选上
-  final bool selected;
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        foregroundColor: selected
-            ? MaterialStatePropertyAll(Theme.of(context).colorScheme.onPrimary)
-            : null,
-        backgroundColor: selected
-            ? MaterialStatePropertyAll(Theme.of(context).colorScheme.primary)
-            : null,
-        elevation: const MaterialStatePropertyAll(0),
-        padding: const MaterialStatePropertyAll(EdgeInsets.all(5)),
-      ),
-      onPressed: onPressed ?? () {},
-      child: FittedBox(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [icon, text],
-        ),
-      ),
     );
   }
 }

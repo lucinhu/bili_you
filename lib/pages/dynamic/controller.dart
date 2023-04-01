@@ -4,6 +4,7 @@ import 'package:bili_you/common/api/dynamic_api.dart';
 import 'package:bili_you/common/models/local/dynamic/dynamic_item.dart';
 import 'package:bili_you/pages/dynamic/widget/dynamic_item_card.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DynamicController extends GetxController {
@@ -15,6 +16,11 @@ class DynamicController extends GetxController {
   // }
   int currentPage = 1;
   List<DynamicItemCard> dynamicItemCards = [];
+  ScrollController scrollController = ScrollController();
+  void animateToTop() {
+    scrollController.animateTo(0,
+        duration: const Duration(milliseconds: 200), curve: Curves.linear);
+  }
 
   Future<bool> _loadDynamicItemCards() async {
     late List<DynamicItem> items;

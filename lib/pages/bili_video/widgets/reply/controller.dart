@@ -12,17 +12,21 @@ import 'package:get/get.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
 
 class ReplyController extends GetxController {
-  ReplyController({required this.bvid, required this.pauseVideoCallback});
+  ReplyController(
+      {required this.bvid,
+      required this.replyType,
+      required this.pauseVideoCallback});
   String bvid;
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
   ScrollController scrollController = ScrollController();
   List<Widget> replyList = <Widget>[];
   int pageNum = 1;
+  final ReplyType replyType;
   RxString sortTypeText = "按热度".obs;
   RxString sortInfoText = "热门评论".obs;
   ReplySort _replySort = ReplySort.like;
-  final Function() pauseVideoCallback;
+  final Function()? pauseVideoCallback;
 
   //切换排列方式
   void toggleSort() {
@@ -65,7 +69,7 @@ class ReplyController extends GetxController {
     late ReplyInfo replyInfo;
     try {
       replyInfo = await ReplyApi.getReply(
-          oid: bvid, pageNum: pageNum, type: ReplyType.video, sort: _replySort);
+          oid: bvid, pageNum: pageNum, type: replyType, sort: _replySort);
     } catch (e) {
       log("评论区加载失败,_addReplyItems:$e");
       return false;

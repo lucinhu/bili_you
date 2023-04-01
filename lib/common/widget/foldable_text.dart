@@ -126,8 +126,9 @@ class _FoldableTextState extends State<FoldableText> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (context, constraints) =>
-          _richText(constraints.maxWidth, constraints.minWidth),
+      builder: (context, constraints) => (widget.text?.isNotEmpty ?? false)
+          ? _richText(constraints.maxWidth, constraints.minWidth)
+          : const SizedBox(),
     );
   }
 }
