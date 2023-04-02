@@ -157,4 +157,7 @@ class ApiConstants {
 
   ///评论点赞
   static const String replyAddLike = "$apiBase/x/v2/reply/action";
+
+  ///上报历史记录
+  static const String heartBeat = "$apiBase/x/click-interface/web/heartbeat";
 }

@@ -30,6 +30,8 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
   GlobalKey aspectRatioKey = GlobalKey();
   BiliDanmaku? danmaku;
   Widget? controllPanel;
+  //每15秒执行一次的timer，用来更新播放记录
+  late Timer heartBeat;
 
   Future<bool> loadVideo(String bvid, int cid) async {
     if (widget.controller._videoAudioController != null) {
@@ -112,8 +114,6 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
     }
   }
 
-  void init() {}
-
   @override
   void initState() {
     danmaku = widget.buildDanmaku?.call(context, widget.controller);
@@ -123,12 +123,18 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
         aspectRatioKey.currentState!.setState(() {});
       }
     };
+    //定时汇报历史记录
+    widget.controller._reportHistory();
+    heartBeat = Timer.periodic(const Duration(seconds: 15), (timer) {
+      widget.controller._reportHistory();
+    });
     widget.controller.biliDanmakuController = danmaku?.controller;
     super.initState();
   }
 
   @override
   void dispose() {
+    heartBeat.cancel();
     widget.onDispose?.call(context, widget.controller);
     super.dispose();
   }
@@ -306,6 +312,16 @@ class BiliVideoPlayerController {
     );
   }
 
+  //汇报一次历史记录
+  Future<void> _reportHistory() async {
+    try {
+      VideoPlayApi.reportHistory(
+          bvid: bvid, cid: cid, playedTime: (await position).inSeconds);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   void toggleFullScreen() {
     if (isFullScreen) {
       isFullScreen = false;
@@ -350,6 +366,7 @@ class BiliVideoPlayerController {
   }
 
   void dispose() {
+    _reportHistory();
     _videoAudioController?.dispose();
   }
 
@@ -391,15 +408,18 @@ class BiliVideoPlayerController {
   Future<void> play() async {
     _playWhenInitialize = true;
     await _videoAudioController?.play();
+    _reportHistory();
   }
 
   Future<void> pause() async {
     _playWhenInitialize = false;
     await _videoAudioController?.pause();
+    _reportHistory();
   }
 
   Future<void> seekTo(Duration position) async {
     await _videoAudioController?.seekTo(position);
+    _reportHistory();
   }
 
   Future<void> setPlayBackSpeed(double speed) async {

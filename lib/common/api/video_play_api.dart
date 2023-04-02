@@ -126,6 +126,15 @@ class VideoPlayApi {
         lastPlayCid: response.data!.lastPlayCid ?? 0,
         lastPlayTime: Duration(milliseconds: response.data!.lastPlayTime ?? 0));
   }
+
+  static Future<void> reportHistory(
+      {required String bvid, required int cid, required int playedTime}) async {
+    var response = await MyDio.dio.post(ApiConstants.heartBeat,
+        queryParameters: {'bvid': bvid, 'cid': cid, 'played_time': playedTime});
+    if (response.data['code'] != 0) {
+      throw 'reportHistory: code:${response.data['code']},message:${response.data['message']}';
+    }
+  }
 }
 
 ///视频流格式标识
