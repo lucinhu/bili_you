@@ -227,11 +227,11 @@ class IntroductionController extends GetxController {
     try {
       ClickAddShareResult result = await VideoOperationApi.share(bvid: bvid);
       if (result.isSuccess) {
-        Share.share('${ApiConstants.bilibiliBase}/video/$bvid');
         videoInfo.shareNum = result.currentShareNum;
       } else {
-        Get.rawSnackbar(message: '分享失败:${result.error}');
+        log('分享失败:${result.error}');
       }
+      Share.share('${ApiConstants.bilibiliBase}/video/$bvid');
     } catch (e) {
       Get.rawSnackbar(message: '分享失败:$e');
     }
