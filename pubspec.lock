@@ -277,18 +277,18 @@ packages:
     dependency: "direct main"
     description:
       name: dio_cookie_manager
-      sha256: "326f2940d2dc48428350615b53cbda6904934e0900fbf791d36be0c72e05e39f"
+      sha256: b45f11c2fcbccf39c5952ab68910b3a155486c4fa730ceb4ce867c4943169ea1
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.3"
+    version: "2.1.4"
   dynamic_color:
     dependency: "direct main"
     description:
       name: dynamic_color
-      sha256: c4a508284b14ec4dda5adba2c28b2cdd34fbae1afead7e8c52cad87d51c5405b
+      sha256: bbebb1b7ebed819e0ec83d4abdc2a8482d934f6a85289ffc1c6acf7589fa2aad
       url: "https://pub.dev"
     source: hosted
-    version: "1.6.2"
+    version: "1.6.3"
   easy_refresh:
     dependency: "direct main"
     description:
@@ -1042,26 +1042,26 @@ packages:
     dependency: "direct main"
     description:
       name: video_player
-      sha256: "868a139229acb5018d22aded3eb9cb4767ff43a8216573c086b6c535a4957481"
+      sha256: de95f0e9405f29b5582573d4166132e71f83b3158aac14e8ee5767a54f4f1fbd
       url: "https://pub.dev"
     source: hosted
-    version: "2.6.0"
+    version: "2.6.1"
   video_player_android:
     dependency: transitive
     description:
       name: video_player_android
-      sha256: e7de6fabe5d96048cd8f4d710f25c3df84bb3cab8b22da6c082bd8f39e316984
+      sha256: a592048a711d5739d9cea2255d425779f138d41095b9149bda60ce4bc1af8871
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.3"
+    version: "2.4.4"
   video_player_avfoundation:
     dependency: transitive
     description:
       name: video_player_avfoundation
-      sha256: "90468226c8687adf7b567d9bb42c25588783c4d30509af1fbd663b2dd049f700"
+      sha256: af308d08c672d5ff718c60127665249617c37a709cb8f0a18dd28a0360299b7c
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.2"
+    version: "2.4.3"
   video_player_platform_interface:
     dependency: transitive
     description:
@@ -1074,10 +1074,10 @@ packages:
     dependency: transitive
     description:
       name: video_player_web
-      sha256: fb3bbeaf0302cb0c31340ebd6075487939aa1fe3b379d1a8784ef852b679940e
+      sha256: "44ce41424d104dfb7cf6982cc6b84af2b007a24d126406025bf40de5d481c74c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.15"
+    version: "2.0.16"
   vm_service:
     dependency: transitive
     description:
@@ -1170,10 +1170,10 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter_android
-      sha256: "9e223788e1954087dac30d813dc151f8e12f09f1139f116ce20b5658893f3627"
+      sha256: "5906c9aa8c88ed372b2ad3c88c942790b4fb16f73fdd1c0647b4d747d9cf5b3f"
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.4"
+    version: "3.4.5"
   webview_flutter_platform_interface:
     dependency: transitive
     description:

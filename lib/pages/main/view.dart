@@ -27,6 +27,13 @@ class _MainPageState extends State<MainPage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    controller.onClose();
+    controller.onDelete();
+    super.dispose();
+  }
+
   // 主视图
   Widget _buildView() {
     return Obx(() => Scaffold(
@@ -37,6 +44,7 @@ class _MainPageState extends State<MainPage> {
             children: controller.pages,
           ),
           bottomNavigationBar: NavigationBar(
+            height: 64,
             destinations: const [
               NavigationDestination(
                 icon: Icon(Icons.home_outlined),
@@ -63,12 +71,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<MainController>(
-      init: MainController(),
-      id: "main",
-      builder: (_) {
-        return _buildView();
-      },
-    );
+    return _buildView();
   }
 }

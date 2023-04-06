@@ -105,7 +105,7 @@ class SearchInputPageController extends GetxController {
       _saveSearchedWord(keyWord.trim());
       // Get.to(() => SearchResultPage(
       //     key: ValueKey('SearchResultPage:$keyWord'), keyWord: keyWord));
-      Navigator.of(Get.context!).push(GetPageRoute(
+      Navigator.of(Get.context!).pushReplacement(GetPageRoute(
           page: () => SearchResultPage(
               key: ValueKey('SearchResultPage:$keyWord'), keyWord: keyWord)));
     } else if (keyWord.isEmpty && defaultSearchWord.isNotEmpty) {

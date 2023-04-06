@@ -165,7 +165,7 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
                             if (snapshot.data == true) {
                               return Stack(children: [
                                 PhotoView.customChild(
-                                  enableRotation: true,
+                                  // enableRotation: true,
                                   child: Center(
                                     child: AspectRatio(
                                       aspectRatio: widget

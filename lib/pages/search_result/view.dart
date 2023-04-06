@@ -1,4 +1,5 @@
 import 'package:bili_you/common/api/search_api.dart';
+import 'package:bili_you/pages/search_input/view.dart';
 
 import 'package:bili_you/pages/search_tab_view/view.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,22 @@ class SearchResultPage extends StatefulWidget {
 
 class _SearchResultPageState extends State<SearchResultPage>
     with AutomaticKeepAliveClientMixin {
+  late SearchResultController controller;
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    controller = Get.put(SearchResultController(keyWord: widget.keyWord));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.onClose();
+    controller.onDelete();
+    super.dispose();
+  }
 
   AppBar _appBar(BuildContext context, SearchResultController controller) {
     return AppBar(
@@ -33,7 +48,9 @@ class _SearchResultPageState extends State<SearchResultPage>
                   border: InputBorder.none,
                 ),
                 onTap: () {
-                  Get.back();
+                  Navigator.of(context).pushReplacement(GetPageRoute(
+                      page: () =>
+                          SearchInputPage(defaultSearchWord: widget.keyWord)));
                 },
               ),
             ),
@@ -75,39 +92,33 @@ class _SearchResultPageState extends State<SearchResultPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return GetBuilder<SearchResultController>(
-      init: SearchResultController(keyWord: widget.keyWord),
-      id: "search_result",
-      builder: (controller) {
-        return Scaffold(
-          appBar: _appBar(context, controller),
-          body: TabBarView(
-            controller: controller.tabController,
-            children: [
-              SearchTabViewPage(
-                keyWord: widget.keyWord,
-                searchType: SearchType.video,
-              ),
-              SearchTabViewPage(
-                keyWord: widget.keyWord,
-                searchType: SearchType.bangumi,
-              ),
-              SearchTabViewPage(
-                keyWord: widget.keyWord,
-                searchType: SearchType.liveRoom,
-              ),
-              SearchTabViewPage(
-                keyWord: widget.keyWord,
-                searchType: SearchType.movie,
-              ),
-              SearchTabViewPage(
-                keyWord: widget.keyWord,
-                searchType: SearchType.user,
-              )
-            ],
+    return Scaffold(
+      appBar: _appBar(context, controller),
+      body: TabBarView(
+        controller: controller.tabController,
+        children: [
+          SearchTabViewPage(
+            keyWord: widget.keyWord,
+            searchType: SearchType.video,
           ),
-        );
-      },
+          SearchTabViewPage(
+            keyWord: widget.keyWord,
+            searchType: SearchType.bangumi,
+          ),
+          SearchTabViewPage(
+            keyWord: widget.keyWord,
+            searchType: SearchType.liveRoom,
+          ),
+          SearchTabViewPage(
+            keyWord: widget.keyWord,
+            searchType: SearchType.movie,
+          ),
+          SearchTabViewPage(
+            keyWord: widget.keyWord,
+            searchType: SearchType.user,
+          )
+        ],
+      ),
     );
   }
 }

@@ -94,19 +94,11 @@ class ReplyItemWidget extends StatelessWidget {
           if (url == null || !url.hasScheme) {
             pauseVideoPlayer?.call();
             //若不是链接,去搜索
-            // Get.to(() => SearchResultPage(
-            //     key: ValueKey("SearchResultPage:${i.url}"), keyWord: i.url));
-            Navigator.of(context).push(GetPageRoute(
-                page: () => SearchResultPage(
-                    key: ValueKey("SearchResultPage:${i.url}"),
-                    keyWord: i.url)));
+            Navigator.of(context).push(
+                GetPageRoute(page: () => SearchResultPage(keyWord: i.url)));
           } else {
             pauseVideoPlayer?.call();
             //若是链接跳转到webview
-            // Get.to(() => BiliBrowser(
-            //     key: ValueKey("BiliBrowser:${i.url}"),
-            //     url: url,
-            //     title: i.title));
             Navigator.of(context).push(GetPageRoute(
                 page: () => BiliBrowser(
                     key: ValueKey("BiliBrowser:${i.url}"),
@@ -124,24 +116,29 @@ class ReplyItemWidget extends StatelessWidget {
       spans.add(WidgetSpan(
           child: GestureDetector(
         onTap: () {
-          pauseVideoPlayer?.call();
+          // pauseVideoPlayer?.call();
           // Get.to(
           //     () => ViewImage(key: ValueKey("ViewImage:${i.url}"), url: i.url));
           Navigator.of(context).push(GetPageRoute(
               page: () =>
                   ViewImage(key: ValueKey("ViewImage:${i.url}"), url: i.url)));
         },
-        child: Hero(
-          tag: i.url,
-          transitionOnUserGestures: true,
-          child: CachedNetworkImage(
-            placeholder: () => Container(
-              color: Get.theme.colorScheme.primary,
+        child: Padding(
+          padding: const EdgeInsets.all(2),
+          child: Hero(
+            tag: i.url,
+            transitionOnUserGestures: true,
+            child: CachedNetworkImage(
+              placeholder: () => Container(
+                color: Get.theme.colorScheme.primary,
+              ),
+              imageUrl: i.url,
+              fit: BoxFit.cover,
+              width: Get.size.width / 3,
+              height: Get.size.width / 3,
+              cacheWidth: ((Get.size.width / 3) * Get.pixelRatio).toInt(),
+              cacheManager: CacheManager(Config(CacheKeys.replyImageKey)),
             ),
-            imageUrl: i.url,
-            width: 200,
-            cacheWidth: 200 * Get.pixelRatio.toInt(),
-            cacheManager: CacheManager(Config(CacheKeys.replyImageKey)),
           ),
         ),
       )));

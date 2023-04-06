@@ -68,7 +68,7 @@ class RecommendCard extends StatelessWidget {
               alignment: Alignment.bottomLeft,
               children: [
                 AspectRatio(
-                  aspectRatio: 16 / 9,
+                  aspectRatio: 16 / 10,
                   child: LayoutBuilder(builder: (context, boxConstraints) {
                     return Hero(
                         tag: "BiliVideoPlayer:$bvid",

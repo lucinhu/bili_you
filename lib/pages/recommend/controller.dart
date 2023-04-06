@@ -56,7 +56,7 @@ class RecommendController extends GetxController {
     return true;
   }
 
-  void onRefresh() async {
+  Future<void> onRefresh() async {
     recommendViewList.clear();
     update(["recommend"]);
     await cacheManager.emptyCache();
@@ -68,7 +68,7 @@ class RecommendController extends GetxController {
     update(["recommend"]);
   }
 
-  void onLoad() async {
+  Future<void> onLoad() async {
     if (await _addRecommendItems()) {
       refreshController.finishLoad(IndicatorResult.success);
       refreshController.resetFooter();

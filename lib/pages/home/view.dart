@@ -19,29 +19,29 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
+  late HomeController controller;
+  late TabController tabController;
+  final RecommendPage recommendPage = const RecommendPage();
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    final TabController tabController =
-        TabController(length: 2, vsync: this, initialIndex: 1);
-
-    return HomeViewGetX(
-      tabController: tabController,
-    );
+  void initState() {
+    controller = Get.put(HomeController());
+    tabController = TabController(length: 5, vsync: this, initialIndex: 1);
+    super.initState();
   }
-}
 
-class HomeViewGetX extends GetView<HomeController> {
-  const HomeViewGetX({Key? key, required this.tabController}) : super(key: key);
-  final TabController tabController;
-  final RecommendPage recommendPage = const RecommendPage();
+  @override
+  void dispose() {
+    controller.onClose();
+    controller.onDelete();
+    super.dispose();
+  }
 
   // 主视图
   Widget _buildView(context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 64,
+        toolbarHeight: 56,
         title: MaterialButton(
           onLongPress: () {
             //长按进入测试界面
@@ -67,7 +67,7 @@ class HomeViewGetX extends GetView<HomeController> {
             controller.refreshDefaultSearchWord();
           },
           color: Theme.of(context).colorScheme.surfaceVariant,
-          height: 56,
+          height: 50,
           elevation: 0,
           focusElevation: 0,
           hoverElevation: 0,
@@ -140,10 +140,20 @@ class HomeViewGetX extends GetView<HomeController> {
         ),
         centerTitle: true,
         bottom: TabBar(
-          splashFactory: NoSplash.splashFactory,
-          labelStyle: const TextStyle(height: 2.5, fontSize: 15),
-          labelPadding: const EdgeInsets.only(bottom: 6),
-          tabs: const [Text("直播"), Text("推荐")],
+          isScrollable: true,
+          tabs: const [
+            Tab(text: "直播"),
+            Tab(text: "推荐"),
+            Tab(
+              text: '热门',
+            ),
+            Tab(
+              text: '排行榜',
+            ),
+            Tab(
+              text: '番剧',
+            ),
+          ],
           controller: tabController,
           onTap: (index) {
             //点击“推荐”回到顶
@@ -159,7 +169,16 @@ class HomeViewGetX extends GetView<HomeController> {
           const Center(
             child: Text("该功能暂无"),
           ),
-          recommendPage
+          recommendPage,
+          const Center(
+            child: Text("该功能暂无"),
+          ),
+          const Center(
+            child: Text("该功能暂无"),
+          ),
+          const Center(
+            child: Text("该功能暂无"),
+          ),
         ],
       ),
     );
@@ -167,12 +186,7 @@ class HomeViewGetX extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<HomeController>(
-      init: HomeController(),
-      id: "home",
-      builder: (_) {
-        return _buildView(context);
-      },
-    );
+    super.build(context);
+    return _buildView(context);
   }
 }

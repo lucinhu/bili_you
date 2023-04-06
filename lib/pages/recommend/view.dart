@@ -15,13 +15,32 @@ class _RecommendPageState extends State<RecommendPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  late RecommendController controller;
+  @override
+  void initState() {
+    controller = Get.put(RecommendController());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.onClose();
+    controller.onDelete();
+    super.dispose();
+  }
 
   // 主视图
-  Widget _buildView(BuildContext context, RecommendController controller) {
+  Widget _buildView(BuildContext context) {
     return EasyRefresh.builder(
       refreshOnStart: true,
-      onLoad: controller.onLoad,
-      onRefresh: controller.onRefresh,
+      onLoad: () async {
+        await controller.onLoad();
+        setState(() {});
+      },
+      onRefresh: () async {
+        await controller.onRefresh();
+        setState(() {});
+      },
       header: const ClassicHeader(
         processedDuration: Duration.zero,
         showMessage: false,
@@ -52,7 +71,7 @@ class _RecommendPageState extends State<RecommendPage>
             crossAxisCount: controller.recommendColumnCount,
             mainAxisExtent: (MediaQuery.of(context).size.width /
                         controller.recommendColumnCount) *
-                    9 /
+                    10 /
                     16 +
                 20 +
                 58),
@@ -67,12 +86,6 @@ class _RecommendPageState extends State<RecommendPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return GetBuilder<RecommendController>(
-      init: RecommendController(),
-      id: "recommend",
-      builder: (controller) {
-        return _buildView(context, controller);
-      },
-    );
+    return _buildView(context);
   }
 }

@@ -1,11 +1,11 @@
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/utils/my_dio.dart';
 import 'package:bili_you/common/utils/settings.dart';
+import 'package:bili_you/pages/main/index.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'pages/splash/view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
                 ? darkDynamic ?? BiliTheme.dynamic.themeDataDark.colorScheme
                 : SettingsUtil.currentTheme.themeDataDark.colorScheme,
             useMaterial3: true),
-        home: const SplashPage(),
+        home: const MainPage(),
       );
     }));
   }

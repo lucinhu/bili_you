@@ -126,21 +126,15 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
                 controller: _refreshController,
                 childBuilder: (context, physics) => ListView.builder(
                   physics: physics,
-                  itemCount: _replyReplies.length,
+                  itemCount: _replyReplies.length + 1,
                   itemBuilder: (context, index) {
                     if (index == 0) {
                       return Padding(
                         padding: const EdgeInsets.only(top: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _rootReply,
-                            _replyReplies[index],
-                          ],
-                        ),
+                        child: _rootReply,
                       );
                     }
-                    return _replyReplies[index];
+                    return _replyReplies[index - 1];
                   },
                   clipBehavior: Clip.antiAlias,
                 ),
