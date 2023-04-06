@@ -1,4 +1,6 @@
+import 'package:bili_you/pages/search_result/view.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class BiliBrowser extends StatefulWidget {
@@ -22,6 +24,29 @@ class _BiliBrowserState extends State<BiliBrowser> {
   void initState() {
     webViewController.loadRequest(widget.url);
     webViewController.setNavigationDelegate(NavigationDelegate(
+        onNavigationRequest: (request) {
+          if (request.url.startsWith('bilibili://video/')) {
+            //跳转av/bv视频
+            String str = Uri.parse(request.url).pathSegments[0];
+            String avOrbv = '';
+            int? av = int.tryParse(str);
+            if (av != null) {
+              avOrbv = 'av$av';
+            } else if (str.startsWith('BV')) {
+              avOrbv = str;
+            }
+            if (avOrbv.isNotEmpty) {
+              //视频跳转
+              Navigator.of(context).pushReplacement(GetPageRoute(
+                page: () => SearchResultPage(keyWord: avOrbv),
+              ));
+            }
+          }
+          if (request.url.startsWith('bilibili://')) {
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
+        },
         onProgress: (progress) {
           if (progressBarKey.currentState?.mounted ?? false) {
             progressBarKey.currentState?.setState(() {
