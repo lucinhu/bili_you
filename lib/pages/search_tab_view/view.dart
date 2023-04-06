@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bili_you/common/api/search_api.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +22,41 @@ class _SearchTabViewPageState extends State<SearchTabViewPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  late SearchTabViewController controller;
+
+  @override
+  void initState() {
+    controller = Get.put(SearchTabViewController(
+        keyWord: widget.keyWord, searchType: widget.searchType));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.onClose();
+    controller.onDelete();
+    super.dispose();
+  }
 
   // 主视图
-  Widget _buildView(SearchTabViewController controller) {
+  Widget _buildView() {
+    if (controller.keyWord != widget.keyWord) {
+      controller.keyWord = widget.keyWord;
+      Timer(const Duration(seconds: 1), () {
+        controller.jumpAvBvidWhenDetected();
+      });
+    }
+    controller.searchType = widget.searchType;
     return EasyRefresh.builder(
       refreshOnStart: true,
-      onLoad: controller.onLoad,
-      onRefresh: controller.onRefresh,
+      onLoad: () async {
+        await controller.onLoad();
+        setState(() {});
+      },
+      onRefresh: () async {
+        await controller.onRefresh();
+        setState(() {});
+      },
       header: const ClassicHeader(
         processedDuration: Duration.zero,
         safeArea: false,
@@ -64,14 +94,6 @@ class _SearchTabViewPageState extends State<SearchTabViewPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return GetBuilder<SearchTabViewController>(
-      tag: widget.searchType.value,
-      init: SearchTabViewController(
-          keyWord: widget.keyWord, searchType: widget.searchType),
-      id: "search_video_result",
-      builder: (controller) {
-        return _buildView(controller);
-      },
-    );
+    return _buildView();
   }
 }

@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:bili_you/common/api/bangumi_api.dart';
 import 'package:bili_you/common/models/local/bangumi/bangumi_info.dart';
 import 'package:bili_you/common/models/local/search/search_bangumi_item.dart';
 import 'package:bili_you/common/models/local/search/search_video_item.dart';
 import 'package:bili_you/common/models/local/video/part_info.dart';
+import 'package:bili_you/common/utils/bvid_avid_util.dart';
 import 'package:bili_you/common/widget/bangumi_tile_item.dart';
 import 'package:bili_you/pages/bili_video/index.dart';
 import 'package:get/get.dart';
@@ -19,8 +22,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class SearchTabViewController extends GetxController {
   SearchTabViewController({required this.keyWord, required this.searchType});
-  late final String keyWord;
-  late final SearchType searchType;
+  String keyWord;
+  SearchType searchType;
 
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
@@ -28,10 +31,6 @@ class SearchTabViewController extends GetxController {
       CacheManager(Config(CacheKeys.searchResultItemCoverKey));
   List<Widget> searchItemWidgetList = <Widget>[];
   int currentPage = 1;
-
-  _initData() {
-    // update(["search_video_result"]);
-  }
 
 //搜索视频
   Future<bool> loadSearchVideoItemWidgtLists() async {
@@ -225,27 +224,44 @@ class SearchTabViewController extends GetxController {
     } else {
       refreshController.finishLoad(IndicatorResult.fail);
     }
-    update(["search_video_result"]);
   }
 
   Future<void> onRefresh() async {
     currentPage = 1;
     await cacheManager.emptyCache();
     searchItemWidgetList.clear();
-    update(["search_video_result"]);
     bool success = await selectType();
     if (success) {
       refreshController.finishRefresh();
     } else {
       refreshController.finishRefresh(IndicatorResult.fail);
     }
-    update(["search_video_result"]);
+  }
+
+  ///当检测到关键词是bvid或av号时，自动跳转对应的视频
+  void jumpAvBvidWhenDetected() {
+    String bvid = '';
+    if (BvidAvidUtil.isBvid(keyWord)) {
+      bvid = keyWord;
+    }
+    String upperCaseKeyWord = keyWord.toUpperCase();
+    int? av = int.tryParse(upperCaseKeyWord.replaceFirst('AV', ''));
+    if (upperCaseKeyWord.startsWith('AV') && av != null) {
+      bvid = BvidAvidUtil.av2Bvid(av);
+    }
+    if (bvid.isNotEmpty) {
+      VideoInfoApi.getVideoParts(bvid: bvid).then((value) =>
+          Navigator.of(Get.context!).push(GetPageRoute(
+              page: () => BiliVideoPage(bvid: bvid, cid: value.first.cid))));
+    }
   }
 
   @override
-  void onReady() {
-    super.onReady();
-    _initData();
+  void onInit() {
+    Timer(const Duration(seconds: 1), () {
+      jumpAvBvidWhenDetected();
+    });
+    super.onInit();
   }
 
   @override
