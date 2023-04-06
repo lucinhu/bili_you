@@ -49,6 +49,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
       reply: replyReplyInfo.rootReply,
       isUp: replyReplyInfo.rootReply.member.mid == replyReplyInfo.upperMid,
       pauseVideoPlayer: widget.pauseVideoCallback,
+      showPreReply: false,
     );
     for (var i in replyReplyInfo.replies) {
       if (_replyReplies.isEmpty) {
@@ -69,6 +70,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
         reply: i,
         isUp: i.member.mid == replyReplyInfo.upperMid,
         pauseVideoPlayer: widget.pauseVideoCallback,
+        showPreReply: false,
       ));
     }
     _pageNum.value++;

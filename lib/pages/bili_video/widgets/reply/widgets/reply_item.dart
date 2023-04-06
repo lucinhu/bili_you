@@ -24,10 +24,12 @@ class ReplyItemWidget extends StatelessWidget {
       required this.reply,
       this.isTop = false,
       this.isUp = false,
+      this.showPreReply = true,
       this.pauseVideoPlayer});
   final ReplyItem reply;
   final bool isTop; //是否是置顶
   final bool isUp; //是否是up主
+  final bool showPreReply; //是否显示评论的外显示评论
   final Function()? pauseVideoPlayer;
 
   static final CacheManager emoteCacheManager =
@@ -373,7 +375,7 @@ class ReplyItemWidget extends StatelessWidget {
                     Builder(
                       builder: (context) {
                         Widget? subReplies;
-                        if (reply.preReplies.isNotEmpty) {
+                        if (reply.replyCount != 0 && showPreReply == true) {
                           List<Widget> preSubReplies = []; //预显示在外的楼中楼
                           for (var j in reply.preReplies) {
                             //添加预显示在外楼中楼评论条目
@@ -392,6 +394,16 @@ class ReplyItemWidget extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                 )));
                           }
+
+                          preSubReplies.add(Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              '共 ${StringFormatUtils.numFormat(reply.replyCount)} 条回复 >',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ));
+
                           //预显示在外楼中楼控件
                           subReplies = Container(
                               decoration: BoxDecoration(
