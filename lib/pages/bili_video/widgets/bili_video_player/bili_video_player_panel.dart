@@ -64,6 +64,8 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
   void initState() {
     widget.controller._isPlayerPlaying =
         widget.controller._biliVideoPlayerController.isPlaying;
+    //进入视频时如果没有在播放就显示
+    widget.controller._show = !widget.controller._isPlayerPlaying;
     widget.controller._duration =
         widget.controller._biliVideoPlayerController.duration;
     widget.controller.asepectRatio =
@@ -150,9 +152,12 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
               //双击暂停/播放
               if (widget.controller._isPlayerPlaying) {
                 widget.controller._biliVideoPlayerController.pause();
+                widget.controller._show = true;
               } else {
                 widget.controller._biliVideoPlayerController.play();
+                widget.controller._show = false;
               }
+              setState(() {});
             },
             onLongPress: () {
               widget.controller._selectingSpeed =

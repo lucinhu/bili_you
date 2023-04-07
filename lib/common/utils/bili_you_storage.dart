@@ -40,6 +40,8 @@ class SettingsStorageKeys {
   static const String showHotSearch = "showHotSearch";
   static const String defaultShowDanmaku = "defaultShowDanmaku";
   static const String preferVideoQuality = "preferVideoQuality";
+  static const String autoPlayOnInit = "autoPlayOnInit";
+  static const String fullScreenPlayOnEnter = "fullScreenPlayOnEnter";
 
   ///偏好视频编码（avc或hev）
   static const String preferVideoCodec = "preferVideoCodec";

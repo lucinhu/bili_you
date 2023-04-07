@@ -42,6 +42,16 @@ class CommonSettingsPage extends StatelessWidget {
               settingsKey: SettingsStorageKeys.defaultShowDanmaku,
               defualtValue: true),
           const SettingsLabel(text: '视频'),
+          const SettingsSwitchTile(
+              title: '详情页直接播放',
+              subTitle: '是否在进入详情页后自动播放',
+              settingsKey: SettingsStorageKeys.autoPlayOnInit,
+              defualtValue: true),
+          const SettingsSwitchTile(
+              title: '直接全屏',
+              subTitle: '是否在进入详情页且视频加载完成后直接全屏',
+              settingsKey: SettingsStorageKeys.fullScreenPlayOnEnter,
+              defualtValue: false),
           SettingsRadiosTile(
             title: '偏好画质',
             subTitle: '视频播放时默认偏向选择的画质',

@@ -37,6 +37,7 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
   Widget? controllPanel;
   //每15秒执行一次的timer，用来更新播放记录
   late Timer heartBeat;
+  bool isFirstEnter = true;
 
   Future<bool> loadVideo(String bvid, int cid) async {
     if (widget.controller._videoAudioController != null) {
@@ -105,11 +106,30 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
         videoHeaders: VideoPlayApi.videoPlayerHttpHeaders,
         autoWakelock: true);
     await widget.controller._videoAudioController!.ensureInitialized();
-    if (widget.controller._playWhenInitialize) {
-      await widget.controller._videoAudioController!.play();
+    //是否是第一次进入
+    if (isFirstEnter) {
+      //是否进入就播放
+      if (widget.controller._playWhenInitialize) {
+        await widget.controller._videoAudioController!.play();
+      }
+      //是否进入就全屏
+      bool isFullScreenPlayOnEnter = BiliYouStorage.settings
+          .get(SettingsStorageKeys.fullScreenPlayOnEnter, defaultValue: false);
+      if (isFullScreenPlayOnEnter) {
+        widget.controller.isFullScreen = false;
+        widget.controller.toggleFullScreen();
+      }
+      isFirstEnter = false;
+    } else {
+      //如果不是第一次进入的话就是刷新
+      //刷新后是否播放
+      if (widget.controller._playWhenRefresh) {
+        await widget.controller._videoAudioController!.play();
+      }
     }
     widget.controller._videoAudioController!
         .seekTo(widget.controller._initVideoPosition);
+
     return true;
   }
 
@@ -121,6 +141,10 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
 
   @override
   void initState() {
+    //是否进入时即播放
+    widget.controller._playWhenInitialize = BiliYouStorage.settings
+        .get(SettingsStorageKeys.autoPlayOnInit, defaultValue: true);
+
     danmaku = widget.buildDanmaku?.call(context, widget.controller);
     controllPanel = widget.buildControllPanel?.call(context, widget.controller);
     widget.controller._updateAsepectRatioWidget = () {
@@ -228,6 +252,7 @@ class BiliVideoPlayerController {
   String bvid;
   int cid;
   bool isFullScreen = false;
+  bool _playWhenRefresh = true;
   bool _playWhenInitialize = true;
   //初始进度
   Duration _initVideoPosition = Duration.zero;
@@ -287,7 +312,7 @@ class BiliVideoPlayerController {
         //将初始播放位置设为当前未知再刷新，这样就刷新后就能接上
         _initVideoPosition = value;
         //刷新后是否播放
-        _playWhenInitialize = isPlaying;
+        _playWhenRefresh = isPlaying;
         reloadWidget();
       },
     );
@@ -301,7 +326,7 @@ class BiliVideoPlayerController {
         //将初始播放位置设为当前未知再刷新，这样就刷新后就能接上
         _initVideoPosition = value;
         //刷新后是否播放
-        _playWhenInitialize = isPlaying;
+        _playWhenRefresh = isPlaying;
         reloadWidget();
       },
     );
@@ -401,12 +426,12 @@ class BiliVideoPlayerController {
   }
 
   Future<void> play() async {
-    _playWhenInitialize = true;
+    _playWhenRefresh = true;
     await _videoAudioController?.play();
   }
 
   Future<void> pause() async {
-    _playWhenInitialize = false;
+    _playWhenRefresh = false;
     await _videoAudioController?.pause();
   }
 
