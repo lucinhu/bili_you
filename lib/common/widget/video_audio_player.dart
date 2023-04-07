@@ -198,7 +198,7 @@ class VideoAudioController {
                   value.isBuffering = false;
                 } else if (!isVideoPlaying && !isAudioPlaying) {
                   //视频因外部原因暂停
-                  value.isPlaying = false;
+                  // value.isPlaying = false;
                   value.isBuffering = false;
                 }
               } else {
@@ -217,7 +217,7 @@ class VideoAudioController {
             if (value.isPlaying != _lastValue.isPlaying) {
               _lastValue.isPlaying = value.isPlaying;
               _callStateChangedListeners();
-              // log("isPlaying changed");
+              // log("isPlaying changed:${value.isPlaying}");
             }
             if (value.isEnd != _lastValue.isEnd) {
               _lastValue.isEnd = value.isEnd;

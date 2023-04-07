@@ -1,3 +1,4 @@
+import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:flutter/material.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
@@ -10,6 +11,7 @@ class RecommendCard extends StatelessWidget {
       {super.key,
       required this.imageUrl,
       required this.cacheManager,
+      required this.heroTagId,
       String? title,
       String? upName,
       String? timeLength,
@@ -34,6 +36,7 @@ class RecommendCard extends StatelessWidget {
   final String danmakuNum;
   final String bvid;
   final int cid;
+  final int heroTagId;
 
   final playInfoTextStyle = const TextStyle(
       color: Colors.white, fontSize: 10, overflow: TextOverflow.ellipsis);
@@ -46,6 +49,7 @@ class RecommendCard extends StatelessWidget {
     //     cid: cid,
     //   ),
     // );
+    HeroTagId.lastId = heroTagId;
     Navigator.of(context).push(GetPageRoute(
       page: () => BiliVideoPage(
         key: ValueKey('BiliVideoPage:$bvid'),
@@ -71,7 +75,7 @@ class RecommendCard extends StatelessWidget {
                   aspectRatio: 16 / 10,
                   child: LayoutBuilder(builder: (context, boxConstraints) {
                     return Hero(
-                        tag: "BiliVideoPlayer:$bvid",
+                        tag: heroTagId,
                         transitionOnUserGestures: true,
                         child: CachedNetworkImage(
                           cacheWidth: (boxConstraints.maxWidth *

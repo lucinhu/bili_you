@@ -1,3 +1,4 @@
+import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player_panel.dart';
@@ -49,6 +50,7 @@ class BiliVideoController extends GetxController
     );
     biliVideoPlayer = BiliVideoPlayer(
       biliVideoPlayerController,
+      heroTagId: HeroTagId.lastId,
       buildControllPanel: (context, biliVideoPlayerController) {
         return BiliVideoPlayerPanel(
           BiliVideoPlayerPanelController(biliVideoPlayerController),

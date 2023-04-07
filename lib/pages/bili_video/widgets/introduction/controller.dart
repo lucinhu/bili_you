@@ -9,6 +9,7 @@ import 'package:bili_you/common/models/local/video/click_like_result.dart';
 import 'package:bili_you/common/models/local/video/video_info.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/common/widget/video_tile_item.dart';
 import 'package:bili_you/pages/bili_video/view.dart';
 import 'package:flutter/material.dart';
@@ -133,6 +134,7 @@ class IntroductionController extends GetxController {
       log("构造相关视频失败:${e.toString()}");
     }
     for (var i in list) {
+      int heroTagId = HeroTagId.id++;
       relatedVideos.add(VideoTileItem(
         picUrl: i.coverUrl,
         bvid: i.bvid,
@@ -142,7 +144,9 @@ class IntroductionController extends GetxController {
         playNum: i.playNum,
         pubDate: i.pubDate,
         cacheManager: cacheManager,
+        heroTagId: heroTagId,
         onTap: (context) {
+          HeroTagId.lastId = heroTagId;
           pauseVideo();
           Navigator.of(context).push(GetPageRoute(
             page: () => BiliVideoPage(

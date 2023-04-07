@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/video_operation_api.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
+import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/pages/about/about_page.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player_panel.dart';
@@ -70,6 +71,7 @@ class UiTestController extends GetxController {
         aspectRatio: 16 / 9,
         child: BiliVideoPlayer(
           biliVideoPlayerController,
+          heroTagId: HeroTagId.lastId,
           buildDanmaku: (context, biliVideoPlayerController) {
             return BiliDanmaku(
                 controller: BiliDanmakuController(biliVideoPlayerController));

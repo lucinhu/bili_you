@@ -5,6 +5,7 @@ import 'package:bili_you/common/api/video_info_api.dart';
 import 'package:bili_you/common/models/local/user_space/user_video_search.dart';
 import 'package:bili_you/common/models/local/video/part_info.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/common/widget/video_tile_item.dart';
 import 'package:bili_you/pages/bili_video/index.dart';
 import 'package:easy_refresh/easy_refresh.dart';
@@ -32,6 +33,7 @@ class UserSpacePageController extends GetxController {
     //   return false;
     // }
     for (var item in userVideoSearch.videos) {
+      int heroTagId = HeroTagId.id++;
       searchItemWidgetList.add(VideoTileItem(
           picUrl: item.coverUrl,
           bvid: item.bvid,
@@ -41,7 +43,9 @@ class UserSpacePageController extends GetxController {
           playNum: item.playCount,
           pubDate: item.pubDate,
           cacheManager: cacheManager,
+          heroTagId: heroTagId,
           onTap: (context) {
+            HeroTagId.lastId = heroTagId;
             late List<PartInfo> videoParts;
             // Get.to(() => FutureBuilder(future: Future(() async {
             //       try {

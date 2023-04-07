@@ -16,6 +16,7 @@ class VideoTileItem extends StatelessWidget {
     required this.pubDate,
     required this.cacheManager,
     required this.onTap,
+    required this.heroTagId,
   });
   final String picUrl;
   final String bvid;
@@ -26,6 +27,7 @@ class VideoTileItem extends StatelessWidget {
   final int pubDate;
   final CacheManager cacheManager;
   final Function(BuildContext context) onTap;
+  final int heroTagId;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,7 @@ class VideoTileItem extends StatelessWidget {
                   children: [
                     LayoutBuilder(builder: (context, box) {
                       return Hero(
-                          tag: "BiliVideoPlayer:$bvid",
+                          tag: heroTagId,
                           transitionOnUserGestures: true,
                           child: CachedNetworkImage(
                             cacheWidth: (box.maxWidth *

@@ -1,6 +1,7 @@
 import 'package:bili_you/common/models/local/dynamic/dynamic_content.dart';
 import 'package:bili_you/common/models/local/dynamic/dynamic_item.dart';
 import 'package:bili_you/common/models/local/reply/reply_content.dart';
+import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
@@ -151,6 +152,7 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
                     DynamicVideoCard(
                       content: widget.dynamicItem.content as AVDynamicContent,
                       cacheManager: videoCoverCacheManager,
+                      heroTagId: HeroTagId.id++,
                     ),
 
                   ///分享，评论，点赞
@@ -204,11 +206,15 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
 
 class DynamicVideoCard extends StatelessWidget {
   const DynamicVideoCard(
-      {super.key, required this.content, required this.cacheManager});
+      {super.key,
+      required this.content,
+      required this.cacheManager,
+      required this.heroTagId});
   final AVDynamicContent content;
   final playInfoTextStyle = const TextStyle(
       color: Colors.white, fontSize: 12, overflow: TextOverflow.ellipsis);
   final CacheManager cacheManager;
+  final int heroTagId;
 
   @override
   Widget build(BuildContext context) {
@@ -218,9 +224,12 @@ class DynamicVideoCard extends StatelessWidget {
     }), builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.done) {
         return GestureDetector(
-          onTap: () => Navigator.of(context).push(GetPageRoute(
-            page: () => BiliVideoPage(bvid: content.bvid, cid: cid),
-          )),
+          onTap: () {
+            HeroTagId.lastId = heroTagId;
+            Navigator.of(context).push(GetPageRoute(
+              page: () => BiliVideoPage(bvid: content.bvid, cid: cid),
+            ));
+          },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -233,7 +242,7 @@ class DynamicVideoCard extends StatelessWidget {
                       aspectRatio: 16 / 9,
                       child: LayoutBuilder(builder: (context, boxConstraints) {
                         return Hero(
-                            tag: "BiliVideoPlayer:${content.bvid}",
+                            tag: heroTagId,
                             transitionOnUserGestures: true,
                             child: CachedNetworkImage(
                               cacheWidth: (boxConstraints.maxWidth *

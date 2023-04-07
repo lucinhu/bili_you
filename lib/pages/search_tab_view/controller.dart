@@ -6,6 +6,7 @@ import 'package:bili_you/common/models/local/search/search_bangumi_item.dart';
 import 'package:bili_you/common/models/local/search/search_video_item.dart';
 import 'package:bili_you/common/models/local/video/part_info.dart';
 import 'package:bili_you/common/utils/bvid_avid_util.dart';
+import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/common/widget/bangumi_tile_item.dart';
 import 'package:bili_you/pages/bili_video/index.dart';
 import 'package:get/get.dart';
@@ -46,6 +47,7 @@ class SearchTabViewController extends GetxController {
     }
     currentPage++;
     for (var i in list) {
+      int heroTagId = HeroTagId.id++;
       searchItemWidgetList.add(VideoTileItem(
         picUrl: i.coverUrl,
         bvid: i.bvid,
@@ -55,7 +57,9 @@ class SearchTabViewController extends GetxController {
         playNum: i.playNum,
         pubDate: i.pubDate,
         cacheManager: cacheManager,
+        heroTagId: heroTagId,
         onTap: (context) {
+          HeroTagId.lastId = heroTagId;
           late List<PartInfo> videoParts;
           // Get.to(() => FutureBuilder(
           //       future: Future(() async {

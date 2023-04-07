@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/models/local/home/recommend_item_info.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -42,6 +43,7 @@ class RecommendController extends GetxController {
     for (var i in list) {
       recommendViewList.add(RecommendCard(
           key: ValueKey("${i.bvid}:RecommendCard"),
+          heroTagId: HeroTagId.id++,
           cacheManager: cacheManager,
           imageUrl: i.coverUrl,
           playNum: StringFormatUtils.numFormat(i.playNum),
