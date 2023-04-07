@@ -33,6 +33,7 @@ class ViewImage extends StatelessWidget {
         ],
       ),
       body: PhotoView(
+        filterQuality: FilterQuality.high,
         imageProvider: CachedNetworkImageProvider(url,
             cacheManager: CacheManager(Config(CacheKeys.replyImageKey))),
         // enableRotation: true,

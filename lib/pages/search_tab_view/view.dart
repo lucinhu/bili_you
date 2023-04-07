@@ -26,8 +26,10 @@ class _SearchTabViewPageState extends State<SearchTabViewPage>
 
   @override
   void initState() {
-    controller = Get.put(SearchTabViewController(
-        keyWord: widget.keyWord, searchType: widget.searchType));
+    controller = Get.put(
+        SearchTabViewController(
+            keyWord: widget.keyWord, searchType: widget.searchType),
+        tag: widget.keyWord + widget.searchType.value);
     super.initState();
   }
 
@@ -82,6 +84,7 @@ class _SearchTabViewPageState extends State<SearchTabViewPage>
       ),
       controller: controller.refreshController,
       childBuilder: (context, physics) => ListView.builder(
+        padding: const EdgeInsets.all(8),
         physics: physics,
         itemCount: controller.searchItemWidgetList.length,
         itemBuilder: (context, index) {

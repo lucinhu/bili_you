@@ -37,16 +37,16 @@ class _WebLoginPageState extends State<WebLoginPage> {
             for (var i in cookies) {
               log('name:${i.name}, value:${i.value}, dominate:${i.domain}');
             }
-            MyDio.cookieManager.cookieJar.saveFromResponse(
+            await MyDio.cookieManager.cookieJar.saveFromResponse(
                 Uri.parse(ApiConstants.bilibiliBase), cookies);
             cookies =
                 await WebviewCookieManager().getCookies(ApiConstants.apiBase);
             for (var i in cookies) {
               log('name:${i.name}, value:${i.value}, dominate:${i.domain}');
             }
-            MyDio.cookieManager.cookieJar
+            await MyDio.cookieManager.cookieJar
                 .saveFromResponse(Uri.parse(ApiConstants.apiBase), cookies);
-            MyDio.dio.interceptors.add(MyDio.cookieManager);
+            // MyDio.dio.interceptors.add(MyDio.cookieManager);
           } catch (e) {
             log('网页登陆获取cookie错误:$e');
             Get.rawSnackbar(message: '网页登陆获取cookie错误:$e');

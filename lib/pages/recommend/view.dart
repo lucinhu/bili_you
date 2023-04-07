@@ -66,8 +66,10 @@ class _RecommendPageState extends State<RecommendPage>
       childBuilder: (context, physics) => GridView.builder(
         controller: controller.scrollController,
         physics: physics,
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(8),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
             crossAxisCount: controller.recommendColumnCount,
             mainAxisExtent: (MediaQuery.of(context).size.width /
                         controller.recommendColumnCount) *

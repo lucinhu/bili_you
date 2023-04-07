@@ -174,21 +174,15 @@ class ReplyItemWidget extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Builder(
-                  builder: (context) {
-                    if (isTop) {
-                      return Text(
+                isTop
+                    ? Text(
                         "置顶",
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontSize: 15,
                             fontWeight: FontWeight.bold),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
+                      )
+                    : const SizedBox()
               ],
             ),
             Expanded(
@@ -224,24 +218,10 @@ class ReplyItemWidget extends StatelessWidget {
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                Builder(
-                                  builder: (context) {
-                                    if (isUp) {
-                                      //显示up主
-                                      return Text(
-                                        ' UP主 ',
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold),
-                                      );
-                                    } else {
-                                      return Container();
-                                    }
-                                  },
-                                )
+                                if (isUp)
+                                  const Padding(
+                                      padding: EdgeInsets.only(left: 4),
+                                      child: UpperTag())
                               ],
                             ),
                             Text(reply.location,
@@ -281,57 +261,34 @@ class ReplyItemWidget extends StatelessWidget {
                     Row(
                       children: [
                         StatefulBuilder(builder: (context, setState) {
-                          return ElevatedButton(
-                              onPressed: () async {
-                                try {
-                                  var result = await ReplyOperationApi.addLike(
-                                      type: reply.type,
-                                      oid: reply.oid,
-                                      rpid: reply.rpid,
-                                      likeOrUnlike: !reply.hasLike);
-                                  if (result.isSuccess) {
-                                    reply.hasLike = !reply.hasLike;
-                                    if (reply.hasLike) {
-                                      reply.likeCount++;
-                                    } else {
-                                      reply.likeCount--;
-                                    }
-                                    setState(() {});
+                          return ThumUpButton(
+                            likeNum: reply.likeCount,
+                            selected: reply.hasLike,
+                            onPressed: () async {
+                              try {
+                                var result = await ReplyOperationApi.addLike(
+                                    type: reply.type,
+                                    oid: reply.oid,
+                                    rpid: reply.rpid,
+                                    likeOrUnlike: !reply.hasLike);
+                                if (result.isSuccess) {
+                                  reply.hasLike = !reply.hasLike;
+                                  if (reply.hasLike) {
+                                    reply.likeCount++;
                                   } else {
-                                    Get.rawSnackbar(
-                                        message: '点赞失败:${result.error}');
+                                    reply.likeCount--;
                                   }
-                                } catch (e) {
-                                  log(e.toString());
-                                  Get.rawSnackbar(message: '$e');
+                                  setState(() {});
+                                } else {
+                                  Get.rawSnackbar(
+                                      message: '点赞失败:${result.error}');
                                 }
-                              },
-                              style: ButtonStyle(
-                                foregroundColor: reply.hasLike == true
-                                    ? MaterialStatePropertyAll(
-                                        Theme.of(context).colorScheme.onPrimary)
-                                    : null,
-                                backgroundColor: reply.hasLike == true
-                                    ? MaterialStatePropertyAll(
-                                        Theme.of(context).colorScheme.primary)
-                                    : null,
-                                elevation: const MaterialStatePropertyAll(0),
-                                minimumSize: const MaterialStatePropertyAll(
-                                    Size(10, 10)),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.thumb_up_rounded,
-                                    size: 15,
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(StringFormatUtils.numFormat(
-                                      reply.likeCount))
-                                ],
-                              ));
+                              } catch (e) {
+                                log(e.toString());
+                                Get.rawSnackbar(message: '$e');
+                              }
+                            },
+                          );
                         }),
                         Expanded(
                           child: Builder(
@@ -438,6 +395,63 @@ class ReplyItemWidget extends StatelessWidget {
                     )
                   ]),
             )
+          ],
+        ));
+  }
+}
+
+class UpperTag extends StatelessWidget {
+  const UpperTag({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Theme.of(context).colorScheme.secondary,
+      child: Text(
+        '  UP主  ',
+        style: TextStyle(
+            color: Theme.of(context).colorScheme.onSecondary,
+            fontSize: 10,
+            fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class ThumUpButton extends StatelessWidget {
+  const ThumUpButton(
+      {super.key,
+      required this.onPressed,
+      required this.likeNum,
+      this.selected = false});
+  final Function()? onPressed;
+  final bool selected;
+  final int likeNum;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: onPressed,
+        style: ButtonStyle(
+          foregroundColor: selected == true
+              ? MaterialStatePropertyAll(
+                  Theme.of(context).colorScheme.onPrimary)
+              : null,
+          backgroundColor: selected == true
+              ? MaterialStatePropertyAll(Theme.of(context).colorScheme.primary)
+              : null,
+          elevation: const MaterialStatePropertyAll(0),
+          minimumSize: const MaterialStatePropertyAll(Size(10, 10)),
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.thumb_up_rounded,
+              size: 15,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Text(StringFormatUtils.numFormat(likeNum))
           ],
         ));
   }

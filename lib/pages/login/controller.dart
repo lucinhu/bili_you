@@ -2,6 +2,7 @@ import 'package:bili_you/common/models/local/login/login_user_info.dart';
 import 'package:bili_you/common/models/local/login/login_user_stat.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/pages/dynamic/controller.dart';
 import 'package:bili_you/pages/home/index.dart';
 
 import 'package:flutter/material.dart';
@@ -73,4 +74,5 @@ Future<void> onLoginSuccess(
   // await box.put(UserStorageKeys.userFollowerCount, userStat.followerCount);
   // await box.put(UserStorageKeys.userFollowingCount, userStat.followingCount);
   Get.find<HomeController>().faceUrl.value = userInfo.avatarUrl;
+  Get.find<DynamicController>().refreshController.callRefresh();
 }

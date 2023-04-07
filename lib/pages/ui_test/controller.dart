@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/video_operation_api.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
+import 'package:bili_you/common/utils/bvid_avid_util.dart';
 import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/pages/about/about_page.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
@@ -22,7 +23,8 @@ class UiTestController extends GetxController {
 
   List<ListTile> listTiles = [];
   BiliVideoPlayerController biliVideoPlayerController =
-      BiliVideoPlayerController(bvid: "170001", cid: 279786);
+      BiliVideoPlayerController(
+          bvid: BvidAvidUtil.av2Bvid(170001), cid: 279786);
 
   //测试名称,页面对应表
   late Map<String, Widget> _testPages;

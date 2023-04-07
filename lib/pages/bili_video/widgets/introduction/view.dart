@@ -1,3 +1,4 @@
+import 'package:bili_you/common/utils/bvid_avid_util.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
@@ -54,203 +55,211 @@ class _IntroductionPageState extends State<IntroductionPage>
     return ListView(
       controller: controller.scrollController,
       shrinkWrap: true,
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
       children: [
-        SizedBox(
-          height: 50,
-          child: GestureDetector(
-            onTap: () {
-              controller.pauseVideo();
-              // Get.to(
-              //   () => UserSpacePage(
-              //       key: ValueKey(
-              //           'UserSpacePage:${controller.videoInfo.ownerMid}'),
-              //       mid: controller.videoInfo.ownerMid),
-              // );
-              Navigator.of(context).push(GetPageRoute(
-                page: () => UserSpacePage(
-                    key: ValueKey(
-                        'UserSpacePage:${controller.videoInfo.ownerMid}'),
-                    mid: controller.videoInfo.ownerMid),
-              ));
-            },
-            child: Row(
-              children: [
-                AvatarWidget(
-                  avatarUrl: controller.videoInfo.ownerFace,
-                  radius: 45 / 2,
-                  cacheWidthHeight: 200,
-                ),
-                Container(
-                    padding: const EdgeInsets.only(left: 5),
-                    child: Text(
-                      controller.videoInfo.ownerName,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
-                    ))
-              ],
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 10),
-          child: Obx(() => SelectableText(
-                controller.title.value,
-                style: const TextStyle(fontSize: 16),
-              )),
-        ),
-        Row(
-          children: [
-            Icon(
-              Icons.slideshow_rounded,
-              size: 14,
-              color: Theme.of(context).hintColor,
-            ),
-            Text(
-              " ${StringFormatUtils.numFormat(controller.videoInfo.playNum)}  ",
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).hintColor,
-              ),
-            ),
-            Icon(
-              Icons.format_list_bulleted_rounded,
-              size: 14,
-              color: Theme.of(context).hintColor,
-            ),
-            Text(
-              " ${controller.videoInfo.danmaukuNum}   ",
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).hintColor,
-              ),
-            ),
-            Text(
-              "${StringFormatUtils.timeStampToDate(controller.videoInfo.pubDate)} ${StringFormatUtils.timeStampToTime(controller.videoInfo.pubDate)}",
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).hintColor,
-              ),
-            )
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 10),
-          child: //copyrights info
-              Row(
+        GestureDetector(
+          onTap: () {
+            controller.pauseVideo();
+            // Get.to(
+            //   () => UserSpacePage(
+            //       key: ValueKey(
+            //           'UserSpacePage:${controller.videoInfo.ownerMid}'),
+            //       mid: controller.videoInfo.ownerMid),
+            // );
+            Navigator.of(context).push(GetPageRoute(
+              page: () => UserSpacePage(
+                  key: ValueKey(
+                      'UserSpacePage:${controller.videoInfo.ownerMid}'),
+                  mid: controller.videoInfo.ownerMid),
+            ));
+          },
+          child: Row(
             children: [
-              Text(
-                "${controller.videoInfo.bvid} 版权信息:${controller.videoInfo.copyRight}",
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Theme.of(context).hintColor,
-                ),
+              Padding(
+                  padding: const EdgeInsets.only(top: 8, left: 2, right: 8),
+                  child: AvatarWidget(
+                    avatarUrl: controller.videoInfo.ownerFace,
+                    radius: 25,
+                    cacheWidthHeight: 200,
+                  )),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.videoInfo.ownerName,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
               )
             ],
           ),
         ),
 
         SelectableRegion(
-            magnifierConfiguration: const TextMagnifierConfiguration(),
-            focusNode: FocusNode(),
-            selectionControls: MaterialTextSelectionControls(),
-            child: Obx(
-              () => FoldableText(
-                //简介详细
-                controller.describe.value,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Theme.of(context).hintColor,
+          magnifierConfiguration: const TextMagnifierConfiguration(),
+          focusNode: FocusNode(),
+          selectionControls: MaterialTextSelectionControls(),
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, bottom: 5),
+                  child: Obx(() => Text(
+                        controller.title.value,
+                        style: const TextStyle(fontSize: 16),
+                      )),
                 ),
-                maxLines: 6,
-                folderTextStyle: TextStyle(
-                    fontSize: 12, color: Theme.of(context).colorScheme.primary),
-              ),
-            )),
-        //TODO tags
-        Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: StatefulBuilder(
-                key: operationButtonKey,
-                builder: (context, setState) {
-                  controller.refreshOperationButton = () {
-                    operationButtonKey.currentState?.setState(() {});
-                  };
-                  var buttonWidth = (MediaQuery.of(context).size.width) / 6;
-                  var buttonHeight =
-                      (MediaQuery.of(context).size.width) / 6 * 0.8;
-                  return Row(
-                    children: [
-                      const Spacer(),
-                      SizedBox(
-                        width: buttonWidth,
-                        height: buttonHeight,
-                        child: IconTextButton(
-                          selected: controller.videoInfo.hasLike,
-                          icon: const Icon(Icons.thumb_up_rounded),
-                          text: Text(
-                            StringFormatUtils.numFormat(
-                                controller.videoInfo.likeNum),
-                            style: operationButtonTextStyle,
-                          ),
-                          onPressed: controller.onLikePressed,
-                        ),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.slideshow_rounded,
+                      size: 14,
+                      color: Theme.of(context).hintColor,
+                    ),
+                    Text(
+                      " ${StringFormatUtils.numFormat(controller.videoInfo.playNum)}  ",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).hintColor,
                       ),
-                      // const Spacer(),
-                      // SizedBox(
-                      //     width: buttonWidth,
-                      //   height: buttonHeight,
-                      //     child: IconTextButton(
-                      //       icon: const Icon(Icons.thumb_down_alt_rounded),
-                      //       text: Text(
-                      //         "不喜欢",
-                      //         style: operationButtonTextStyle,
-                      //       ),
-                      //       onPressed: () {},
-                      //     )),
-                      const Spacer(),
-                      SizedBox(
-                          width: buttonWidth,
-                          height: buttonHeight,
-                          child: IconTextButton(
-                              selected: controller.videoInfo.hasAddCoin,
-                              icon: const Icon(Icons.circle_rounded),
-                              text: Text(
-                                  StringFormatUtils.numFormat(
-                                      controller.videoInfo.coinNum),
-                                  style: operationButtonTextStyle),
-                              onPressed: controller.onAddCoinPressed)),
-                      const Spacer(),
-                      SizedBox(
-                          width: buttonWidth,
-                          height: buttonHeight,
-                          child: IconTextButton(
-                            selected: controller.videoInfo.hasFavourite,
-                            icon: const Icon(Icons.star_rounded),
-                            text: Text(
-                                StringFormatUtils.numFormat(
-                                    controller.videoInfo.favariteNum),
-                                style: operationButtonTextStyle),
-                            onPressed: () {},
-                          )),
-                      const Spacer(),
-                      SizedBox(
-                          width: buttonWidth,
-                          height: buttonHeight,
-                          child: IconTextButton(
-                            icon: const Icon(Icons.share_rounded),
-                            text: Text(
-                                StringFormatUtils.numFormat(
-                                    controller.videoInfo.shareNum),
-                                style: operationButtonTextStyle),
-                            onPressed: controller.onAddSharePressed,
-                          )),
-                      const Spacer(),
-                    ],
-                  );
-                })),
+                    ),
+                    Icon(
+                      Icons.format_list_bulleted_rounded,
+                      size: 14,
+                      color: Theme.of(context).hintColor,
+                    ),
+                    Text(
+                      " ${controller.videoInfo.danmaukuNum}   ",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
+                    Text(
+                      "${StringFormatUtils.timeStampToDate(controller.videoInfo.pubDate)} ${StringFormatUtils.timeStampToTime(controller.videoInfo.pubDate)}",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    )
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "${controller.videoInfo.bvid}  AV${BvidAvidUtil.bvid2Av(controller.videoInfo.bvid)}   ${controller.videoInfo.copyRight}",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Obx(
+                    () => FoldableText(
+                      //简介详细
+                      controller.describe.value,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).hintColor,
+                      ),
+                      maxLines: 6,
+                      folderTextStyle: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.primary),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        //TODO tags
+        StatefulBuilder(
+            key: operationButtonKey,
+            builder: (context, setState) {
+              controller.refreshOperationButton = () {
+                operationButtonKey.currentState?.setState(() {});
+              };
+              var buttonWidth = (MediaQuery.of(context).size.width) / 6;
+              var buttonHeight = (MediaQuery.of(context).size.width) / 6 * 0.8;
+              return Row(
+                children: [
+                  const Spacer(),
+                  SizedBox(
+                    width: buttonWidth,
+                    height: buttonHeight,
+                    child: IconTextButton(
+                      selected: controller.videoInfo.hasLike,
+                      icon: const Icon(Icons.thumb_up_rounded),
+                      text: Text(
+                        StringFormatUtils.numFormat(
+                            controller.videoInfo.likeNum),
+                        style: operationButtonTextStyle,
+                      ),
+                      onPressed: controller.onLikePressed,
+                    ),
+                  ),
+                  // const Spacer(),
+                  // SizedBox(
+                  //     width: buttonWidth,
+                  //   height: buttonHeight,
+                  //     child: IconTextButton(
+                  //       icon: const Icon(Icons.thumb_down_alt_rounded),
+                  //       text: Text(
+                  //         "不喜欢",
+                  //         style: operationButtonTextStyle,
+                  //       ),
+                  //       onPressed: () {},
+                  //     )),
+                  const Spacer(),
+                  SizedBox(
+                      width: buttonWidth,
+                      height: buttonHeight,
+                      child: IconTextButton(
+                          selected: controller.videoInfo.hasAddCoin,
+                          icon: const Icon(Icons.circle_rounded),
+                          text: Text(
+                              StringFormatUtils.numFormat(
+                                  controller.videoInfo.coinNum),
+                              style: operationButtonTextStyle),
+                          onPressed: controller.onAddCoinPressed)),
+                  const Spacer(),
+                  SizedBox(
+                      width: buttonWidth,
+                      height: buttonHeight,
+                      child: IconTextButton(
+                        selected: controller.videoInfo.hasFavourite,
+                        icon: const Icon(Icons.star_rounded),
+                        text: Text(
+                            StringFormatUtils.numFormat(
+                                controller.videoInfo.favariteNum),
+                            style: operationButtonTextStyle),
+                        onPressed: () {},
+                      )),
+                  const Spacer(),
+                  SizedBox(
+                      width: buttonWidth,
+                      height: buttonHeight,
+                      child: IconTextButton(
+                        icon: const Icon(Icons.share_rounded),
+                        text: Text(
+                            StringFormatUtils.numFormat(
+                                controller.videoInfo.shareNum),
+                            style: operationButtonTextStyle),
+                        onPressed: controller.onAddSharePressed,
+                      )),
+                  const Spacer(),
+                ],
+              );
+            }),
 
         Builder(
           builder: (context) {

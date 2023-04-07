@@ -32,17 +32,18 @@ class VideoTileItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(10),
       onTap: () {
         onTap(context);
       },
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(4),
         child: SizedBox(
           height: 90,
           child: Row(children: [
             SizedBox(
               width: 160,
-              height: 90,
+              height: 100,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5),
                 child: Stack(
@@ -60,7 +61,7 @@ class VideoTileItem extends StatelessWidget {
                                 .toInt(),
                             filterQuality: FilterQuality.none,
                             width: 160,
-                            height: 90,
+                            height: 100,
                             fit: BoxFit.cover,
                             imageUrl: picUrl,
                             cacheManager: cacheManager,

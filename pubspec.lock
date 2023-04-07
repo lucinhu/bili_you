@@ -217,6 +217,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.3"
+  cronet_http:
+    dependency: transitive
+    description:
+      name: cronet_http
+      sha256: a9aae580099ba1df89f27f4c0a6cba179e3e1135bbe23a22b9664d2c0c24d4e7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   cross_file:
     dependency: transitive
     description:
@@ -241,6 +249,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.17.2"
+  cupertino_http:
+    dependency: transitive
+    description:
+      name: cupertino_http
+      sha256: "25ccac265488d64cd868e311567b874cdc1aefcbef02033108d679c3f83a3108"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
   dart_style:
     dependency: transitive
     description:
@@ -337,14 +353,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  floating:
-    dependency: "direct main"
-    description:
-      name: floating
-      sha256: c6380d9cbf628370c68749fa1f0675bc5b69d9a5b923b84660e79b3e6c9a47ec
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -560,6 +568,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  native_dio_adapter:
+    dependency: "direct main"
+    description:
+      name: native_dio_adapter
+      sha256: "1ff361deaca3c26a8fc56571f7f0809785a248d1bc0c9123be829baaebf986e0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   node_preamble:
     dependency: transitive
     description:
@@ -1224,4 +1240,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=3.0.0-134.0.dev <4.0.0"
-  flutter: ">=3.4.0-17.0.pre"
+  flutter: ">=3.7.0"
