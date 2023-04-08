@@ -128,7 +128,7 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
       }
     }
     widget.controller._videoAudioController!
-        .seekTo(widget.controller._initVideoPosition);
+        .seekTo(widget.controller.initVideoPosition);
 
     return true;
   }
@@ -245,17 +245,17 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
 }
 
 class BiliVideoPlayerController {
-  BiliVideoPlayerController({
-    required this.bvid,
-    required this.cid,
-  });
+  BiliVideoPlayerController(
+      {required this.bvid,
+      required this.cid,
+      this.initVideoPosition = Duration.zero});
   String bvid;
   int cid;
   bool isFullScreen = false;
   bool _playWhenRefresh = true;
   bool _playWhenInitialize = true;
   //初始进度
-  Duration _initVideoPosition = Duration.zero;
+  Duration initVideoPosition;
   late Size _size;
   late EdgeInsets _padding;
 
@@ -297,7 +297,7 @@ class BiliVideoPlayerController {
     videoPlayInfo = null;
     _videoPlayItem = null;
     _audioPlayItem = null;
-    _initVideoPosition = Duration.zero;
+    initVideoPosition = Duration.zero;
     this.bvid = bvid;
     this.cid = cid;
     reloadWidget();
@@ -310,7 +310,7 @@ class BiliVideoPlayerController {
     position.then(
       (value) {
         //将初始播放位置设为当前未知再刷新，这样就刷新后就能接上
-        _initVideoPosition = value;
+        initVideoPosition = value;
         //刷新后是否播放
         _playWhenRefresh = isPlaying;
         reloadWidget();
@@ -324,7 +324,7 @@ class BiliVideoPlayerController {
     position.then(
       (value) {
         //将初始播放位置设为当前未知再刷新，这样就刷新后就能接上
-        _initVideoPosition = value;
+        initVideoPosition = value;
         //刷新后是否播放
         _playWhenRefresh = isPlaying;
         reloadWidget();

@@ -1,6 +1,7 @@
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/pages/about/about_page.dart';
+import 'package:bili_you/pages/history/history_page.dart';
 import 'package:bili_you/pages/login/web_login/view.dart';
 import 'package:bili_you/pages/settings_page/settings_page.dart';
 import 'package:flutter/material.dart';
@@ -222,68 +223,38 @@ class UserMenuPage extends GetView<UserMenuController> {
                 endIndent: 25,
                 thickness: 2,
               ),
-              InkWell(
+              UserMenuListTile(
+                icon: const Icon(Icons.history),
+                title: '历史记录',
+                onTap: () => Navigator.of(context)
+                    .push(GetPageRoute(page: () => const HistoryPage())),
+              ),
+              UserMenuListTile(
+                icon: const Icon(
+                  Icons.settings,
+                ),
+                title: "设置",
                 onTap: () {
                   Navigator.of(context).push(GetPageRoute(
                     page: () => const SettingsPage(),
                   ));
                 },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 35, right: 35, top: 25, bottom: 25),
-                  child: Row(children: [
-                    const Icon(
-                      Icons.settings,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 13,
-                    ),
-                    const Text(
-                      "设置",
-                      style: TextStyle(fontSize: 18),
-                    )
-                  ]),
-                ),
               ),
-              InkWell(
+              UserMenuListTile(
+                icon: const Icon(Icons.info),
+                title: "关于",
                 onTap: () {
                   Navigator.of(context).push(GetPageRoute(
                     page: () => const AboutPage(),
                   ));
                 },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 35, right: 35, top: 25, bottom: 25),
-                  child: Row(children: [
-                    const Icon(Icons.info),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 13,
-                    ),
-                    const Text(
-                      "关于",
-                      style: TextStyle(fontSize: 18),
-                    )
-                  ]),
-                ),
               ),
-              InkWell(
+              UserMenuListTile(
+                icon: const Icon(Icons.logout_rounded),
+                title: "退出登陆",
                 onTap: () {
                   controller.onLogout();
                 },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 35, right: 35, top: 25, bottom: 25),
-                  child: Row(children: [
-                    const Icon(Icons.logout_rounded),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 13,
-                    ),
-                    const Text(
-                      "退出登陆",
-                      style: TextStyle(fontSize: 18),
-                    )
-                  ]),
-                ),
               ),
               const SizedBox(
                 height: 20,
@@ -339,6 +310,35 @@ class UserMenuPage extends GetView<UserMenuController> {
       builder: (_) {
         return _buildView(context);
       },
+    );
+  }
+}
+
+class UserMenuListTile extends StatelessWidget {
+  const UserMenuListTile(
+      {super.key, required this.icon, required this.title, this.onTap});
+  final Function()? onTap;
+  final Icon icon;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding:
+            const EdgeInsets.only(left: 35, right: 35, top: 25, bottom: 25),
+        child: Row(children: [
+          icon,
+          SizedBox(
+            width: MediaQuery.of(context).size.width / 13,
+          ),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 18),
+          )
+        ]),
+      ),
     );
   }
 }

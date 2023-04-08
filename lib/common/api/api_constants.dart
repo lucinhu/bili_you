@@ -160,4 +160,8 @@ class ApiConstants {
 
   ///上报历史记录
   static const String heartBeat = "$apiBase/x/click-interface/web/heartbeat";
+
+  ///浏览/播放历史记录
+  ///test: https://api.bilibili.com/x/web-interface/history/cursor
+  static const String viewHistory = "$apiBase/x/web-interface/history/cursor";
 }

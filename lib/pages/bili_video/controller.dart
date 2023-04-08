@@ -8,15 +8,18 @@ import 'package:get/get.dart';
 
 class BiliVideoController extends GetxController
     with GetTickerProviderStateMixin {
-  BiliVideoController(
-      {required this.bvid,
-      required this.cid,
-      this.ssid,
-      required this.isBangumi});
+  BiliVideoController({
+    required this.bvid,
+    required this.cid,
+    this.ssid,
+    this.progress,
+    required this.isBangumi,
+  });
   String bvid;
   late String oldBvid;
   int cid;
   int? ssid;
+  int? progress;
   bool isBangumi;
   late BiliVideoPlayer biliVideoPlayer;
   late BiliVideoPlayerController biliVideoPlayerController;
@@ -45,9 +48,10 @@ class BiliVideoController extends GetxController
         vsync: this,
         animationDuration: const Duration(milliseconds: 200));
     biliVideoPlayerController = BiliVideoPlayerController(
-      bvid: bvid,
-      cid: cid,
-    );
+        bvid: bvid,
+        cid: cid,
+        initVideoPosition:
+            progress != null ? Duration(seconds: progress!) : Duration.zero);
     biliVideoPlayer = BiliVideoPlayer(
       biliVideoPlayerController,
       heroTagId: HeroTagId.lastId,

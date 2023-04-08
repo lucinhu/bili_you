@@ -8,18 +8,20 @@ import 'index.dart';
 import 'widgets/reply/controller.dart';
 
 class BiliVideoPage extends StatefulWidget {
-  const BiliVideoPage({
-    Key? key,
-    required this.bvid,
-    required this.cid,
-    this.isBangumi = false,
-    this.ssid,
-  })  : tag = "BiliVideoPage:$bvid",
+  const BiliVideoPage(
+      {Key? key,
+      required this.bvid,
+      required this.cid,
+      this.isBangumi = false,
+      this.ssid,
+      this.progress})
+      : tag = "BiliVideoPage:$bvid",
         super(key: key);
   final String bvid;
   final int cid;
   final int? ssid;
   final bool isBangumi;
+  final int? progress;
   final String tag;
 
   @override
@@ -37,6 +39,7 @@ class _BiliVideoPageState extends State<BiliVideoPage> {
           bvid: widget.bvid,
           cid: widget.cid,
           isBangumi: widget.isBangumi,
+          progress: widget.progress,
           ssid: widget.ssid),
       tag: widget.tag,
     );
