@@ -50,8 +50,10 @@ class _SearchResultPageState extends State<SearchResultPage>
                 ),
                 onTap: () {
                   Navigator.of(context).pushReplacement(GetPageRoute(
-                      page: () =>
-                          SearchInputPage(defaultSearchWord: widget.keyWord)));
+                      page: () => SearchInputPage(
+                            defaultHintSearchWord: widget.keyWord,
+                            defaultInputSearchWord: widget.keyWord,
+                          )));
                 },
               ),
             ),

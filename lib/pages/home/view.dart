@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage>
                 page: () => SearchInputPage(
                       key: ValueKey(
                           'SearchInputPage:${controller.defaultSearchWord.value}'),
-                      defaultSearchWord: controller.defaultSearchWord.value,
+                      defaultHintSearchWord: controller.defaultSearchWord.value,
                     )));
 
             //更新搜索框默认词

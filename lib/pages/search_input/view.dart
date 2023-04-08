@@ -5,9 +5,13 @@ import 'package:get/get.dart';
 import 'index.dart';
 
 class SearchInputPage extends StatefulWidget {
-  const SearchInputPage({Key? key, required this.defaultSearchWord})
+  const SearchInputPage(
+      {Key? key,
+      required this.defaultHintSearchWord,
+      this.defaultInputSearchWord})
       : super(key: key);
-  final String defaultSearchWord;
+  final String defaultHintSearchWord;
+  final String? defaultInputSearchWord;
 
   @override
   State<SearchInputPage> createState() => _SearchInputPageState();
@@ -119,7 +123,10 @@ class _SearchInputPageState extends State<SearchInputPage> {
   }
 
   _init() {
-    controller.defaultSearchWord = widget.defaultSearchWord;
+    controller.defaultSearchWord = widget.defaultHintSearchWord;
+    if (widget.defaultInputSearchWord != null) {
+      controller.textEditingController.text = widget.defaultInputSearchWord!;
+    }
   }
 
   // 主视图
@@ -165,7 +172,7 @@ class _SearchInputPageState extends State<SearchInputPage> {
                                 ),
                               )),
                           border: InputBorder.none,
-                          hintText: widget.defaultSearchWord),
+                          hintText: widget.defaultHintSearchWord),
                     ),
                   ),
                 ],
