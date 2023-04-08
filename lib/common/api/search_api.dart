@@ -1,8 +1,11 @@
 import 'package:bili_you/common/api/api_constants.dart';
+import 'package:bili_you/common/models/local/reply/official_verify.dart';
+import 'package:bili_you/common/models/local/reply/reply_member.dart';
 import 'package:bili_you/common/models/local/search/default_search_word.dart';
 import 'package:bili_you/common/models/local/search/hot_word_item.dart';
 import 'package:bili_you/common/models/local/search/search_bangumi_item.dart';
 import 'package:bili_you/common/models/local/search/search_suggest_item.dart';
+import 'package:bili_you/common/models/local/search/search_user_item.dart';
 import 'package:bili_you/common/models/network/search/default_search_word.dart';
 import 'package:bili_you/common/models/network/search/hot_words.dart';
 import 'package:bili_you/common/models/network/search/search_bangumi.dart';
@@ -191,6 +194,39 @@ class SearchApi {
     }
     return list;
   }
+
+  static Future<List<SearchUserItem>> getSearchUsers(
+      {required String keyWord, required int page}) async {
+    List<SearchUserItem> list = [];
+    var response =
+        await MyDio.dio.get(ApiConstants.searchWithType, queryParameters: {
+      'keyword': keyWord,
+      'search_type': SearchType.user.value,
+      'page': page,
+    });
+    if (response.data['code'] != 0) {
+      throw "getSearchUsers: code:${response.data['code']}, message:${response.data['message']}";
+    }
+    for (Map<String, dynamic> i in response.data['data']['result']) {
+      list.add(SearchUserItem(
+          mid: i['mid'],
+          name: i['uname'],
+          face: "http:${i['upic']}",
+          sign: i['usign'],
+          fansCount: i['fans'],
+          videoCount: i['videos'],
+          level: i['level'],
+          gender: Gender.values[i['gender'] - 1],
+          isUpper: i['is_upuser'] == 1,
+          isLive: i['is_live'] == 1,
+          roomId: i['room_id'],
+          officialVerify: OfficialVerify(
+              type:
+                  OfficialVerifyTypeCode.fromCode(i['official_verify']['type']),
+              description: i['official_verify']['desc'])));
+    }
+    return list;
+  }
 }
 
 //视频搜索排序类型
@@ -240,5 +276,5 @@ enum SearchType {
 
 extension SearchTypeExtension on SearchType {
   String get value =>
-      ['video', 'media_bangumi', 'media_ft', 'live_room', 'user'][index];
+      ['video', 'media_bangumi', 'media_ft', 'live_room', 'bili_user'][index];
 }

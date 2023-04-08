@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:bili_you/common/api/bangumi_api.dart';
 import 'package:bili_you/common/models/local/bangumi/bangumi_info.dart';
 import 'package:bili_you/common/models/local/search/search_bangumi_item.dart';
+import 'package:bili_you/common/models/local/search/search_user_item.dart';
 import 'package:bili_you/common/models/local/search/search_video_item.dart';
 import 'package:bili_you/common/models/local/video/part_info.dart';
 import 'package:bili_you/common/utils/bvid_avid_util.dart';
 import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/common/widget/bangumi_tile_item.dart';
+import 'package:bili_you/common/widget/user_tile_item.dart';
 import 'package:bili_you/pages/bili_video/index.dart';
 import 'package:get/get.dart';
 import 'dart:developer';
@@ -201,11 +203,25 @@ class SearchTabViewController extends GetxController {
     return true;
   }
 
+  Future<bool> loadSearchUserItemWidgetLists() async {
+    late List<SearchUserItem> list;
+    // try {
+    list = await SearchApi.getSearchUsers(keyWord: keyWord, page: currentPage);
+    currentPage++;
+    // } catch (e) {
+    //   log("loadSearchBangumiItemWidgtLists:$e");
+    //   return false;
+    // }
+    for (var i in list) {
+      searchItemWidgetList.add(UserTileItem(searchUserItem: i));
+    }
+    return true;
+  }
+
   Future<bool> selectType() async {
     switch (searchType) {
       case SearchType.video:
         return await loadSearchVideoItemWidgtLists();
-
       case SearchType.bangumi:
         return await loadSearchBangumiItemWidgtLists();
       case SearchType.movie:
@@ -213,8 +229,7 @@ class SearchTabViewController extends GetxController {
       case SearchType.liveRoom:
         return false;
       case SearchType.user:
-        return false;
-
+        return await loadSearchUserItemWidgetLists();
       default:
         return false;
     }
