@@ -28,19 +28,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(builder: ((lightDynamic, darkDynamic) {
       return GetMaterialApp(
-        themeMode: SettingsUtil.currentThemeMode,
-        theme: ThemeData(
-            colorScheme: SettingsUtil.currentTheme == BiliTheme.dynamic
-                ? lightDynamic ?? BiliTheme.dynamic.themeDataLight.colorScheme
-                : SettingsUtil.currentTheme.themeDataLight.colorScheme,
-            useMaterial3: true),
-        darkTheme: ThemeData(
-            colorScheme: SettingsUtil.currentTheme == BiliTheme.dynamic
-                ? darkDynamic ?? BiliTheme.dynamic.themeDataDark.colorScheme
-                : SettingsUtil.currentTheme.themeDataDark.colorScheme,
-            useMaterial3: true),
-        home: const MainPage(),
-      );
+          useInheritedMediaQuery: true,
+          themeMode: SettingsUtil.currentThemeMode,
+          theme: ThemeData(
+              colorScheme: SettingsUtil.currentTheme == BiliTheme.dynamic
+                  ? lightDynamic ?? BiliTheme.dynamic.themeDataLight.colorScheme
+                  : SettingsUtil.currentTheme.themeDataLight.colorScheme,
+              useMaterial3: true),
+          darkTheme: ThemeData(
+              colorScheme: SettingsUtil.currentTheme == BiliTheme.dynamic
+                  ? darkDynamic ?? BiliTheme.dynamic.themeDataDark.colorScheme
+                  : SettingsUtil.currentTheme.themeDataDark.colorScheme,
+              useMaterial3: true),
+          home: const MainPage(),
+          builder: (context, child) => child == null
+              ? const SizedBox()
+              : MediaQuery(
+                  data: MediaQuery.of(context).copyWith(
+                      textScaleFactor: MediaQuery.of(context).textScaleFactor *
+                          BiliYouStorage.settings.get(
+                              SettingsStorageKeys.textScaleFactor,
+                              defaultValue: 1.0)),
+                  child: child));
     }));
   }
 }

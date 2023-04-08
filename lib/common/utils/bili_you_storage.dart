@@ -46,6 +46,9 @@ class SettingsStorageKeys {
   ///首页推荐列数
   static const String recommendColumnCount = 'recommendColumnCount';
 
+  ///字体大小缩放
+  static const String textScaleFactor = 'textScaleFactor';
+
   ///偏好视频编码（avc或hev）
   static const String preferVideoCodec = "preferVideoCodec";
   static const String preferAudioQuality = "preferAudioQuality";

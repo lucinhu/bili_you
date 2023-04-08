@@ -1,5 +1,9 @@
+import 'package:bili_you/common/utils/index.dart';
 import 'package:bili_you/common/utils/settings.dart';
+import 'package:bili_you/common/widget/settings_label.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/get_core.dart';
 
 class AppearanceSettingsPage extends StatefulWidget {
   const AppearanceSettingsPage({super.key});
@@ -106,6 +110,34 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                         ),
                       ));
             },
+          ),
+          const SettingsLabel(text: '字体'),
+          ListTile(
+            title: const Text('缩放倍数'),
+            subtitle: Text(BiliYouStorage.settings
+                .get(SettingsStorageKeys.textScaleFactor, defaultValue: 1.0)
+                .toString()),
+            onTap: () => showDialog(
+              context: context,
+              builder: (context) => SimpleDialog(
+                title: const Text('缩放倍数'),
+                children: [
+                  Slider(
+                    value: BiliYouStorage.settings.get(
+                        SettingsStorageKeys.textScaleFactor,
+                        defaultValue: 1.0),
+                    min: 0.5,
+                    max: 2,
+                    divisions: 6,
+                    onChanged: (value) async {
+                      await BiliYouStorage.settings
+                          .put(SettingsStorageKeys.textScaleFactor, value);
+                      await Get.forceAppUpdate();
+                    },
+                  )
+                ],
+              ),
+            ),
           )
         ]));
   }
