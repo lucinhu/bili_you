@@ -46,7 +46,6 @@ dependencies:
   # 网络相关 
   dio: ^5.1.1
   dio_cookie_manager: ^2.1.4
-  native_dio_adapter: ^0.1.0
   cookie_jar: ^3.0.0
   gt3_flutter_plugin: ^0.0.8
   flutter_cache_manager: ^3.3.0
