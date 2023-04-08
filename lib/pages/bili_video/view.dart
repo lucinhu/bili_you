@@ -118,8 +118,9 @@ class _BiliVideoPageState extends State<BiliVideoPage> {
 
   @override
   void dispose() {
-    biliVideoController.onClose();
-    biliVideoController.onDelete();
+    // biliVideoController.onClose();
+    // biliVideoController.onDelete();
+    biliVideoController.dispose();
     super.dispose();
   }
 

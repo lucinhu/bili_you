@@ -24,13 +24,15 @@ class _RecommendPageState extends State<RecommendPage>
 
   @override
   void dispose() {
-    controller.onClose();
-    controller.onDelete();
+    // controller.onClose();
+    // controller.onDelete();
+    controller.dispose();
     super.dispose();
   }
 
   // 主视图
   Widget _buildView(BuildContext context) {
+    controller.updateWidget = () => setState(() {});
     return EasyRefresh.builder(
       refreshOnStart: true,
       onLoad: () async {
@@ -75,8 +77,7 @@ class _RecommendPageState extends State<RecommendPage>
                         controller.recommendColumnCount) *
                     10 /
                     16 +
-                20 +
-                58),
+                83 * MediaQuery.of(context).textScaleFactor),
         itemCount: controller.recommendViewList.length,
         itemBuilder: (context, index) {
           return controller.recommendViewList[index];

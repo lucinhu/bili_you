@@ -35,8 +35,9 @@ class _SearchTabViewPageState extends State<SearchTabViewPage>
 
   @override
   void dispose() {
-    controller.onClose();
-    controller.onDelete();
+    // controller.onClose();
+    // controller.onDelete();
+    controller.dispose();
     super.dispose();
   }
 

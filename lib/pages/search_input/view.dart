@@ -23,8 +23,9 @@ class _SearchInputPageState extends State<SearchInputPage> {
 
   @override
   void dispose() {
-    controller.onClose();
-    controller.onDelete();
+    // controller.onClose();
+    // controller.onDelete();
+    controller.dispose();
     super.dispose();
   }
 

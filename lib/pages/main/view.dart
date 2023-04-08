@@ -29,8 +29,9 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void dispose() {
-    controller.onClose();
-    controller.onDelete();
+    // controller.onClose();
+    // controller.onDelete();
+    controller.dispose();
     super.dispose();
   }
 
