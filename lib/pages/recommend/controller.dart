@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bili_you/common/models/local/home/recommend_item_info.dart';
+import 'package:bili_you/common/utils/index.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:easy_refresh/easy_refresh.dart';
@@ -10,8 +11,6 @@ import 'package:get/get.dart';
 // import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'widgets/recommend_card.dart';
 import 'package:bili_you/common/api/home_api.dart';
-
-import 'package:bili_you/common/utils/string_format_utils.dart';
 
 class RecommendController extends GetxController {
   RecommendController();
@@ -23,7 +22,16 @@ class RecommendController extends GetxController {
   int refreshIdx = 0;
   CacheManager cacheManager =
       CacheManager(Config(CacheKeys.recommendItemCoverKey));
-  int recommendColumnCount = 2;
+  int recommendColumnCount = 1;
+
+  @override
+  void onInit() {
+    recommendColumnCount = BiliYouStorage.settings
+        .get(SettingsStorageKeys.recommendColumnCount, defaultValue: 2);
+    super.onInit();
+  }
+
+  Function()? updateWidget;
 
   void animateToTop() {
     scrollController.animateTo(0,
@@ -60,14 +68,14 @@ class RecommendController extends GetxController {
 
   Future<void> onRefresh() async {
     recommendViewList.clear();
-    update(["recommend"]);
+    // update(["recommend"]);
     await cacheManager.emptyCache();
     if (await _addRecommendItems()) {
       refreshController.finishRefresh(IndicatorResult.success);
     } else {
       refreshController.finishRefresh(IndicatorResult.fail);
     }
-    update(["recommend"]);
+    // update(["recommend"]);
   }
 
   Future<void> onLoad() async {
@@ -77,7 +85,7 @@ class RecommendController extends GetxController {
     } else {
       refreshController.finishLoad(IndicatorResult.fail);
     }
-    update(["recommend"]);
+    // update(["recommend"]);
   }
 
   _initData() {

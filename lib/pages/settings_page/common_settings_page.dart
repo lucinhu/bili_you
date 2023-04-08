@@ -4,7 +4,9 @@ import 'package:bili_you/common/utils/index.dart';
 import 'package:bili_you/common/widget/settings_label.dart';
 import 'package:bili_you/common/widget/settings_radios_tile.dart';
 import 'package:bili_you/common/widget/settings_switch_tile.dart';
+import 'package:bili_you/pages/recommend/index.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CommonSettingsPage extends StatelessWidget {
   const CommonSettingsPage({super.key});
@@ -19,6 +21,23 @@ class CommonSettingsPage extends StatelessWidget {
               subTitle: '是否在启动app时检查更新',
               settingsKey: SettingsStorageKeys.autoCheckUpdate,
               defualtValue: true),
+          const SettingsLabel(text: '首页推荐'),
+          SettingsRadiosTile(
+            title: '推荐列数',
+            subTitle: '首页推荐卡片的列数',
+            buildTrailingText: () => BiliYouStorage.settings
+                .get(SettingsStorageKeys.recommendColumnCount, defaultValue: 2)
+                .toString(),
+            itemNameValue: const {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5},
+            buildGroupValue: () => BiliYouStorage.settings
+                .get(SettingsStorageKeys.recommendColumnCount, defaultValue: 2),
+            applyValue: (value) async {
+              await BiliYouStorage.settings
+                  .put(SettingsStorageKeys.recommendColumnCount, value);
+              Get.find<RecommendController>().recommendColumnCount = value;
+              Get.find<RecommendController>().updateWidget?.call();
+            },
+          ),
           const SettingsLabel(text: '搜索'),
           const SettingsSwitchTile(
               title: '显示搜索默认词',
