@@ -205,13 +205,14 @@ class SearchTabViewController extends GetxController {
 
   Future<bool> loadSearchUserItemWidgetLists() async {
     late List<SearchUserItem> list;
-    // try {
-    list = await SearchApi.getSearchUsers(keyWord: keyWord, page: currentPage);
-    currentPage++;
-    // } catch (e) {
-    //   log("loadSearchBangumiItemWidgtLists:$e");
-    //   return false;
-    // }
+    try {
+      list =
+          await SearchApi.getSearchUsers(keyWord: keyWord, page: currentPage);
+      currentPage++;
+    } catch (e) {
+      log("loadSearchBangumiItemWidgtLists:$e");
+      return false;
+    }
     for (var i in list) {
       searchItemWidgetList.add(UserTileItem(searchUserItem: i));
     }
