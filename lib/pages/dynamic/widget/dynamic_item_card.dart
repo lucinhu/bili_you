@@ -95,6 +95,8 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
                 child: AvatarWidget(
                   radius: 45 / 2,
                   avatarUrl: widget.dynamicItem.author.avatarUrl,
+                  officialVerifyType:
+                      widget.dynamicItem.author.officialVerify.type,
                   onPressed: () {
                     // Get.to(() => UserSpacePage(
                     //     key:

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bili_you/common/api/reply_operation_api.dart';
+import 'package:bili_you/common/models/local/reply/official_verify.dart';
 import 'package:bili_you/common/models/local/reply/reply_content.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
@@ -25,12 +26,14 @@ class ReplyItemWidget extends StatelessWidget {
       this.isTop = false,
       this.isUp = false,
       this.showPreReply = true,
-      this.pauseVideoPlayer});
+      this.pauseVideoPlayer,
+      this.officialVerifyType});
   final ReplyItem reply;
   final bool isTop; //是否是置顶
   final bool isUp; //是否是up主
   final bool showPreReply; //是否显示评论的外显示评论
   final Function()? pauseVideoPlayer;
+  final OfficialVerifyType? officialVerifyType;
 
   static final CacheManager emoteCacheManager =
       CacheManager(Config(CacheKeys.emoteKey));
@@ -158,6 +161,7 @@ class ReplyItemWidget extends StatelessWidget {
               children: [
                 AvatarWidget(
                   avatarUrl: reply.member.avatarUrl,
+                  officialVerifyType: officialVerifyType,
                   radius: 45 / 2,
                   onPressed: () {
                     pauseVideoPlayer?.call();

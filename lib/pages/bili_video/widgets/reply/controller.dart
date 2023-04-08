@@ -61,6 +61,7 @@ class ReplyController extends GetxController {
       isTop: isTop,
       isUp: i.member.mid == replyInfo.upperMid,
       pauseVideoPlayer: pauseVideoCallback,
+      officialVerifyType: i.member.officialVerify.type,
     ));
   }
 

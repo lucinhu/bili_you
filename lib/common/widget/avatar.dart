@@ -57,8 +57,8 @@ class AvatarWidget extends StatelessWidget {
                                 color: Theme.of(context).colorScheme.background,
                                 width: 2)),
                         color: officialVerifyType == OfficialVerifyType.person
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.secondary),
+                            ? Colors.amber
+                            : Colors.blue),
                   )),
           ],
         ),

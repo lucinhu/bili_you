@@ -50,6 +50,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
       isUp: replyReplyInfo.rootReply.member.mid == replyReplyInfo.upperMid,
       pauseVideoPlayer: widget.pauseVideoCallback,
       showPreReply: false,
+      officialVerifyType: replyReplyInfo.rootReply.member.officialVerify.type,
     );
     for (var i in replyReplyInfo.replies) {
       if (_replyReplies.isEmpty) {
@@ -71,6 +72,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
         isUp: i.member.mid == replyReplyInfo.upperMid,
         pauseVideoPlayer: widget.pauseVideoCallback,
         showPreReply: false,
+        officialVerifyType: i.member.officialVerify.type,
       ));
     }
     _pageNum.value++;
