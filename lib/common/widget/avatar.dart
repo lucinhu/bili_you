@@ -59,6 +59,11 @@ class AvatarWidget extends StatelessWidget {
                         color: officialVerifyType == OfficialVerifyType.person
                             ? Colors.amber
                             : Colors.blue),
+                    child: Icon(
+                      Icons.electric_bolt_rounded,
+                      size: radius / 3,
+                      color: Colors.white,
+                    ),
                   )),
           ],
         ),
