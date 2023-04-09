@@ -105,7 +105,7 @@ class StringFormatUtils {
 
   ///将字符串中html字符实体改为对应的文字符号
   static String replaceAllHtmlEntitiesToCharacter(String str) {
-    return str.replaceAllMapped(RegExp(r'\&.*?\;'), (match) {
+    String newStr = str.replaceAllMapped(RegExp(r'&.*?;'), (match) {
       switch (match[0]) {
         case '&lt;':
           return '<';
@@ -117,43 +117,30 @@ class StringFormatUtils {
           return '"';
         case '&apos;':
           return '\'';
-        // case '&cent;':
-        //   return '¢';
-        // case '&pound;':
-        //   return '£';
-        // case '&yen;':
-        //   return '¥';
-        // case '&euro;':
-        //   return '€';
-        // case '&copy;':
-        //   return '©';
-        // case '&reg;':
-        //   return '®';
-        case '&#60;':
-          return '<';
-        case '&#62;':
-          return '>';
-        case '&#38;':
-          return '&';
-        case '&#34;':
-          return '"';
-        case '&#39;':
-          return '\'';
-        // case '&#162;':
-        //   return '¢';
-        // case '&#163;':
-        //   return '£';
-        // case '&#165;':
-        //   return '¥';
-        // case '&#8364;':
-        //   return '€';
-        // case '&#169;':
-        //   return '©';
-        // case '&#174;':
-        //   return '®';
+        case '&cent;':
+          return '¢';
+        case '&pound;':
+          return '£';
         default:
-          return match[0] ?? '';
+          if (match[0] == null) return '';
+          //如果&#和;之间是数字，则转换成对应unicode编码的字符
+          if (match[0]!.startsWith('&#') && match[0]!.endsWith(';')) {
+            var numberStr = match[0]!.replaceFirst('&#', '').replaceFirst(
+                  ';',
+                  '',
+                );
+            //转换成int时如果数字前有x，则是16进制，否则按10进制转换
+            int? number = numberStr.startsWith('x')
+                ? int.tryParse(numberStr.replaceFirst('x', ''), radix: 16)
+                : int.tryParse(numberStr);
+            if (number != null) {
+              return String.fromCharCode(number);
+            }
+          }
+          return match[0]!;
       }
     });
+    if (str == newStr) return str;
+    return replaceAllHtmlEntitiesToCharacter(newStr);
   }
 }
