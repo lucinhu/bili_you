@@ -207,7 +207,7 @@ class SearchApi {
     if (response.data['code'] != 0) {
       throw "getSearchUsers: code:${response.data['code']}, message:${response.data['message']}";
     }
-    for (Map<String, dynamic> i in response.data['data']['result']) {
+    for (Map<String, dynamic> i in response.data['data']?['result'] ?? []) {
       list.add(SearchUserItem(
           mid: i['mid'],
           name: i['uname'],
