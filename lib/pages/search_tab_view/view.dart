@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bili_you/common/api/search_api.dart';
-import 'package:easy_refresh/easy_refresh.dart';
+import 'package:bili_you/common/widget/simple_easy_refresher.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -50,40 +50,11 @@ class _SearchTabViewPageState extends State<SearchTabViewPage>
       });
     }
     controller.searchType = widget.searchType;
-    return EasyRefresh.builder(
-      refreshOnStart: true,
-      onLoad: () async {
-        await controller.onLoad();
-        setState(() {});
-      },
-      onRefresh: () async {
-        await controller.onRefresh();
-        setState(() {});
-      },
-      header: const ClassicHeader(
-        processedDuration: Duration.zero,
-        safeArea: false,
-        showMessage: false,
-        processingText: "正在刷新...",
-        readyText: "正在刷新...",
-        armedText: "释放以刷新",
-        dragText: "下拉刷新",
-        processedText: "刷新成功",
-        failedText: "刷新失败",
-      ),
-      footer: const ClassicFooter(
-        processedDuration: Duration.zero,
-        safeArea: false,
-        showMessage: false,
-        processingText: "加载中...",
-        processedText: "加载成功",
-        readyText: "加载中...",
-        armedText: "释放以加载更多",
-        dragText: "上拉加载",
-        failedText: "加载失败",
-        noMoreText: "没有更多内容",
-      ),
-      controller: controller.refreshController,
+
+    return SimpleEasyRefresher(
+      easyRefreshController: controller.refreshController,
+      onLoad: controller.onLoad,
+      onRefresh: controller.onRefresh,
       childBuilder: (context, physics) => ListView.builder(
         padding: const EdgeInsets.all(8),
         physics: physics,

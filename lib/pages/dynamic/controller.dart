@@ -33,7 +33,9 @@ class DynamicController extends GetxController {
     for (var i in items) {
       dynamicItemCards.add(DynamicItemCard(dynamicItem: i));
     }
-    currentPage++;
+    if (items.isNotEmpty) {
+      currentPage++;
+    }
     return true;
   }
 
@@ -43,7 +45,6 @@ class DynamicController extends GetxController {
     } else {
       refreshController.finishLoad(IndicatorResult.fail);
     }
-    update(["dynamic"]);
   }
 
   void onRefresh() async {
@@ -55,7 +56,6 @@ class DynamicController extends GetxController {
       refreshController.finishRefresh(IndicatorResult.fail);
     }
     log(dynamicItemCards.length.toString());
-    update(["dynamic"]);
   }
 
   void onTap() {}

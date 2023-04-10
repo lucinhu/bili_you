@@ -31,7 +31,7 @@ class RecommendController extends GetxController {
     super.onInit();
   }
 
-  Function()? updateWidget;
+  // Function()? updateWidget;
 
   void animateToTop() {
     scrollController.animateTo(0,
@@ -68,14 +68,12 @@ class RecommendController extends GetxController {
 
   Future<void> onRefresh() async {
     recommendViewList.clear();
-    // update(["recommend"]);
     await cacheManager.emptyCache();
     if (await _addRecommendItems()) {
       refreshController.finishRefresh(IndicatorResult.success);
     } else {
       refreshController.finishRefresh(IndicatorResult.fail);
     }
-    // update(["recommend"]);
   }
 
   Future<void> onLoad() async {
@@ -85,7 +83,6 @@ class RecommendController extends GetxController {
     } else {
       refreshController.finishLoad(IndicatorResult.fail);
     }
-    // update(["recommend"]);
   }
 
   _initData() {

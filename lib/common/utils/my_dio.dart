@@ -22,6 +22,7 @@ abstract class MyDio {
       cookieManager =
           CookieManager(PersistCookieJar(storage: FileStorage(cookiePath)));
     }
+    dio.options.connectTimeout = const Duration(seconds: 5);
     dio.interceptors.add(cookieManager);
     dio.options.headers = {'user-agent': ApiConstants.userAgent};
     dio.transformer = BackgroundTransformer();

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class SimpleEasyRefresher extends StatefulWidget {
   const SimpleEasyRefresher(
       {super.key,
-      this.easyRefreshController,
+      required this.easyRefreshController,
       this.onLoad,
       this.onRefresh,
       required this.childBuilder});
@@ -34,6 +34,7 @@ class _SimpleEasyRefresherState extends State<SimpleEasyRefresher> {
           setState(() {});
         },
         header: const ClassicHeader(
+          safeArea: false,
           processedDuration: Duration.zero,
           showMessage: false,
           processingText: "正在刷新...",

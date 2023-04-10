@@ -48,20 +48,22 @@ class ReplyController extends GetxController {
 //添加评论条目到控件列表
   addReplyItemWidget(List<Widget> list, ReplyInfo replyInfo, ReplyItem i,
       {bool frontDivider = true, bool isTop = false}) {
-    if (frontDivider) {
-      list.add(Divider(
-        color: Theme.of(Get.context!).colorScheme.secondaryContainer,
-        thickness: 1,
-      ));
-    }
-
     //添加评论条目
-    list.add(ReplyItemWidget(
-      reply: i,
-      isTop: isTop,
-      isUp: i.member.mid == replyInfo.upperMid,
-      pauseVideoPlayer: pauseVideoCallback,
-      officialVerifyType: i.member.officialVerify.type,
+    list.add(Column(
+      children: [
+        if (frontDivider)
+          Divider(
+            color: Theme.of(Get.context!).colorScheme.secondaryContainer,
+            thickness: 1,
+          ),
+        ReplyItemWidget(
+          reply: i,
+          isTop: isTop,
+          isUp: i.member.mid == replyInfo.upperMid,
+          pauseVideoPlayer: pauseVideoCallback,
+          officialVerifyType: i.member.officialVerify.type,
+        ),
+      ],
     ));
   }
 
@@ -74,6 +76,19 @@ class ReplyController extends GetxController {
     } catch (e) {
       log("评论区加载失败,_addReplyItems:$e");
       return false;
+    }
+    //如果评论控件条数将会多于评论总数的话，说明有重复的，就删除重复项
+    if ((replyList.length -
+            1 -
+            replyInfo.topReplies.length +
+            replyInfo.replies.length) >
+        replyInfo.replyCount) {
+      int n = (replyList.length -
+              1 -
+              replyInfo.topReplies.length +
+              replyInfo.replies.length) -
+          replyInfo.replyCount;
+      replyInfo.replies.removeRange(0, n - 1);
     }
     if (replyList.isEmpty) {
       //当第一次时
@@ -121,7 +136,14 @@ class ReplyController extends GetxController {
       addReplyItemWidget(replyList, replyInfo, i,
           frontDivider: replyList.length != 1);
     }
-    pageNum++;
+    //更新页码并刷新页面
+    //如果当前页不为空的话，下一次加载就进入下一页
+    if (replyInfo.replies.isNotEmpty) {
+      pageNum++;
+    } else {
+      //如果为空的话，下一次加载就返回上一页
+      pageNum--;
+    }
     return true;
   }
 
@@ -129,14 +151,12 @@ class ReplyController extends GetxController {
   onReplyRefresh() async {
     pageNum = 1;
     replyList.clear();
-    // update(["reply"]);
     await _addReplyItems().then((value) {
       if (value) {
         refreshController.finishRefresh();
       } else {
         refreshController.finishRefresh(IndicatorResult.fail);
       }
-      update(["reply"]);
     });
   }
 
@@ -149,7 +169,6 @@ class ReplyController extends GetxController {
       } else {
         refreshController.finishLoad(IndicatorResult.fail);
       }
-      update(["reply"]);
     });
   }
 

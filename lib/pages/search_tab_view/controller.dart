@@ -36,7 +36,7 @@ class SearchTabViewController extends GetxController {
   int currentPage = 1;
 
 //搜索视频
-  Future<bool> loadSearchVideoItemWidgtLists() async {
+  Future<bool> loadSearchVideoItemWidgetLists() async {
     late List<SearchVideoItem> list;
     try {
       list = await SearchApi.getSearchVideos(
@@ -44,10 +44,12 @@ class SearchTabViewController extends GetxController {
           page: currentPage,
           order: SearchVideoOrder.comprehensive);
     } catch (e) {
-      log("loadSearchVideoItemWidgtLists:$e");
+      log("loadSearchVideoItemWidgetLists:$e");
       return false;
     }
-    currentPage++;
+    if (list.isNotEmpty) {
+      currentPage++;
+    }
     for (var i in list) {
       int heroTagId = HeroTagId.id++;
       searchItemWidgetList.add(VideoTileItem(
@@ -120,13 +122,13 @@ class SearchTabViewController extends GetxController {
   }
 
 //搜索番剧
-  Future<bool> loadSearchBangumiItemWidgtLists() async {
+  Future<bool> loadSearchBangumiItemWidgetLists() async {
     late List<SearchBangumiItem> list;
     try {
       list = await SearchApi.getSearchBangumis(
           keyWord: keyWord, page: currentPage);
     } catch (e) {
-      log("loadSearchBangumiItemWidgtLists:$e");
+      log("loadSearchBangumiItemWidgetLists:$e");
       return false;
     }
     for (var i in list) {
@@ -199,7 +201,9 @@ class SearchTabViewController extends GetxController {
         },
       ));
     }
-    currentPage++;
+    if (list.isNotEmpty) {
+      currentPage++;
+    }
     return true;
   }
 
@@ -208,13 +212,15 @@ class SearchTabViewController extends GetxController {
     try {
       list =
           await SearchApi.getSearchUsers(keyWord: keyWord, page: currentPage);
-      currentPage++;
     } catch (e) {
-      log("loadSearchBangumiItemWidgtLists:$e");
+      log("loadSearchUserItemWidgetLists:$e");
       return false;
     }
     for (var i in list) {
       searchItemWidgetList.add(UserTileItem(searchUserItem: i));
+    }
+    if (list.isNotEmpty) {
+      currentPage++;
     }
     return true;
   }
@@ -222,9 +228,9 @@ class SearchTabViewController extends GetxController {
   Future<bool> selectType() async {
     switch (searchType) {
       case SearchType.video:
-        return await loadSearchVideoItemWidgtLists();
+        return await loadSearchVideoItemWidgetLists();
       case SearchType.bangumi:
-        return await loadSearchBangumiItemWidgtLists();
+        return await loadSearchBangumiItemWidgetLists();
       case SearchType.movie:
         return false;
       case SearchType.liveRoom:

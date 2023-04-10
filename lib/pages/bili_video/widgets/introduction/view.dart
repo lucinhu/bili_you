@@ -54,7 +54,6 @@ class _IntroductionPageState extends State<IntroductionPage>
   Widget _buildView(BuildContext context, IntroductionController controller) {
     return ListView(
       controller: controller.scrollController,
-      shrinkWrap: true,
       padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
       children: [
         GestureDetector(

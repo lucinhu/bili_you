@@ -1,5 +1,5 @@
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
-import 'package:easy_refresh/easy_refresh.dart';
+import 'package:bili_you/common/widget/simple_easy_refresher.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,50 +27,46 @@ class _ReplyPageState extends State<ReplyPage>
   _ReplyPageState();
   @override
   bool get wantKeepAlive => true;
+  late ReplyController controller;
+
+  @override
+  void initState() {
+    controller = Get.put(
+        ReplyController(
+            bvid: widget.replyId,
+            replyType: widget.replyType,
+            pauseVideoCallback: widget.pauseVideoCallback),
+        tag: widget.tag);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   // 主视图
   Widget _buildView(ReplyController controller) {
-    return EasyRefresh.builder(
-        refreshOnStart: true,
-        onLoad: controller.onReplyLoad,
-        onRefresh: controller.onReplyRefresh,
-        header: const MaterialHeader(),
-        footer: const ClassicFooter(
-          processedDuration: Duration.zero,
-          safeArea: false,
-          showMessage: false,
-          processingText: "加载中...",
-          processedText: "加载成功",
-          readyText: "加载中...",
-          armedText: "释放以加载更多",
-          dragText: "上拉加载",
-          failedText: "加载失败",
-          noMoreText: "没有更多内容",
-        ),
-        controller: controller.refreshController,
-        childBuilder: (context, physics) => ListView.builder(
-              shrinkWrap: true,
-              controller: controller.scrollController,
-              padding: const EdgeInsets.all(0),
-              physics: physics,
-              itemCount: controller.replyList.length,
-              itemBuilder: (context, index) {
-                return controller.replyList[index];
-              },
-            ));
+    return SimpleEasyRefresher(
+      childBuilder: (context, physics) => ListView.builder(
+        controller: controller.scrollController,
+        physics: physics,
+        padding: const EdgeInsets.all(0),
+        itemCount: controller.replyList.length,
+        itemBuilder: (context, index) {
+          return controller.replyList[index];
+        },
+      ),
+      onLoad: controller.onReplyLoad,
+      onRefresh: controller.onReplyRefresh,
+      easyRefreshController: controller.refreshController,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return GetBuilder(
-      init: ReplyController(
-          bvid: widget.replyId,
-          replyType: widget.replyType,
-          pauseVideoCallback: widget.pauseVideoCallback),
-      tag: widget.tag,
-      builder: (controller) => _buildView(controller),
-      id: 'reply',
-    );
+    return _buildView(controller);
   }
 }

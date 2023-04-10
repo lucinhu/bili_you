@@ -35,7 +35,9 @@ class CommonSettingsPage extends StatelessWidget {
               await BiliYouStorage.settings
                   .put(SettingsStorageKeys.recommendColumnCount, value);
               Get.find<RecommendController>().recommendColumnCount = value;
-              Get.find<RecommendController>().updateWidget?.call();
+              await Get.find<RecommendController>()
+                  .refreshController
+                  .callRefresh();
             },
           ),
           const SettingsLabel(text: '搜索'),

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bili_you/common/api/reply_api.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/models/local/reply/reply_reply_info.dart';
+import 'package:bili_you/common/widget/simple_easy_refresher.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
@@ -28,10 +29,10 @@ class ReplyReplyPage extends StatefulWidget {
 
 class _ReplyReplyPageState extends State<ReplyReplyPage>
     with AutomaticKeepAliveClientMixin {
-  final ValueNotifier<int> _pageNum = ValueNotifier<int>(1);
+  int _pageNum = 1;
   final EasyRefreshController _refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
-  late Widget _rootReply;
+  Widget _rootReply = const SizedBox();
   final List<Widget> _replyReplies = [];
   Future<bool> _addReplyReply() async {
     late ReplyReplyInfo replyReplyInfo;
@@ -40,7 +41,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
           type: widget.replyType,
           oid: widget.replyId,
           rootId: widget.rootId,
-          pageNum: _pageNum.value);
+          pageNum: _pageNum);
     } catch (e) {
       log("_addReplyReply:$e");
       return false;
@@ -52,30 +53,46 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
       showPreReply: false,
       officialVerifyType: replyReplyInfo.rootReply.member.officialVerify.type,
     );
+    //如果评论控件条数将会多于评论总数的话，说明有重复的，就删除重复项
+    if ((_replyReplies.length + replyReplyInfo.replies.length) >
+        replyReplyInfo.replyCount) {
+      int n = (_replyReplies.length + replyReplyInfo.replies.length) -
+          replyReplyInfo.replyCount;
+      replyReplyInfo.replies.removeRange(0, n - 1);
+    }
+    //添加评论
     for (var i in replyReplyInfo.replies) {
-      if (_replyReplies.isEmpty) {
-        _replyReplies.add(Divider(
-          color: Theme.of(Get.context!).colorScheme.primaryContainer,
-          thickness: 2,
-        ));
-      } else {
-        _replyReplies.add(Divider(
-          color: Theme.of(Get.context!).colorScheme.secondaryContainer,
-          thickness: 1,
-          indent: 10,
-          endIndent: 10,
-        ));
-      }
-
-      _replyReplies.add(ReplyItemWidget(
-        reply: i,
-        isUp: i.member.mid == replyReplyInfo.upperMid,
-        pauseVideoPlayer: widget.pauseVideoCallback,
-        showPreReply: false,
-        officialVerifyType: i.member.officialVerify.type,
+      _replyReplies.add(Column(
+        children: [
+          _replyReplies.isEmpty
+              ? Divider(
+                  color: Theme.of(Get.context!).colorScheme.primaryContainer,
+                  thickness: 2,
+                )
+              : Divider(
+                  color: Theme.of(Get.context!).colorScheme.secondaryContainer,
+                  thickness: 1,
+                  indent: 10,
+                  endIndent: 10,
+                ),
+          ReplyItemWidget(
+            reply: i,
+            isUp: i.member.mid == replyReplyInfo.upperMid,
+            pauseVideoPlayer: widget.pauseVideoCallback,
+            showPreReply: false,
+            officialVerifyType: i.member.officialVerify.type,
+          ),
+        ],
       ));
     }
-    _pageNum.value++;
+    //更新页码并刷新页面
+    //如果当前页不为空的话，下一次加载就进入下一页
+    if (replyReplyInfo.replies.isNotEmpty) {
+      _pageNum++;
+    } else {
+      //如果为空的话，下一次加载就返回上一页
+      _pageNum--;
+    }
     return true;
   }
 
@@ -90,7 +107,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
 
   _onRefresh() async {
     _replyReplies.clear();
-    _pageNum.value = 1;
+    _pageNum = 1;
 
     if (await _addReplyReply()) {
       _refreshController.finishRefresh();
@@ -102,53 +119,24 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return FutureBuilder(
-      future: _addReplyReply(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return ValueListenableBuilder(
-            valueListenable: _pageNum,
-            builder: (context, value, child) {
-              return EasyRefresh.builder(
-                onLoad: _onLoad,
-                onRefresh: _onRefresh,
-                header: const MaterialHeader(),
-                footer: const ClassicFooter(
-                  processedDuration: Duration.zero,
-                  safeArea: false,
-                  showMessage: false,
-                  processingText: "加载中...",
-                  processedText: "加载成功",
-                  readyText: "加载中...",
-                  armedText: "释放以加载更多",
-                  dragText: "上拉加载",
-                  failedText: "加载失败",
-                  noMoreText: "没有更多内容",
-                ),
-                controller: _refreshController,
-                childBuilder: (context, physics) => ListView.builder(
-                  physics: physics,
-                  itemCount: _replyReplies.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: _rootReply,
-                      );
-                    }
-                    return _replyReplies[index - 1];
-                  },
-                  clipBehavior: Clip.antiAlias,
-                ),
-              );
-            },
-          );
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
+    return SimpleEasyRefresher(
+      easyRefreshController: _refreshController,
+      onLoad: _onLoad,
+      onRefresh: _onRefresh,
+      childBuilder: (context, physics) => ListView.builder(
+        physics: physics,
+        itemCount: _replyReplies.length + 1,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: _rootReply,
+            );
+          }
+          return _replyReplies[index - 1];
+        },
+        clipBehavior: Clip.antiAlias,
+      ),
     );
   }
 

@@ -108,7 +108,6 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
                                 'UserSpacePage:${widget.dynamicItem.author.mid}'),
                             mid: widget.dynamicItem.author.mid)));
                   },
-                  cacheWidthHeight: 100,
                 ),
               ),
               Column(
@@ -141,13 +140,18 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
                   widget.dynamicItem.content.emotes.isNotEmpty
                       ? SelectableText.rich(
                           buildEmojiText(widget.dynamicItem.content, context))
-                      : FoldableText.rich(
-                          buildEmojiText(widget.dynamicItem.content, context),
-                          maxLines: 6,
-                          folderTextStyle:
-                              TextStyle(color: Theme.of(context).primaryColor),
-                          style: const TextStyle(fontSize: 15),
-                        ),
+                      : SelectableRegion(
+                          magnifierConfiguration:
+                              const TextMagnifierConfiguration(),
+                          focusNode: FocusNode(),
+                          selectionControls: MaterialTextSelectionControls(),
+                          child: FoldableText.rich(
+                            buildEmojiText(widget.dynamicItem.content, context),
+                            maxLines: 6,
+                            folderTextStyle: TextStyle(
+                                color: Theme.of(context).primaryColor),
+                            style: const TextStyle(fontSize: 15),
+                          )),
 
                   ///视频
                   if (widget.dynamicItem.content is AVDynamicContent)
@@ -220,113 +224,112 @@ class DynamicVideoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int cid = 0;
-    return FutureBuilder(future: Future(() async {
-      cid = (await VideoInfoApi.getVideoParts(bvid: content.bvid)).first.cid;
-    }), builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.done) {
-        return GestureDetector(
-          onTap: () {
-            HeroTagId.lastId = heroTagId;
-            Navigator.of(context).push(GetPageRoute(
-              page: () => BiliVideoPage(bvid: content.bvid, cid: cid),
-            ));
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Stack(
-                  alignment: Alignment.bottomLeft,
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: LayoutBuilder(builder: (context, boxConstraints) {
-                        return Hero(
-                            tag: heroTagId,
-                            transitionOnUserGestures: true,
-                            child: CachedNetworkImage(
-                              cacheWidth: (boxConstraints.maxWidth *
-                                      MediaQuery.of(context).devicePixelRatio)
-                                  .toInt(),
-                              cacheHeight: (boxConstraints.maxHeight *
-                                      MediaQuery.of(context).devicePixelRatio)
-                                  .toInt(),
-                              cacheManager: cacheManager,
-                              fit: BoxFit.cover,
-                              imageUrl: content.picUrl,
-                              placeholder: () => Container(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceVariant,
-                              ),
-                              errorWidget: () => const Center(
-                                child: Icon(Icons.error),
-                              ),
-                              filterQuality: FilterQuality.none,
-                            ));
-                      }),
-                    ),
-                    Container(
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black38,
-                              blurRadius: 12,
-                              spreadRadius: 10,
-                              offset: Offset(0, 12)),
-                        ],
-                      ),
-                      padding:
-                          const EdgeInsets.only(left: 6, right: 6, bottom: 3),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.slideshow_rounded,
-                              color: Colors.white,
-                              size: 14,
-                            ),
-                            Text(
-                              " ${content.playCount}  ",
-                              maxLines: 1,
-                              style: playInfoTextStyle,
-                            ),
-                            const Icon(
-                              Icons.format_list_bulleted_rounded,
-                              color: Colors.white,
-                              size: 14,
-                            ),
-                            Text(
-                              " ${content.damakuCount}",
-                              maxLines: 1,
-                              style: playInfoTextStyle,
-                            ),
-                            const Spacer(),
-                            Text(
-                              content.duration,
-                              maxLines: 1,
-                              style: playInfoTextStyle,
-                            ),
-                          ]),
-                    ),
-                  ],
+    return GestureDetector(
+      onTap: () {
+        HeroTagId.lastId = heroTagId;
+        int cid = 0;
+        Navigator.of(context).push(GetPageRoute(
+          page: () => FutureBuilder(future: Future(() async {
+            cid = (await VideoInfoApi.getVideoParts(bvid: content.bvid))
+                .first
+                .cid;
+          }), builder: (context, snap) {
+            if (snap.connectionState == ConnectionState.done) {
+              return BiliVideoPage(bvid: content.bvid, cid: cid);
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          }),
+        ));
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Stack(
+              alignment: Alignment.bottomLeft,
+              children: [
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: LayoutBuilder(builder: (context, boxConstraints) {
+                    return Hero(
+                        tag: heroTagId,
+                        transitionOnUserGestures: true,
+                        child: CachedNetworkImage(
+                          cacheWidth: (boxConstraints.maxWidth *
+                                  MediaQuery.of(context).devicePixelRatio)
+                              .toInt(),
+                          cacheHeight: (boxConstraints.maxHeight *
+                                  MediaQuery.of(context).devicePixelRatio)
+                              .toInt(),
+                          cacheManager: cacheManager,
+                          fit: BoxFit.cover,
+                          imageUrl: content.picUrl,
+                          placeholder: () => Container(
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                          ),
+                          errorWidget: () => const Icon(Icons.error),
+                          filterQuality: FilterQuality.none,
+                        ));
+                  }),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text(
-                  content.title,
-                  maxLines: 2,
+                Container(
+                  decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black38,
+                          blurRadius: 12,
+                          spreadRadius: 10,
+                          offset: Offset(0, 12)),
+                    ],
+                  ),
+                  padding: const EdgeInsets.only(left: 6, right: 6, bottom: 3),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.slideshow_rounded,
+                          color: Colors.white,
+                          size: 14,
+                        ),
+                        Text(
+                          " ${content.playCount}  ",
+                          maxLines: 1,
+                          style: playInfoTextStyle,
+                        ),
+                        const Icon(
+                          Icons.format_list_bulleted_rounded,
+                          color: Colors.white,
+                          size: 14,
+                        ),
+                        Text(
+                          " ${content.damakuCount}",
+                          maxLines: 1,
+                          style: playInfoTextStyle,
+                        ),
+                        const Spacer(),
+                        Text(
+                          content.duration,
+                          maxLines: 1,
+                          style: playInfoTextStyle,
+                        ),
+                      ]),
                 ),
-              )
-            ],
+              ],
+            ),
           ),
-        );
-      } else {
-        return const SizedBox();
-      }
-    });
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              content.title,
+              maxLines: 2,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
