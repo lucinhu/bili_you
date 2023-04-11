@@ -1,6 +1,8 @@
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/utils/settings.dart';
 import 'package:bili_you/pages/dynamic/view.dart';
+import 'package:bili_you/pages/home/index.dart';
+import 'package:bili_you/pages/recommend/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,6 +27,26 @@ class _MainPageState extends State<MainPage> {
     }
     controller = Get.put(MainController());
     super.initState();
+  }
+
+  void onDestinationSelected(int value) {
+    // 点击当前 NavigationBar
+    if (value == controller.selectedIndex.value) {
+      var currentPage = controller.pages[value];
+      // 首页
+      if(currentPage is HomePage){
+        var homeController = Get.find<HomeController>();
+        var controller = homeController.tabsList[homeController.tabController!.index]['controller'];
+        if(controller == 'RecommendController'){
+          Get.find<RecommendController>().animateToTop();
+        }
+      }
+      // 动态
+      if(currentPage is DynamicPage) {
+        Get.find<DynamicController>().animateToTop();
+      }
+    }
+    controller.selectedIndex.value = value;
   }
 
   @override
@@ -59,13 +81,7 @@ class _MainPageState extends State<MainPage> {
               ),
             ],
             selectedIndex: controller.selectedIndex.value,
-            onDestinationSelected: (value) {
-              if (value == controller.selectedIndex.value &&
-                  controller.pages[value] is DynamicPage) {
-                Get.find<DynamicController>().animateToTop();
-              }
-              controller.selectedIndex.value = value;
-            },
+            onDestinationSelected: (value) => onDestinationSelected(value),
           ),
         ));
   }
