@@ -20,13 +20,14 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
   late HomeController controller;
-  late TabController tabController;
   final RecommendPage recommendPage = const RecommendPage();
+  List<Map<String, dynamic>> tabsList = [];
 
   @override
   void initState() {
     controller = Get.put(HomeController());
-    tabController = TabController(length: 5, vsync: this, initialIndex: 1);
+    tabsList = controller.tabsList;
+    controller.tabController = TabController(length: tabsList.length, vsync: this, initialIndex: controller.tabInitIndex);
     super.initState();
   }
 
@@ -142,45 +143,23 @@ class _HomePageState extends State<HomePage>
         centerTitle: true,
         bottom: TabBar(
           isScrollable: true,
-          tabs: const [
-            Tab(text: "直播"),
-            Tab(text: "推荐"),
-            Tab(
-              text: '热门',
-            ),
-            Tab(
-              text: '排行榜',
-            ),
-            Tab(
-              text: '番剧',
-            ),
-          ],
-          controller: tabController,
+          tabs: tabsList.map((e) => Tab(text: e['text'])).toList(),
+          controller: controller.tabController,
           onTap: (index) {
             //点击“推荐”回到顶
-            if (index == 1 && !tabController.indexIsChanging) {
+            if (index == 1 && !controller.tabController!.indexIsChanging) {
               Get.find<RecommendController>().animateToTop();
             }
           },
         ),
       ),
       body: TabBarView(
-        controller: tabController,
-        children: [
-          const Center(
-            child: Text("该功能暂无"),
-          ),
-          recommendPage,
-          const Center(
-            child: Text("该功能暂无"),
-          ),
-          const Center(
-            child: Text("该功能暂无"),
-          ),
-          const Center(
-            child: Text("该功能暂无"),
-          ),
-        ],
+        controller: controller.tabController,
+        children: tabsList.map((e) {
+          return tabsList.indexOf(e) == 1
+              ? recommendPage
+              : const Center(child: Text("该功能暂无"));
+        }).toList(),
       ),
     );
   }

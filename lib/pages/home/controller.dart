@@ -4,6 +4,7 @@ import 'package:bili_you/common/api/index.dart';
 import 'package:bili_you/common/models/local/login/login_user_info.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:flutter/material.dart';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,36 @@ class HomeController extends GetxController {
   late LoginUserInfo userInfo;
 
   RxString defaultSearchWord = "搜索".obs;
+  final List<Map<String, String>> tabsList = [
+    {
+      'text': '直播',
+      'id': '',
+      'controller': ''
+    },
+    {
+      'text': '推荐',
+      'id': '',
+      'controller': 'RecommendController'
+    },
+    {
+      'text': '热门',
+      'id': '',
+      'controller': ''
+    },
+    {
+      'text': '直播',
+      'id': '',
+      'controller': ''
+    },
+    {
+      'text': '番剧',
+      'id': '',
+      'controller': ''
+    }
+  ];
+  late TabController? tabController;
+  final int tabInitIndex = 1;
+  RxInt tabIndex = 1.obs;
 
   _initData() async {
     refreshDefaultSearchWord();
