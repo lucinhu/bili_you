@@ -1,0 +1,22 @@
+name: "Feature request"
+description: 关于新功能的建议
+labels: 
+  - enhancement
+assignees: lucinhu
+body:
+  - type: textarea
+    attributes:
+      label: 预期行为
+      description: 你提出的功能会解决预期中的什么问题
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 功能描述
+      description: 简洁而有力的描述你想象中的新功能
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 补充说明
+      description: 如果有任何补充，填写此字段
