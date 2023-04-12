@@ -1,5 +1,8 @@
 name: "Bug report"
 description: 创建问题报告以帮助 bili_you 更好
+labels: 
+  - bug
+assignees: lucinhu
 body:
   - type: textarea
     attributes:
