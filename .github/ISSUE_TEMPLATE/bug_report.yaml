@@ -1,0 +1,42 @@
+name: "Bug report"
+description: 创建问题报告以帮助 bili_you 更好
+labels: 
+  - bug
+assignees: lucinhu
+body:
+  - type: textarea
+    attributes:
+      label: Bug 描述
+      description: 简洁而有力的描述 Bug
+    validations:
+      required: true
+  - type: textarea
+    attributes: 
+      label: 复现步骤
+      description: 如何复现你描述的 Bug ?
+    validations: 
+      required: true
+  - type: textarea
+    attributes:
+      label: 预期行为
+      description: 若无 Bug 你认为 bili_you 改如何工作
+  - type: textarea
+    attributes:
+      label: 屏幕捕获
+      description: 如果可用，添加一些截图帮助排查问题
+  - type: textarea
+    attributes:
+      label: 版本信息
+      description: 填写一些版本信息
+      value: |
+        1. Android 版本: 
+        2. Webview 版本: 
+        3. 设备型号: 
+        4. bili_you 版本号: 
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 补充说明
+      description: 如果有任何补充，填写此字段
+  
