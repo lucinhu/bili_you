@@ -1,33 +1,37 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a report to help us improve 
 title: "[BUG]"
 labels: bug
 assignees: lucinhu
 
 ---
 
-**描述BUG**
-清楚而简介的bug描述.
+**Bug 描述**
+> 简洁而有力的描述 Bug
 
-**Bug产生步骤**
-重现步骤:
+
+
+**Bug 复现步骤**
+> 如何复现你描述的 Bug
+复现步骤：
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
 **预期行为**
-A clear and concise description of what you expected to happen.
+> 如果 Bug 破坏了 Bili_you 的行为，你认为 bili_you 正确工作的方式
 
 **截图**
-If applicable, add screenshots to help explain your problem.
+> 如果可用，添加一些问题相关的截图帮助排查问题
 
-**设备信息:**
- - 型号: [如小米10]
- - 系统: [如Android13]
- - webview版本: 
- - 版本号 [如v1.0.7]
 
-**Additional context**
-Add any other context about the problem here.
+**设备信息**
+ - 型号：[如小米 10]
+ - 系统：[如 Android13]
+ - webview 版本：
+ - 版本号 [如 v1.0.7]
+
+**补充说明**
+> 如果有任何额外的说明，请填写此字段
