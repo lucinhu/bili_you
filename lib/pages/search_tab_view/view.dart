@@ -9,10 +9,14 @@ import 'controller.dart';
 
 class SearchTabViewPage extends StatefulWidget {
   const SearchTabViewPage(
-      {Key? key, required this.keyWord, this.searchType = SearchType.video})
+      {Key? key,
+      required this.keyWord,
+      this.searchType = SearchType.video,
+      required this.tagName})
       : super(key: key);
   final String keyWord;
   final SearchType searchType;
+  final String tagName;
 
   @override
   State<SearchTabViewPage> createState() => _SearchTabViewPageState();
@@ -29,7 +33,7 @@ class _SearchTabViewPageState extends State<SearchTabViewPage>
     controller = Get.put(
         SearchTabViewController(
             keyWord: widget.keyWord, searchType: widget.searchType),
-        tag: widget.keyWord + widget.searchType.value);
+        tag: widget.tagName);
     super.initState();
   }
 
@@ -56,6 +60,7 @@ class _SearchTabViewPageState extends State<SearchTabViewPage>
       onLoad: controller.onLoad,
       onRefresh: controller.onRefresh,
       childBuilder: (context, physics) => ListView.builder(
+        controller: controller.scrollController,
         padding: const EdgeInsets.all(8),
         physics: physics,
         itemCount: controller.searchItemWidgetList.length,

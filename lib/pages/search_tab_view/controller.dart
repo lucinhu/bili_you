@@ -34,6 +34,12 @@ class SearchTabViewController extends GetxController {
       CacheManager(Config(CacheKeys.searchResultItemCoverKey));
   List<Widget> searchItemWidgetList = <Widget>[];
   int currentPage = 1;
+  ScrollController scrollController = ScrollController();
+
+  animateToTop() {
+    scrollController.animateTo(0,
+        duration: const Duration(milliseconds: 500), curve: Curves.linear);
+  }
 
 //搜索视频
   Future<bool> loadSearchVideoItemWidgetLists() async {

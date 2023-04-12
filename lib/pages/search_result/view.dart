@@ -1,5 +1,6 @@
 import 'package:bili_you/common/api/search_api.dart';
 import 'package:bili_you/pages/search_input/view.dart';
+import 'package:bili_you/pages/search_tab_view/controller.dart';
 
 import 'package:bili_you/pages/search_tab_view/view.dart';
 import 'package:flutter/material.dart';
@@ -71,24 +72,20 @@ class _SearchResultPageState extends State<SearchResultPage>
         bottom: TabBar(
             controller: controller.tabController,
             onTap: (value) {
+              if (controller.currentSelectedTabIndex == value) {
+                //移动到顶部
+                Get.find<SearchTabViewController>(
+                        tag: controller.getTabTagNameByIndex(value))
+                    .animateToTop();
+              }
+              controller.currentSelectedTabIndex = value;
               controller.tabController.animateTo(value);
             },
-            tabs: const [
-              Tab(
-                text: "视频",
-              ),
-              Tab(
-                text: "番剧",
-              ),
-              Tab(
-                text: "直播",
-              ),
-              Tab(
-                text: "影视",
-              ),
-              Tab(
-                text: "用户",
-              )
+            tabs: [
+              for (var i in SearchType.values)
+                Tab(
+                  text: i.name,
+                ),
             ]));
   }
 
@@ -100,26 +97,12 @@ class _SearchResultPageState extends State<SearchResultPage>
       body: TabBarView(
         controller: controller.tabController,
         children: [
-          SearchTabViewPage(
-            keyWord: widget.keyWord,
-            searchType: SearchType.video,
-          ),
-          SearchTabViewPage(
-            keyWord: widget.keyWord,
-            searchType: SearchType.bangumi,
-          ),
-          SearchTabViewPage(
-            keyWord: widget.keyWord,
-            searchType: SearchType.liveRoom,
-          ),
-          SearchTabViewPage(
-            keyWord: widget.keyWord,
-            searchType: SearchType.movie,
-          ),
-          SearchTabViewPage(
-            keyWord: widget.keyWord,
-            searchType: SearchType.user,
-          )
+          for (var i in SearchType.values)
+            SearchTabViewPage(
+              keyWord: widget.keyWord,
+              searchType: i,
+              tagName: controller.getTabTagNameByIndex(i.index),
+            ),
         ],
       ),
     );
