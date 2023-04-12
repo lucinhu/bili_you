@@ -19,7 +19,6 @@ import '../models/network/login/post_sms_require.dart' as raw;
 
 abstract class LoginApi {
   ///获取登陆需要的key和hash
-  ///TODO: 改造封装成getxxx
   static Future<raw.PasswordLoginKeyHashResponse>
       requestPasswordLoginKeyHash() async {
     Dio dio = MyDio.dio;
@@ -29,7 +28,6 @@ abstract class LoginApi {
   }
 
   ///获取人机测试所需要的数据
-  ///TODO: 改造封装成getxxx
   static Future<raw.CaptchaDataResponse> requestCaptchaData() async {
     var dio = MyDio.dio;
     var response = await dio.get(ApiConstants.captcha,
@@ -39,7 +37,6 @@ abstract class LoginApi {
   }
 
   ///请求发送验证码信息到手机
-  ///TODO: 改造封装成getxxx
   static Future<raw.PostSmsRequireResponse> postSendSmsToPhone(int cid, int tel,
       String token, String challenge, String validate, String seccode) async {
     var dio = MyDio.dio;
@@ -60,7 +57,6 @@ abstract class LoginApi {
   }
 
   ///短信登录
-  ///TODO: 改造封装成getxxx
   static Future<raw.PostSmsLoginResponse> smsLogin(
       int cid, int tel, int code, String captchaKey) async {
     Dio dio = MyDio.dio;
@@ -81,7 +77,6 @@ abstract class LoginApi {
   }
 
   ///密码登陆
-  ///TODO: 改造封装成getxxx
   static Future<raw.PostPasswordLoginResponse> postPasswordLoginInfo(
       raw.CaptchaResultModel captchaResult,
       raw.PasswordLoginKeyHashResponse passwordLoginKeyHash,

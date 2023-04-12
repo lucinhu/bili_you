@@ -20,7 +20,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.9
 
 environment:
-  sdk: '>=2.19.0-444.2<4.0.0'
+  sdk: '>=3.0.0-417.0.dev<4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -87,6 +87,7 @@ dependencies:
 
   # 分享
   share_plus: ^6.3.1
+  card_swiper: ^2.0.4
   
   
 
