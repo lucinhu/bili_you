@@ -88,7 +88,7 @@ class ReplyController extends GetxController {
               replyInfo.topReplies.length +
               replyInfo.replies.length) -
           replyInfo.replyCount;
-      replyInfo.replies.removeRange(0, n - 1);
+      replyInfo.replies.removeRange(0, n);
     }
     if (replyList.isEmpty) {
       //当第一次时
