@@ -180,7 +180,7 @@ class ReplyController extends GetxController {
     //清理其他用户头像的缓存
     CacheManager(Config(CacheKeys.othersFaceKey)).emptyCache();
     //清理评论图缓存
-    CacheManager(Config(CacheKeys.replyImageKey)).emptyCache();
+    CacheManager(Config(CacheKeys.bigImageKey)).emptyCache();
     super.onClose();
   }
 }

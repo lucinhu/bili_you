@@ -7,12 +7,14 @@ import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
 import 'package:bili_you/common/widget/icon_text_button.dart';
 import 'package:bili_you/index.dart';
-import 'package:bili_you/pages/bili_video/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
+import 'package:bili_you/pages/dynamic/widget/dynamic_draw.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
+
+import 'dynamic_video_card.dart';
 
 class DynamicItemCard extends StatefulWidget {
   const DynamicItemCard({super.key, required this.dynamicItem});
@@ -152,6 +154,7 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
                                 color: Theme.of(context).primaryColor),
                             style: const TextStyle(fontSize: 15),
                           )),
+                  const Padding(padding: EdgeInsets.only(top: 8)),
 
                   ///视频
                   if (widget.dynamicItem.content is AVDynamicContent)
@@ -160,6 +163,12 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
                       cacheManager: videoCoverCacheManager,
                       heroTagId: HeroTagId.id++,
                     ),
+
+                  ///图片
+                  if (widget.dynamicItem.content is DrawDynamicContent)
+                    DynamicDrawWidget(
+                        content:
+                            widget.dynamicItem.content as DrawDynamicContent),
 
                   ///分享，评论，点赞
                   GridView.count(
@@ -205,130 +214,6 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
             )
           ],
         ),
-      ),
-    );
-  }
-}
-
-class DynamicVideoCard extends StatelessWidget {
-  const DynamicVideoCard(
-      {super.key,
-      required this.content,
-      required this.cacheManager,
-      required this.heroTagId});
-  final AVDynamicContent content;
-  final playInfoTextStyle = const TextStyle(
-      color: Colors.white, fontSize: 12, overflow: TextOverflow.ellipsis);
-  final CacheManager cacheManager;
-  final int heroTagId;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        HeroTagId.lastId = heroTagId;
-        int cid = 0;
-        Navigator.of(context).push(GetPageRoute(
-          page: () => FutureBuilder(future: Future(() async {
-            cid = (await VideoInfoApi.getVideoParts(bvid: content.bvid))
-                .first
-                .cid;
-          }), builder: (context, snap) {
-            if (snap.connectionState == ConnectionState.done) {
-              return BiliVideoPage(bvid: content.bvid, cid: cid);
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          }),
-        ));
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Stack(
-              alignment: Alignment.bottomLeft,
-              children: [
-                AspectRatio(
-                  aspectRatio: 16 / 10,
-                  child: LayoutBuilder(builder: (context, boxConstraints) {
-                    return Hero(
-                        tag: heroTagId,
-                        transitionOnUserGestures: true,
-                        child: CachedNetworkImage(
-                          cacheWidth: (boxConstraints.maxWidth *
-                                  MediaQuery.of(context).devicePixelRatio)
-                              .toInt(),
-                          cacheHeight: (boxConstraints.maxHeight *
-                                  MediaQuery.of(context).devicePixelRatio)
-                              .toInt(),
-                          cacheManager: cacheManager,
-                          fit: BoxFit.cover,
-                          imageUrl: content.picUrl,
-                          placeholder: () => Container(
-                            color: Theme.of(context).colorScheme.surfaceVariant,
-                          ),
-                          errorWidget: () => const Icon(Icons.error),
-                          filterQuality: FilterQuality.none,
-                        ));
-                  }),
-                ),
-                Container(
-                  decoration: const BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black38,
-                          blurRadius: 12,
-                          spreadRadius: 10,
-                          offset: Offset(0, 12)),
-                    ],
-                  ),
-                  padding: const EdgeInsets.only(left: 6, right: 6, bottom: 3),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.slideshow_rounded,
-                          color: Colors.white,
-                          size: 14,
-                        ),
-                        Text(
-                          " ${content.playCount}  ",
-                          maxLines: 1,
-                          style: playInfoTextStyle,
-                        ),
-                        const Icon(
-                          Icons.format_list_bulleted_rounded,
-                          color: Colors.white,
-                          size: 14,
-                        ),
-                        Text(
-                          " ${content.damakuCount}",
-                          maxLines: 1,
-                          style: playInfoTextStyle,
-                        ),
-                        const Spacer(),
-                        Text(
-                          content.duration,
-                          maxLines: 1,
-                          style: playInfoTextStyle,
-                        ),
-                      ]),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Text(
-              content.title,
-              maxLines: 2,
-            ),
-          )
-        ],
       ),
     );
   }

@@ -12,6 +12,26 @@ class WordDynamicContent extends DynamicContent {
       WordDynamicContent(description: "", emotes: []);
 }
 
+class Draw {
+  Draw(
+      {required this.width,
+      required this.height,
+      required this.size,
+      required this.picUrl});
+  int width;
+  int height;
+  double size;
+  String picUrl;
+}
+
+class DrawDynamicContent extends DynamicContent {
+  DrawDynamicContent(
+      {required super.description, required super.emotes, required this.draws});
+  static DrawDynamicContent get zero =>
+      DrawDynamicContent(description: '', emotes: [], draws: []);
+  List<Draw> draws;
+}
+
 class AVDynamicContent extends DynamicContent {
   AVDynamicContent(
       {required super.description,

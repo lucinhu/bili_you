@@ -6,5 +6,5 @@ class CacheKeys {
   static const String relatedVideosItemCoverKey = 'relatedVideosItemCover';
   static const String dynamicVideoItemCoverKey = 'dynamicVideoItemCover';
   static const String emoteKey = 'emote';
-  static const String replyImageKey = 'replyImage';
+  static const String bigImageKey = 'bigImageKey';
 }

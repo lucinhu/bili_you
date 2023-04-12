@@ -124,9 +124,15 @@ class ReplyItemWidget extends StatelessWidget {
           // pauseVideoPlayer?.call();
           // Get.to(
           //     () => ViewImage(key: ValueKey("ViewImage:${i.url}"), url: i.url));
-          Navigator.of(context).push(GetPageRoute(
-              page: () =>
-                  ViewImage(key: ValueKey("ViewImage:${i.url}"), url: i.url)));
+          Navigator.of(context).push(
+            GetPageRoute(
+              page: () => ViewImagePage(
+                key: ValueKey("ViewImage:${i.url}"),
+                urls: content.pictures.map<String>((e) => e.url).toList(),
+                initIndex: content.pictures.indexOf(i),
+              ),
+            ),
+          );
         },
         child: Padding(
           padding: const EdgeInsets.all(2),
@@ -142,7 +148,7 @@ class ReplyItemWidget extends StatelessWidget {
               width: Get.size.width / 3,
               height: Get.size.width / 3,
               cacheWidth: ((Get.size.width / 3) * Get.pixelRatio).toInt(),
-              cacheManager: CacheManager(Config(CacheKeys.replyImageKey)),
+              cacheManager: CacheManager(Config(CacheKeys.bigImageKey)),
             ),
           ),
         ),
@@ -456,6 +462,8 @@ class ThumUpButton extends StatelessWidget {
     return ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
+          padding: const MaterialStatePropertyAll(
+              EdgeInsets.only(left: 10, right: 10)),
           foregroundColor: selected == true
               ? MaterialStatePropertyAll(
                   Theme.of(context).colorScheme.onPrimary)

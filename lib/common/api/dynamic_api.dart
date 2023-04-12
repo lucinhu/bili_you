@@ -103,8 +103,20 @@ class DynamicApi {
 
           break;
         case DynamicItemType.draw:
-          //抽奖&互动
-          dynamicContent = _buildWordDynamicContent(moduleDynamic);
+          //抽奖&互动&图片
+          dynamicContent = DrawDynamicContent(
+              description: moduleDynamic?.desc?.text ?? '',
+              emotes: _buildEmoteList(
+                  moduleDynamic?.desc?.richTextNodes ?? <raw.RichTextNode>[]),
+              draws: [
+                for (var i
+                    in moduleDynamic?.major?.draw?.items ?? <raw.DrawItem>[])
+                  Draw(
+                      width: i.width ?? 0,
+                      height: i.height ?? 0,
+                      size: i.size ?? 0,
+                      picUrl: i.src ?? '')
+              ]);
           break;
         case DynamicItemType.liveRecommend:
           //直播推荐
