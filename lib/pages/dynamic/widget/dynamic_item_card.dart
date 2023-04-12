@@ -17,8 +17,10 @@ import 'package:get/get.dart';
 import 'dynamic_video_card.dart';
 
 class DynamicItemCard extends StatefulWidget {
-  const DynamicItemCard({super.key, required this.dynamicItem});
+  const DynamicItemCard(
+      {super.key, required this.dynamicItem, this.isForward = false});
   final DynamicItem dynamicItem;
+  final bool isForward;
 
   @override
   State<DynamicItemCard> createState() => _DynamicItemCardState();
@@ -79,9 +81,23 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
     return TextSpan(children: spans);
   }
 
+  void _goToUserSpacePage() {
+    // Get.to(() => UserSpacePage(
+    //     key:
+    //         ValueKey('UserSpacePage:${dynamicItem.author.mid}'),
+    //     mid: dynamicItem.author.mid));
+    Navigator.of(context).push(GetPageRoute(
+        page: () => UserSpacePage(
+            key: ValueKey('UserSpacePage:${widget.dynamicItem.author.mid}'),
+            mid: widget.dynamicItem.author.mid)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: !widget.isForward
+          ? Theme.of(context).cardColor
+          : Theme.of(context).colorScheme.surfaceVariant,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20))),
       margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
@@ -92,49 +108,47 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: AvatarWidget(
-                  radius: 45 / 2,
-                  avatarUrl: widget.dynamicItem.author.avatarUrl,
-                  officialVerifyType:
-                      widget.dynamicItem.author.officialVerify.type,
-                  onPressed: () {
-                    // Get.to(() => UserSpacePage(
-                    //     key:
-                    //         ValueKey('UserSpacePage:${dynamicItem.author.mid}'),
-                    //     mid: dynamicItem.author.mid));
-                    Navigator.of(context).push(GetPageRoute(
-                        page: () => UserSpacePage(
-                            key: ValueKey(
-                                'UserSpacePage:${widget.dynamicItem.author.mid}'),
-                            mid: widget.dynamicItem.author.mid)));
-                  },
+              if (!widget.isForward)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: AvatarWidget(
+                    radius: 45 / 2,
+                    avatarUrl: widget.dynamicItem.author.avatarUrl,
+                    officialVerifyType:
+                        widget.dynamicItem.author.officialVerify.type,
+                    onPressed: _goToUserSpacePage,
+                  ),
                 ),
-              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    //发动态的作者名字
-                    widget.dynamicItem.author.name,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold),
+                  GestureDetector(
+                    onTap: _goToUserSpacePage,
+                    child: Text(
+                      //发动态的作者名字
+                      widget.dynamicItem.author.name,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                   //发布时间,动作
-                  Text(
-                    "${widget.dynamicItem.author.pubTime} ${widget.dynamicItem.author.pubAction}",
-                    style: TextStyle(
-                        color: Theme.of(context).hintColor, fontSize: 12),
-                  )
+                  if (!widget.isForward)
+                    Text(
+                      "${widget.dynamicItem.author.pubTime} ${widget.dynamicItem.author.pubAction}",
+                      style: TextStyle(
+                          color: Theme.of(context).hintColor, fontSize: 12),
+                    )
                 ],
               )
             ]),
             Padding(
-              padding: const EdgeInsets.only(
-                  top: 14.0, left: 8, right: 8, bottom: 8), //动态信息
+              padding: EdgeInsets.only(
+                  top: (!widget.isForward) ? 14.0 : 0,
+                  left: 8,
+                  right: 8,
+                  bottom: 8), //动态信息
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -164,6 +178,16 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
                       heroTagId: HeroTagId.id++,
                     ),
 
+                  ///转发
+                  if ((!widget.isForward) &&
+                      widget.dynamicItem.content is ForwardDynamicContent)
+                    DynamicItemCard(
+                      dynamicItem:
+                          (widget.dynamicItem.content as ForwardDynamicContent)
+                              .forward,
+                      isForward: true,
+                    ),
+
                   ///图片
                   if (widget.dynamicItem.content is DrawDynamicContent)
                     DynamicDrawWidget(
@@ -171,44 +195,46 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
                             widget.dynamicItem.content as DrawDynamicContent),
 
                   ///分享，评论，点赞
-                  GridView.count(
-                    padding: const EdgeInsets.only(top: 16),
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    crossAxisCount: 3,
-                    childAspectRatio: 16 / 9,
-                    crossAxisSpacing: 10,
-                    children: [
-                      IconTextButton(
-                          onPressed: () {
-                            Get.rawSnackbar(message: '功能暂未完成');
-                          },
-                          icon: const Icon(Icons.arrow_outward_outlined),
-                          text: Text(StringFormatUtils.numFormat(
-                              widget.dynamicItem.stat.shareCount))),
-                      IconTextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(GetPageRoute(
-                                page: () => Scaffold(
-                                      appBar: AppBar(title: const Text("评论")),
-                                      body: ReplyPage(
-                                        replyId: widget.dynamicItem.replyId,
-                                        replyType: widget.dynamicItem.replyType,
-                                      ),
-                                    )));
-                          },
-                          icon: const Icon(Icons.message_outlined),
-                          text: Text(StringFormatUtils.numFormat(
-                              widget.dynamicItem.stat.replyCount))),
-                      IconTextButton(
-                          onPressed: () {
-                            Get.rawSnackbar(message: '功能暂未完成');
-                          },
-                          icon: const Icon(Icons.thumb_up_outlined),
-                          text: Text(StringFormatUtils.numFormat(
-                              widget.dynamicItem.stat.likeCount)))
-                    ],
-                  )
+                  if (!widget.isForward)
+                    GridView.count(
+                      padding: const EdgeInsets.only(top: 16),
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      crossAxisCount: 3,
+                      childAspectRatio: 16 / 9,
+                      crossAxisSpacing: 10,
+                      children: [
+                        IconTextButton(
+                            onPressed: () {
+                              Get.rawSnackbar(message: '功能暂未完成');
+                            },
+                            icon: const Icon(Icons.arrow_outward_outlined),
+                            text: Text(StringFormatUtils.numFormat(
+                                widget.dynamicItem.stat.shareCount))),
+                        IconTextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(GetPageRoute(
+                                  page: () => Scaffold(
+                                        appBar: AppBar(title: const Text("评论")),
+                                        body: ReplyPage(
+                                          replyId: widget.dynamicItem.replyId,
+                                          replyType:
+                                              widget.dynamicItem.replyType,
+                                        ),
+                                      )));
+                            },
+                            icon: const Icon(Icons.message_outlined),
+                            text: Text(StringFormatUtils.numFormat(
+                                widget.dynamicItem.stat.replyCount))),
+                        IconTextButton(
+                            onPressed: () {
+                              Get.rawSnackbar(message: '功能暂未完成');
+                            },
+                            icon: const Icon(Icons.thumb_up_outlined),
+                            text: Text(StringFormatUtils.numFormat(
+                                widget.dynamicItem.stat.likeCount)))
+                      ],
+                    )
                 ],
               ),
             )

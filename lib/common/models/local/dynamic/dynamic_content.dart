@@ -1,3 +1,4 @@
+import 'package:bili_you/common/models/local/dynamic/dynamic_item.dart';
 import 'package:bili_you/common/models/local/reply/reply_content.dart';
 
 abstract class DynamicContent {
@@ -60,4 +61,14 @@ class AVDynamicContent extends DynamicContent {
   final String duration;
   final String playCount;
   final String damakuCount;
+}
+
+class ForwardDynamicContent extends DynamicContent {
+  ForwardDynamicContent(
+      {required super.description,
+      required super.emotes,
+      required this.forward});
+  static ForwardDynamicContent get zero => ForwardDynamicContent(
+      description: "", emotes: [], forward: DynamicItem.zero);
+  DynamicItem forward;
 }

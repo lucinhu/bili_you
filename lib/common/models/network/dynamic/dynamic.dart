@@ -96,7 +96,7 @@ class DataItem {
   ItemModules? modules;
   String? type;
   bool? visible;
-  Orig? orig;
+  DataItem? orig;
 
   factory DataItem.fromRawJson(String str) =>
       DataItem.fromJson(json.decode(str));
@@ -111,7 +111,7 @@ class DataItem {
             : ItemModules.fromJson(json["modules"]),
         type: json["type"],
         visible: json["visible"],
-        orig: json["orig"] == null ? null : Orig.fromJson(json["orig"]),
+        orig: json["orig"] == null ? null : DataItem.fromJson(json["orig"]),
       );
 
   Map<String, dynamic> toJson() => {
