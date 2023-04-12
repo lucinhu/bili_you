@@ -8,6 +8,7 @@ import 'package:bili_you/common/widget/foldable_text.dart';
 import 'package:bili_you/common/widget/icon_text_button.dart';
 import 'package:bili_you/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
+import 'package:bili_you/pages/dynamic/widget/dynamic_article.dart';
 import 'package:bili_you/pages/dynamic/widget/dynamic_draw.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:flutter/material.dart';
@@ -153,22 +154,31 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ///动态文字消息
-                  widget.dynamicItem.content.emotes.isNotEmpty
-                      ? SelectableText.rich(
-                          buildEmojiText(widget.dynamicItem.content, context))
-                      : SelectableRegion(
-                          magnifierConfiguration:
-                              const TextMagnifierConfiguration(),
-                          focusNode: FocusNode(),
-                          selectionControls: MaterialTextSelectionControls(),
-                          child: FoldableText.rich(
-                            buildEmojiText(widget.dynamicItem.content, context),
-                            maxLines: 6,
-                            folderTextStyle: TextStyle(
-                                color: Theme.of(context).primaryColor),
-                            style: const TextStyle(fontSize: 15),
-                          )),
-                  const Padding(padding: EdgeInsets.only(top: 8)),
+                  if (widget.dynamicItem.content.description.isNotEmpty)
+                    widget.dynamicItem.content.emotes.isNotEmpty
+                        ? SelectableText.rich(
+                            buildEmojiText(widget.dynamicItem.content, context))
+                        : SelectableRegion(
+                            magnifierConfiguration:
+                                const TextMagnifierConfiguration(),
+                            focusNode: FocusNode(),
+                            selectionControls: MaterialTextSelectionControls(),
+                            child: FoldableText.rich(
+                              TextSpan(
+                                  text: widget.dynamicItem.content.description),
+                              maxLines: 6,
+                              folderTextStyle: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary),
+                              style: const TextStyle(fontSize: 15),
+                            )),
+                  if (widget.dynamicItem.content.description.isNotEmpty)
+                    const Padding(padding: EdgeInsets.only(top: 8)),
+
+                  ///文章
+                  if (widget.dynamicItem.content is ArticleDynamicContent)
+                    DynamicArticleWidget(
+                        content: widget.dynamicItem.content
+                            as ArticleDynamicContent),
 
                   ///视频
                   if (widget.dynamicItem.content is AVDynamicContent)

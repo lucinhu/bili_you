@@ -20,14 +20,17 @@ class DynamicApi {
     if (page == 1) {
       _offset = "";
     }
+    //必须有features=itemOpusStyle才会有文章动态
     var response = await MyDio.dio.get(
       ApiConstants.dynamicFeed,
       queryParameters: _offset.isEmpty
-          ? {
+          ? {'type': type, 'page': page, 'features': 'itemOpusStyle'}
+          : {
               'type': type,
               'page': page,
-            }
-          : {'type': type, 'page': page, 'offset': _offset},
+              'offset': _offset,
+              'features': 'itemOpusStyle'
+            },
       options: Options(responseType: ResponseType.plain),
     );
     return await compute((message) async {
@@ -91,7 +94,21 @@ class DynamicApi {
         break;
       case DynamicItemType.article:
         //文章
-        dynamicContent = _buildWordDynamicContent(moduleDynamic);
+        dynamicContent = ArticleDynamicContent(
+            jumpUrl: moduleDynamic?.major?.opus?.jumpUrl ?? '',
+            description: moduleDynamic?.desc?.text ?? '',
+            title: moduleDynamic?.major?.opus?.title ?? '',
+            text: moduleDynamic?.major?.opus?.summary?.text ?? '',
+            emotes: _buildEmoteList(
+                moduleDynamic?.desc?.richTextNodes ?? <raw.RichTextNode>[]),
+            draws: moduleDynamic?.major?.opus?.pics
+                    ?.map<Draw>((e) => Draw(
+                        width: e.width ?? 0,
+                        height: e.height ?? 0,
+                        size: e.size ?? 0,
+                        picUrl: e.url ?? ''))
+                    .toList() ??
+                []);
         break;
       case DynamicItemType.av:
         //视频投稿

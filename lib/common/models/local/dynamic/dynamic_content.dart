@@ -33,6 +33,22 @@ class DrawDynamicContent extends DynamicContent {
   List<Draw> draws;
 }
 
+class ArticleDynamicContent extends DynamicContent {
+  ArticleDynamicContent(
+      {required super.description,
+      required this.title,
+      required this.text,
+      required super.emotes,
+      required this.draws,
+      required this.jumpUrl});
+  static ArticleDynamicContent get zero => ArticleDynamicContent(
+      title: '', description: '', text: '', emotes: [], draws: [], jumpUrl: '');
+  List<Draw> draws;
+  String title;
+  String text;
+  String jumpUrl;
+}
+
 class AVDynamicContent extends DynamicContent {
   AVDynamicContent(
       {required super.description,

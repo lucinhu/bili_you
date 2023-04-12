@@ -1421,17 +1421,13 @@ class Emoji {
 }
 
 class Major {
-  Major({
-    this.liveRcmd,
-    this.type,
-    this.archive,
-    this.draw,
-  });
+  Major({this.liveRcmd, this.type, this.archive, this.draw, this.opus});
 
   LiveRcmd? liveRcmd;
   String? type;
   Archive? archive;
   Draw? draw;
+  Opus? opus;
 
   factory Major.fromRawJson(String str) => Major.fromJson(json.decode(str));
 
@@ -1445,13 +1441,113 @@ class Major {
         archive:
             json["archive"] == null ? null : Archive.fromJson(json["archive"]),
         draw: json["draw"] == null ? null : Draw.fromJson(json["draw"]),
+        opus: json["opus"] == null ? null : Opus.fromJson(json["opus"]),
       );
 
   Map<String, dynamic> toJson() => {
+        "opus": opus?.toJson(),
         "live_rcmd": liveRcmd?.toJson(),
         "type": type,
         "archive": archive?.toJson(),
         "draw": draw?.toJson(),
+      };
+}
+
+class Opus {
+  Opus({
+    this.jumpUrl,
+    this.pics,
+    this.summary,
+    this.title,
+  });
+
+  String? jumpUrl;
+  List<Pic>? pics;
+  Summary? summary;
+  String? title;
+
+  factory Opus.fromRawJson(String str) => Opus.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Opus.fromJson(Map<String, dynamic> json) => Opus(
+        jumpUrl: json["jump_url"] ?? '',
+        pics: json["pics"] == null
+            ? []
+            : List<Pic>.from(json["pics"]!.map((x) => Pic.fromJson(x))),
+        summary:
+            json["summary"] == null ? null : Summary.fromJson(json["summary"]),
+        title: json["title"] ?? '',
+      );
+
+  Map<String, dynamic> toJson() => {
+        "jump_url": jumpUrl,
+        "pics": pics == null
+            ? []
+            : List<dynamic>.from(pics!.map((x) => x.toJson())),
+        "summary": summary?.toJson(),
+        "title": title,
+      };
+}
+
+class Pic {
+  Pic({
+    this.height,
+    this.size,
+    this.url,
+    this.width,
+  });
+
+  int? height;
+  double? size;
+  String? url;
+  int? width;
+
+  factory Pic.fromRawJson(String str) => Pic.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Pic.fromJson(Map<String, dynamic> json) => Pic(
+        height: json["height"],
+        size: json["size"]?.toDouble(),
+        url: json["url"],
+        width: json["width"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "height": height,
+        "size": size,
+        "url": url,
+        "width": width,
+      };
+}
+
+class Summary {
+  Summary({
+    this.richTextNodes,
+    this.text,
+  });
+
+  List<RichTextNode>? richTextNodes;
+  String? text;
+
+  factory Summary.fromRawJson(String str) => Summary.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Summary.fromJson(Map<String, dynamic> json) => Summary(
+        richTextNodes: json["rich_text_nodes"] == null
+            ? []
+            : List<RichTextNode>.from(
+                json["rich_text_nodes"]!.map((x) => RichTextNode.fromJson(x))),
+        text: json["text"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "rich_text_nodes": richTextNodes == null
+            ? []
+            : List<dynamic>.from(richTextNodes!.map((x) => x.toJson())),
+        "text": text,
       };
 }
 

@@ -14,6 +14,7 @@ class DynamicDrawWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (content.draws.isEmpty) return const SizedBox();
     double ratio = content.draws[0].width / content.draws[0].height;
     double newRatio = ratio >= 1
         ? ((ratio < 1.8) ? ratio : 1.8)
