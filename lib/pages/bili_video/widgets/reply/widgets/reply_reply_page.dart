@@ -46,52 +46,57 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
       log("_addReplyReply:$e");
       return false;
     }
-    _rootReply = ReplyItemWidget(
-      reply: replyReplyInfo.rootReply,
-      isUp: replyReplyInfo.rootReply.member.mid == replyReplyInfo.upperMid,
-      pauseVideoPlayer: widget.pauseVideoCallback,
-      showPreReply: false,
-      officialVerifyType: replyReplyInfo.rootReply.member.officialVerify.type,
+    _rootReply = Column(
+      children: [
+        ReplyItemWidget(
+          hasFrontDivider: false,
+          reply: replyReplyInfo.rootReply,
+          isUp: replyReplyInfo.rootReply.member.mid == replyReplyInfo.upperMid,
+          pauseVideoPlayer: widget.pauseVideoCallback,
+          showPreReply: false,
+          officialVerifyType:
+              replyReplyInfo.rootReply.member.officialVerify.type,
+        ),
+        Divider(
+          color: Theme.of(Get.context!).colorScheme.primaryContainer,
+          thickness: 2,
+        )
+      ],
     );
-    //如果评论控件条数将会多于评论总数的话，说明有重复的，就删除重复项
-    if ((_replyReplies.length + replyReplyInfo.replies.length) >
-        replyReplyInfo.replyCount) {
-      int n = (_replyReplies.length + replyReplyInfo.replies.length) -
-          replyReplyInfo.replyCount;
-      replyReplyInfo.replies.removeRange(0, n);
-    }
-    //添加评论
-    for (var i in replyReplyInfo.replies) {
-      _replyReplies.add(Column(
-        children: [
-          _replyReplies.isEmpty
-              ? Divider(
-                  color: Theme.of(Get.context!).colorScheme.primaryContainer,
-                  thickness: 2,
-                )
-              : Divider(
-                  color: Theme.of(Get.context!).colorScheme.secondaryContainer,
-                  thickness: 1,
-                  indent: 10,
-                  endIndent: 10,
-                ),
-          ReplyItemWidget(
-            reply: i,
-            isUp: i.member.mid == replyReplyInfo.upperMid,
-            pauseVideoPlayer: widget.pauseVideoCallback,
-            showPreReply: false,
-            officialVerifyType: i.member.officialVerify.type,
-          ),
-        ],
-      ));
-    }
-    //更新页码并刷新页面
+    //更新页码
     //如果当前页不为空的话，下一次加载就进入下一页
     if (replyReplyInfo.replies.isNotEmpty) {
       _pageNum++;
     } else {
       //如果为空的话，下一次加载就返回上一页
       _pageNum--;
+    }
+    //删除重复项
+    final int minIndex = _replyReplies.length -
+        replyReplyInfo
+            .replies.length; //必须要先求n,因为replyReplyInfo.replies是动态删除的,长度会变
+    for (var i = _replyReplies.length - 1; i >= minIndex; i--) {
+      if (i < 0) break;
+      if (_replyReplies[i] is! ReplyItemWidget) break;
+      replyReplyInfo.replies.removeWhere((element) {
+        if (element.rpid == (_replyReplies[i] as ReplyItemWidget).reply.rpid) {
+          log('same${replyReplyInfo.replies.length}');
+          return true;
+        } else {
+          return false;
+        }
+      });
+    }
+    //添加评论
+    for (var i in replyReplyInfo.replies) {
+      _replyReplies.add(ReplyItemWidget(
+        hasFrontDivider: _replyReplies.isNotEmpty,
+        reply: i,
+        isUp: i.member.mid == replyReplyInfo.upperMid,
+        pauseVideoPlayer: widget.pauseVideoCallback,
+        showPreReply: false,
+        officialVerifyType: i.member.officialVerify.type,
+      ));
     }
     return true;
   }

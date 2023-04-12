@@ -49,22 +49,16 @@ class ReplyController extends GetxController {
   addReplyItemWidget(List<Widget> list, ReplyInfo replyInfo, ReplyItem i,
       {bool frontDivider = true, bool isTop = false}) {
     //添加评论条目
-    list.add(Column(
-      children: [
-        if (frontDivider)
-          Divider(
-            color: Theme.of(Get.context!).colorScheme.secondaryContainer,
-            thickness: 1,
-          ),
-        ReplyItemWidget(
-          reply: i,
-          isTop: isTop,
-          isUp: i.member.mid == replyInfo.upperMid,
-          pauseVideoPlayer: pauseVideoCallback,
-          officialVerifyType: i.member.officialVerify.type,
-        ),
-      ],
-    ));
+    list.add(
+      ReplyItemWidget(
+        reply: i,
+        isTop: isTop,
+        isUp: i.member.mid == replyInfo.upperMid,
+        hasFrontDivider: frontDivider,
+        pauseVideoPlayer: pauseVideoCallback,
+        officialVerifyType: i.member.officialVerify.type,
+      ),
+    );
   }
 
 //加载评论区控件条目
@@ -77,18 +71,28 @@ class ReplyController extends GetxController {
       log("评论区加载失败,_addReplyItems:$e");
       return false;
     }
-    //如果评论控件条数将会多于评论总数的话，说明有重复的，就删除重复项
-    if ((replyList.length -
-            1 -
-            replyInfo.topReplies.length +
-            replyInfo.replies.length) >
-        replyInfo.replyCount) {
-      int n = (replyList.length -
-              1 -
-              replyInfo.topReplies.length +
-              replyInfo.replies.length) -
-          replyInfo.replyCount;
-      replyInfo.replies.removeRange(0, n);
+    //更新页码
+    //如果当前页不为空的话，下一次加载就进入下一页
+    if (replyInfo.replies.isNotEmpty) {
+      pageNum++;
+    } else {
+      //如果为空的话，下一次加载就返回上一页
+      pageNum--;
+    }
+    //删除重复项
+    final int minIndex = replyList.length -
+        replyInfo.replies.length; //必须要先求n,因为replyInfo.replies是动态删除的,长度会变
+    for (var i = replyList.length - 1; i >= minIndex; i--) {
+      if (i < 0) break;
+      if (replyList[i] is! ReplyItemWidget) break;
+      replyInfo.replies.removeWhere((element) {
+        if (element.rpid == (replyList[i] as ReplyItemWidget).reply.rpid) {
+          log('same${replyInfo.replies.length}');
+          return true;
+        } else {
+          return false;
+        }
+      });
     }
     if (replyList.isEmpty) {
       //当第一次时
@@ -135,14 +139,6 @@ class ReplyController extends GetxController {
     for (var i in replyInfo.replies) {
       addReplyItemWidget(replyList, replyInfo, i,
           frontDivider: replyList.length != 1);
-    }
-    //更新页码并刷新页面
-    //如果当前页不为空的话，下一次加载就进入下一页
-    if (replyInfo.replies.isNotEmpty) {
-      pageNum++;
-    } else {
-      //如果为空的话，下一次加载就返回上一页
-      pageNum--;
     }
     return true;
   }

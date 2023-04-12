@@ -26,12 +26,14 @@ class ReplyItemWidget extends StatelessWidget {
       this.isTop = false,
       this.isUp = false,
       this.showPreReply = true,
+      this.hasFrontDivider = false,
       this.pauseVideoPlayer,
       this.officialVerifyType});
   final ReplyItem reply;
   final bool isTop; //是否是置顶
   final bool isUp; //是否是up主
   final bool showPreReply; //是否显示评论的外显示评论
+  final bool hasFrontDivider; //是否前面有分界线
   final Function()? pauseVideoPlayer;
   final OfficialVerifyType? officialVerifyType;
 
@@ -152,255 +154,273 @@ class ReplyItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
+    return Column(
+      children: [
+        if (hasFrontDivider)
+          Divider(
+            color: Theme.of(Get.context!).colorScheme.secondaryContainer,
+            thickness: 1,
+            indent: 10,
+            endIndent: 10,
+          ),
+        Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AvatarWidget(
-                  avatarUrl: reply.member.avatarUrl,
-                  officialVerifyType: officialVerifyType,
-                  radius: 45 / 2,
-                  onPressed: () {
-                    pauseVideoPlayer?.call();
-                    // Get.to(() => UserSpacePage(
-                    //     key: ValueKey("UserSpacePage:${reply.member.mid}"),
-                    //     mid: reply.member.mid));
-                    Navigator.of(context).push(GetPageRoute(
-                        page: () => UserSpacePage(
-                            key: ValueKey("UserSpacePage:${reply.member.mid}"),
-                            mid: reply.member.mid)));
-                  },
-                  cacheWidthHeight: 200,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                isTop
-                    ? Text(
-                        "置顶",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      )
-                    : const SizedBox()
-              ],
-            ),
-            Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Column(
                   children: [
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 10, top: 5, bottom: 5),
-                      child: GestureDetector(
-                        onTap: () {
-                          pauseVideoPlayer?.call();
-                          // Get.to(() => UserSpacePage(
-                          //     key:
-                          //         ValueKey("UserSpacePage:${reply.member.mid}"),
-                          //     mid: reply.member.mid));
-                          Navigator.of(context).push(GetPageRoute(
-                              page: () => UserSpacePage(
-                                  key: ValueKey(
-                                      "UserSpacePage:${reply.member.mid}"),
-                                  mid: reply.member.mid)));
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                    AvatarWidget(
+                      avatarUrl: reply.member.avatarUrl,
+                      officialVerifyType: officialVerifyType,
+                      radius: 45 / 2,
+                      onPressed: () {
+                        pauseVideoPlayer?.call();
+                        // Get.to(() => UserSpacePage(
+                        //     key: ValueKey("UserSpacePage:${reply.member.mid}"),
+                        //     mid: reply.member.mid));
+                        Navigator.of(context).push(GetPageRoute(
+                            page: () => UserSpacePage(
+                                key: ValueKey(
+                                    "UserSpacePage:${reply.member.mid}"),
+                                mid: reply.member.mid)));
+                      },
+                      cacheWidthHeight: 200,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    isTop
+                        ? Text(
+                            "置顶",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
+                          )
+                        : const SizedBox()
+                  ],
+                ),
+                Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 10, top: 5, bottom: 5),
+                          child: GestureDetector(
+                            onTap: () {
+                              pauseVideoPlayer?.call();
+                              // Get.to(() => UserSpacePage(
+                              //     key:
+                              //         ValueKey("UserSpacePage:${reply.member.mid}"),
+                              //     mid: reply.member.mid));
+                              Navigator.of(context).push(GetPageRoute(
+                                  page: () => UserSpacePage(
+                                      key: ValueKey(
+                                          "UserSpacePage:${reply.member.mid}"),
+                                      mid: reply.member.mid)));
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  reply.member.name,
-                                  style: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
+                                Row(
+                                  children: [
+                                    Text(
+                                      reply.member.name,
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    if (isUp)
+                                      const Padding(
+                                          padding: EdgeInsets.only(left: 4),
+                                          child: UpperTag())
+                                  ],
                                 ),
-                                if (isUp)
-                                  const Padding(
-                                      padding: EdgeInsets.only(left: 4),
-                                      child: UpperTag())
+                                Text(reply.location,
+                                    style: TextStyle(
+                                        color: Theme.of(context).hintColor,
+                                        fontSize: 12))
                               ],
                             ),
-                            Text(reply.location,
-                                style: TextStyle(
-                                    color: Theme.of(context).hintColor,
-                                    fontSize: 12))
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child:
-                          //评论内容
-                          //TODO: 有表情的评论暂时无法折叠
-                          (reply.content.emotes.isNotEmpty ||
-                                  reply.content.pictures.isNotEmpty ||
-                                  reply.content.jumpUrls.isNotEmpty)
-                              ? SelectableText.rich(
-                                  buildReplyItemContent(reply.content, context))
-                              : SelectableRegion(
-                                  magnifierConfiguration:
-                                      const TextMagnifierConfiguration(),
-                                  focusNode: FocusNode(),
-                                  selectionControls:
-                                      MaterialTextSelectionControls(),
-                                  child: FoldableText.rich(
-                                    buildReplyItemContent(
-                                        reply.content, context),
-                                    maxLines: 6,
-                                    folderTextStyle: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary),
-                                  )),
-                    ),
-                    Row(
-                      children: [
-                        StatefulBuilder(builder: (context, setState) {
-                          return ThumUpButton(
-                            likeNum: reply.likeCount,
-                            selected: reply.hasLike,
-                            onPressed: () async {
-                              try {
-                                var result = await ReplyOperationApi.addLike(
-                                    type: reply.type,
-                                    oid: reply.oid,
-                                    rpid: reply.rpid,
-                                    likeOrUnlike: !reply.hasLike);
-                                if (result.isSuccess) {
-                                  reply.hasLike = !reply.hasLike;
-                                  if (reply.hasLike) {
-                                    reply.likeCount++;
-                                  } else {
-                                    reply.likeCount--;
-                                  }
-                                  setState(() {});
-                                } else {
-                                  Get.rawSnackbar(
-                                      message: '点赞失败:${result.error}');
-                                }
-                              } catch (e) {
-                                log(e.toString());
-                                Get.rawSnackbar(message: '$e');
-                              }
-                            },
-                          );
-                        }),
-                        Expanded(
-                          child: Builder(
-                            builder: (context) {
-                              List<Widget> list = [];
-                              if (reply.tags.isNotEmpty) {
-                                for (var i in reply.tags) {
-                                  list.add(
-                                    Text(
-                                      "$i ", //标签,如热评,up觉得很赞
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                        overflow: TextOverflow.ellipsis,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  );
-                                }
-                                return Row(
-                                  children: list,
-                                );
-                              } else {
-                                return Container();
-                              }
-                            },
                           ),
                         ),
-                        Text(
-                          StringFormatUtils.timeStampToAgoDate(reply.replyTime),
-                          style: TextStyle(
-                              fontSize: 12, color: Theme.of(context).hintColor),
-                        )
-                      ],
-                    ),
-                    Builder(
-                      builder: (context) {
-                        Widget? subReplies;
-                        if (reply.replyCount != 0 && showPreReply == true) {
-                          List<Widget> preSubReplies = []; //预显示在外的楼中楼
-                          for (var j in reply.preReplies) {
-                            //添加预显示在外楼中楼评论条目
-                            preSubReplies.add(Padding(
-                                padding: const EdgeInsets.only(top: 8),
-                                child: Text.rich(
-                                  TextSpan(
-                                    children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child:
+                              //评论内容
+                              //TODO: 有表情的评论暂时无法折叠
+                              (reply.content.emotes.isNotEmpty ||
+                                      reply.content.pictures.isNotEmpty ||
+                                      reply.content.jumpUrls.isNotEmpty)
+                                  ? SelectableText.rich(buildReplyItemContent(
+                                      reply.content, context))
+                                  : SelectableRegion(
+                                      magnifierConfiguration:
+                                          const TextMagnifierConfiguration(),
+                                      focusNode: FocusNode(),
+                                      selectionControls:
+                                          MaterialTextSelectionControls(),
+                                      child: FoldableText.rich(
+                                        buildReplyItemContent(
+                                            reply.content, context),
+                                        maxLines: 6,
+                                        folderTextStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary),
+                                      )),
+                        ),
+                        Row(
+                          children: [
+                            StatefulBuilder(builder: (context, setState) {
+                              return ThumUpButton(
+                                likeNum: reply.likeCount,
+                                selected: reply.hasLike,
+                                onPressed: () async {
+                                  try {
+                                    var result =
+                                        await ReplyOperationApi.addLike(
+                                            type: reply.type,
+                                            oid: reply.oid,
+                                            rpid: reply.rpid,
+                                            likeOrUnlike: !reply.hasLike);
+                                    if (result.isSuccess) {
+                                      reply.hasLike = !reply.hasLike;
+                                      if (reply.hasLike) {
+                                        reply.likeCount++;
+                                      } else {
+                                        reply.likeCount--;
+                                      }
+                                      setState(() {});
+                                    } else {
+                                      Get.rawSnackbar(
+                                          message: '点赞失败:${result.error}');
+                                    }
+                                  } catch (e) {
+                                    log(e.toString());
+                                    Get.rawSnackbar(message: '$e');
+                                  }
+                                },
+                              );
+                            }),
+                            Expanded(
+                              child: Builder(
+                                builder: (context) {
+                                  List<Widget> list = [];
+                                  if (reply.tags.isNotEmpty) {
+                                    for (var i in reply.tags) {
+                                      list.add(
+                                        Text(
+                                          "$i ", //标签,如热评,up觉得很赞
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    return Row(
+                                      children: list,
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
+                                },
+                              ),
+                            ),
+                            Text(
+                              StringFormatUtils.timeStampToAgoDate(
+                                  reply.replyTime),
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: Theme.of(context).hintColor),
+                            )
+                          ],
+                        ),
+                        Builder(
+                          builder: (context) {
+                            Widget? subReplies;
+                            if (reply.replyCount != 0 && showPreReply == true) {
+                              List<Widget> preSubReplies = []; //预显示在外的楼中楼
+                              for (var j in reply.preReplies) {
+                                //添加预显示在外楼中楼评论条目
+                                preSubReplies.add(Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: Text.rich(
                                       TextSpan(
-                                        text: "${j.member.name}: ",
+                                        children: [
+                                          TextSpan(
+                                            text: "${j.member.name}: ",
+                                          ),
+                                          buildReplyItemContent(
+                                              j.content, context)
+                                        ],
                                       ),
-                                      buildReplyItemContent(j.content, context)
-                                    ],
-                                  ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    )));
+                              }
+
+                              preSubReplies.add(Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Text(
+                                  '共 ${StringFormatUtils.numFormat(reply.replyCount)} 条回复 >',
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                )));
-                          }
-
-                          preSubReplies.add(Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              '共 ${StringFormatUtils.numFormat(reply.replyCount)} 条回复 >',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ));
-
-                          //预显示在外楼中楼控件
-                          subReplies = Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .surfaceVariant),
-                              padding: const EdgeInsets.only(
-                                  left: 8, right: 8, bottom: 8),
-                              child: GestureDetector(
-                                child: ListView(
-                                  padding: EdgeInsets.zero,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  children: preSubReplies,
                                 ),
-                                onTap: () {
-                                  //楼中楼点击后弹出详细楼中楼
-                                  Get.bottomSheet(
-                                      ReplyReplyPage(
-                                        replyId: reply.oid.toString(),
-                                        replyType: reply.type,
-                                        rootId: reply.rpid,
-                                        pauseVideoCallback:
-                                            pauseVideoPlayer ?? () {},
-                                      ),
-                                      backgroundColor:
-                                          Theme.of(context).cardColor,
-                                      clipBehavior: Clip.antiAlias);
-                                },
                               ));
-                        }
-                        return subReplies ?? const SizedBox();
-                      },
-                    )
-                  ]),
-            )
-          ],
-        ));
+
+                              //预显示在外楼中楼控件
+                              subReplies = Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .surfaceVariant),
+                                  padding: const EdgeInsets.only(
+                                      left: 8, right: 8, bottom: 8),
+                                  child: GestureDetector(
+                                    child: ListView(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      children: preSubReplies,
+                                    ),
+                                    onTap: () {
+                                      //楼中楼点击后弹出详细楼中楼
+                                      Get.bottomSheet(
+                                          ReplyReplyPage(
+                                            replyId: reply.oid.toString(),
+                                            replyType: reply.type,
+                                            rootId: reply.rpid,
+                                            pauseVideoCallback:
+                                                pauseVideoPlayer ?? () {},
+                                          ),
+                                          backgroundColor:
+                                              Theme.of(context).cardColor,
+                                          clipBehavior: Clip.antiAlias);
+                                    },
+                                  ));
+                            }
+                            return subReplies ?? const SizedBox();
+                          },
+                        )
+                      ]),
+                )
+              ],
+            )),
+      ],
+    );
   }
 }
 
