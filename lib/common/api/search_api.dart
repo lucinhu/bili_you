@@ -277,4 +277,5 @@ enum SearchType {
 extension SearchTypeExtension on SearchType {
   String get value =>
       ['video', 'media_bangumi', 'media_ft', 'live_room', 'bili_user'][index];
+  String get name => ['视频', '番剧', '影视', '直播间', '用户'][index];
 }

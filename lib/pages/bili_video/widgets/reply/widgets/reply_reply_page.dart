@@ -58,7 +58,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
         replyReplyInfo.replyCount) {
       int n = (_replyReplies.length + replyReplyInfo.replies.length) -
           replyReplyInfo.replyCount;
-      replyReplyInfo.replies.removeRange(0, n - 1);
+      replyReplyInfo.replies.removeRange(0, n);
     }
     //添加评论
     for (var i in replyReplyInfo.replies) {
