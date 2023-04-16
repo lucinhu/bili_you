@@ -117,7 +117,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
     if (await _addReplyReply()) {
       _refreshController.finishRefresh();
     } else {
-      _refreshController.finishLoad(IndicatorResult.fail);
+      _refreshController.finishRefresh(IndicatorResult.fail);
     }
   }
 
