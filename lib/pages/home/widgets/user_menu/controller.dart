@@ -4,7 +4,7 @@ import 'package:bili_you/common/api/index.dart';
 import 'package:bili_you/common/models/local/login/login_user_info.dart';
 import 'package:bili_you/common/models/local/login/login_user_stat.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
-import 'package:bili_you/common/utils/my_dio.dart';
+import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -74,7 +74,7 @@ class UserMenuController extends GetxController {
   }
 
   onLogout() async {
-    MyDio.cookieManager.cookieJar.deleteAll();
+    HttpUtils.cookieManager.cookieJar.deleteAll();
     resetRX();
     var box = BiliYouStorage.user;
     box.put(UserStorageKeys.hasLogin, false);

@@ -12,15 +12,12 @@ import 'package:bili_you/common/models/network/search/search_bangumi.dart';
 import 'package:bili_you/common/models/network/search/search_suggest.dart';
 import 'package:bili_you/common/models/network/search/search_video.dart';
 import 'package:bili_you/common/models/local/search/search_video_item.dart';
-import 'package:bili_you/common/utils/my_dio.dart';
+import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 class SearchApi {
   static Future<DefaultSearchWordResponse> _requestDefaultSearchWords() async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.defualtSearchWord);
+    var response = await HttpUtils().get(ApiConstants.defualtSearchWord);
     return DefaultSearchWordResponse.fromJson(response.data);
   }
 
@@ -39,8 +36,7 @@ class SearchApi {
   }
 
   static Future<HotWordResponse> _requestHotWords() async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.hotWordsMob);
+    var response = await HttpUtils().get(ApiConstants.hotWordsMob);
     return HotWordResponse.fromJson(response.data);
   }
 
@@ -63,8 +59,7 @@ class SearchApi {
 
   static Future<SearchSuggestResponse> _requestSearchSuggests(
       String keyWord) async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.searchSuggest,
+    var response = await HttpUtils().get(ApiConstants.searchSuggest,
         queryParameters: {'term': keyWord, "main_ver": 'v1'});
     return SearchSuggestResponse.fromJson(response.data);
   }
@@ -98,23 +93,20 @@ class SearchApi {
     required SearchType searchType,
     required SearchVideoOrder order,
   }) async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.searchWithType,
-        queryParameters: {
-          'keyword': keyword,
-          'search_type': searchType.value,
-          'order': order.value,
-          'page': page,
-        },
-        options: Options(responseType: ResponseType.plain));
-    var ret = await compute((data) {
-      if (searchType == SearchType.video) {
-        return SearchVideoResponse.fromRawJson(response.data);
-      } else {
-        return BangumiSearchResponse.fromRawJson(response.data);
-      }
-    }, response.data);
-    return ret;
+    var response = await HttpUtils().get(
+      ApiConstants.searchWithType,
+      queryParameters: {
+        'keyword': keyword,
+        'search_type': searchType.value,
+        'order': order.value,
+        'page': page,
+      },
+    );
+    if (searchType == SearchType.video) {
+      return SearchVideoResponse.fromJson(response.data);
+    } else {
+      return BangumiSearchResponse.fromJson(response.data);
+    }
   }
 
   ///搜索视频请求
@@ -199,7 +191,7 @@ class SearchApi {
       {required String keyWord, required int page}) async {
     List<SearchUserItem> list = [];
     var response =
-        await MyDio.dio.get(ApiConstants.searchWithType, queryParameters: {
+        await HttpUtils().get(ApiConstants.searchWithType, queryParameters: {
       'keyword': keyWord,
       'search_type': SearchType.user.value,
       'page': page,

@@ -2,7 +2,7 @@ import 'package:bili_you/common/api/index.dart';
 import 'package:bili_you/common/models/local/reply/reply_add_like_result.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/utils/cookie_util.dart';
-import 'package:bili_you/common/utils/index.dart';
+import 'package:bili_you/common/utils/http_utils.dart';
 
 class ReplyOperationApi {
   static Future<ReplyAddLikeResult> addLike(
@@ -11,7 +11,7 @@ class ReplyOperationApi {
       required int rpid,
       required bool likeOrUnlike}) async {
     var response =
-        await MyDio.dio.post(ApiConstants.replyAddLike, queryParameters: {
+        await HttpUtils().post(ApiConstants.replyAddLike, queryParameters: {
       'type': type.code,
       'oid': oid,
       'rpid': rpid,

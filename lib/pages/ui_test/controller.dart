@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bili_you/common/api/video_operation_api.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/utils/bvid_avid_util.dart';
+import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/pages/about/about_page.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
@@ -92,7 +93,7 @@ class UiTestController extends GetxController {
             child: const Text("print cookie"),
             onPressed: () async {
               log('cookies:');
-              for (var i in (await MyDio.cookieManager.cookieJar
+              for (var i in (await HttpUtils.cookieManager.cookieJar
                   .loadForRequest(Uri.parse(ApiConstants.bilibiliBase)))) {
                 log('name:${i.name},\tvalue:${i.value},\tmaxAge:${i.maxAge.toString()}');
                 Get.rawSnackbar(

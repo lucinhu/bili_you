@@ -5,10 +5,9 @@ import 'package:bili_you/common/models/local/reply/official_verify.dart';
 import 'package:bili_you/common/models/local/reply/vip.dart';
 import 'package:bili_you/common/models/network/user/user_info.dart' as raw;
 import 'package:bili_you/common/models/network/user/user_stat.dart' as raw;
+import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:encrypt/encrypt.dart';
-
-import 'package:bili_you/common/utils/my_dio.dart';
 import 'api_constants.dart';
 import '../models/network/login/captcha_data.dart' as raw;
 import '../models/network/login/captcha_result.dart' as raw;
@@ -21,26 +20,25 @@ abstract class LoginApi {
   ///获取登陆需要的key和hash
   static Future<raw.PasswordLoginKeyHashResponse>
       requestPasswordLoginKeyHash() async {
-    Dio dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.passwordPublicKeyHash,
-        options: Options(headers: {'user-agent': ApiConstants.userAgent}));
+    var response = await HttpUtils().get(
+      ApiConstants.passwordPublicKeyHash,
+    );
     return raw.PasswordLoginKeyHashResponse.fromJson(response.data);
   }
 
   ///获取人机测试所需要的数据
   static Future<raw.CaptchaDataResponse> requestCaptchaData() async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.captcha,
-        queryParameters: {"source": "main_web"},
-        options: Options(headers: {'user-agent': ApiConstants.userAgent}));
+    var response = await HttpUtils().get(
+      ApiConstants.captcha,
+      queryParameters: {"source": "main_web"},
+    );
     return raw.CaptchaDataResponse.fromJson(response.data);
   }
 
   ///请求发送验证码信息到手机
   static Future<raw.PostSmsRequireResponse> postSendSmsToPhone(int cid, int tel,
       String token, String challenge, String validate, String seccode) async {
-    var dio = MyDio.dio;
-    var response = await dio.post(ApiConstants.smsCode,
+    var response = await HttpUtils().post(ApiConstants.smsCode,
         data: {
           "cid": cid,
           "tel": tel,
@@ -59,8 +57,7 @@ abstract class LoginApi {
   ///短信登录
   static Future<raw.PostSmsLoginResponse> smsLogin(
       int cid, int tel, int code, String captchaKey) async {
-    Dio dio = MyDio.dio;
-    var response = await dio.post(ApiConstants.smsLogin,
+    var response = await HttpUtils().post(ApiConstants.smsLogin,
         data: {
           "cid": cid,
           "tel": tel,
@@ -82,16 +79,15 @@ abstract class LoginApi {
       raw.PasswordLoginKeyHashResponse passwordLoginKeyHash,
       String username,
       String password) async {
-    Dio dio = MyDio.dio;
     //先获取cookie
-    await dio.get(ApiConstants.bilibiliBase,
+    await HttpUtils().get(ApiConstants.bilibiliBase,
         options: Options(headers: {'user-agent': ApiConstants.userAgent}));
     //加密密码
     dynamic publicKey = RSAKeyParser().parse(passwordLoginKeyHash.data!.key!);
     String passwordEncryptyed = Encrypter(RSA(publicKey: publicKey))
         .encrypt(passwordLoginKeyHash.data!.hash! + password)
         .base64;
-    var response = await dio.post(ApiConstants.passwordLogin,
+    var response = await HttpUtils().post(ApiConstants.passwordLogin,
         data: {
           'username': username,
           'password': passwordEncryptyed,
@@ -110,12 +106,12 @@ abstract class LoginApi {
   }
 
   static Future<raw.LoginUserInfoResponse> _requestLoginUserInfo() async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.userInfo,
-        options: Options(responseType: ResponseType.plain));
+    var response = await HttpUtils().get(
+      ApiConstants.userInfo,
+    );
     raw.LoginUserInfoResponse ret;
     try {
-      ret = raw.LoginUserInfoResponse.fromRawJson(response.data);
+      ret = raw.LoginUserInfoResponse.fromJson(response.data);
     } catch (e) {
       throw '$e, json:${response.data}';
     }
@@ -153,8 +149,7 @@ abstract class LoginApi {
 
   ///获取当前cookie用户的状态：粉丝数，关注数，动态数
   static Future<raw.LoginUserStatResponse> _requestLoginUserStat() async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.userStat);
+    var response = await HttpUtils().get(ApiConstants.userStat);
     return raw.LoginUserStatResponse.fromJson(response.data);
   }
 

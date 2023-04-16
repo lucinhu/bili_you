@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:bili_you/common/api/index.dart';
-import 'package:bili_you/common/utils/index.dart';
+import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:bili_you/pages/login/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -37,14 +37,14 @@ class _WebLoginPageState extends State<WebLoginPage> {
             for (var i in cookies) {
               log('name:${i.name}, value:${i.value}, dominate:${i.domain}');
             }
-            await MyDio.cookieManager.cookieJar.saveFromResponse(
+            await HttpUtils.cookieManager.cookieJar.saveFromResponse(
                 Uri.parse(ApiConstants.bilibiliBase), cookies);
             cookies =
                 await WebviewCookieManager().getCookies(ApiConstants.apiBase);
             for (var i in cookies) {
               log('name:${i.name}, value:${i.value}, dominate:${i.domain}');
             }
-            await MyDio.cookieManager.cookieJar
+            await HttpUtils.cookieManager.cookieJar
                 .saveFromResponse(Uri.parse(ApiConstants.apiBase), cookies);
             // MyDio.dio.interceptors.add(MyDio.cookieManager);
           } catch (e) {

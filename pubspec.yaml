@@ -50,6 +50,8 @@ dependencies:
   gt3_flutter_plugin: ^0.0.8
   flutter_cache_manager: ^3.3.0
   protobuf: ^2.1.0
+  connectivity_plus: ^3.0.4
+  dio_http2_adapter: ^2.2.0
 
   # 加解密
   encrypt: ^5.0.1

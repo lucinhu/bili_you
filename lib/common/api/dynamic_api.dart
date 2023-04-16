@@ -7,10 +7,7 @@ import 'package:bili_you/common/models/local/reply/official_verify.dart';
 import 'package:bili_you/common/models/local/reply/reply_content.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/models/network/dynamic/dynamic.dart' as raw;
-import 'package:bili_you/common/utils/index.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-
+import 'package:bili_you/common/utils/http_utils.dart';
 import '../models/local/reply/vip.dart';
 
 class DynamicApi {
@@ -21,7 +18,7 @@ class DynamicApi {
       _offset = "";
     }
     //必须有features=itemOpusStyle才会有文章动态
-    var response = await MyDio.dio.get(
+    var response = await HttpUtils().get(
       ApiConstants.dynamicFeed,
       queryParameters: _offset.isEmpty
           ? {'type': type, 'page': page, 'features': 'itemOpusStyle'}
@@ -31,11 +28,8 @@ class DynamicApi {
               'offset': _offset,
               'features': 'itemOpusStyle'
             },
-      options: Options(responseType: ResponseType.plain),
     );
-    return await compute((message) async {
-      return raw.DynamicResponse.fromRawJson(message);
-    }, response.data);
+    return raw.DynamicResponse.fromJson(response.data);
   }
 
   static Future<List<DynamicItem>> getDynamicItems({required int page}) async {

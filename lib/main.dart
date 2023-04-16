@@ -1,5 +1,5 @@
 import 'package:bili_you/common/utils/bili_you_storage.dart';
-import 'package:bili_you/common/utils/my_dio.dart';
+import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:bili_you/common/utils/settings.dart';
 import 'package:bili_you/pages/main/index.dart';
 import 'package:dynamic_color/dynamic_color.dart';
@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MyDio.init();
+  await HttpUtils().init();
   await BiliYouStorage.ensureInitialized();
   runApp(const MyApp());
   //状态栏、导航栏沉浸

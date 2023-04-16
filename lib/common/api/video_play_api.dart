@@ -3,9 +3,8 @@ import 'package:bili_you/common/models/local/video/audio_play_item.dart';
 import 'package:bili_you/common/models/local/video/video_play_info.dart';
 import 'package:bili_you/common/models/local/video/video_play_item.dart';
 import 'package:bili_you/common/models/network/video_play/video_play.dart';
-import 'package:bili_you/common/utils/my_dio.dart';
+import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 class VideoPlayApi {
   static Map<String, String> videoPlayerHttpHeaders = {
@@ -15,8 +14,7 @@ class VideoPlayApi {
 
   static Future<VideoPlayResponse> _requestVideoPlay(
       {required String bvid, required int cid, int fnval = 16}) async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.videoPlay,
+    var response = await HttpUtils().get(ApiConstants.videoPlay,
         queryParameters: {
           'bvid': bvid,
           'cid': cid,
@@ -26,11 +24,9 @@ class VideoPlayApi {
         },
         options: Options(headers: {
           'user_agent': ApiConstants.userAgent,
-        }, responseType: ResponseType.plain));
-    var ret = await compute((data) async {
-      return VideoPlayResponse.fromRawJson(data);
-    }, response.data);
-    return ret;
+        }));
+
+    return VideoPlayResponse.fromJson(response.data);
   }
 
   static Future<VideoPlayInfo> getVideoPlay({
@@ -129,7 +125,7 @@ class VideoPlayApi {
 
   static Future<void> reportHistory(
       {required String bvid, required int cid, required int playedTime}) async {
-    var response = await MyDio.dio.post(ApiConstants.heartBeat,
+    var response = await HttpUtils().post(ApiConstants.heartBeat,
         queryParameters: {'bvid': bvid, 'cid': cid, 'played_time': playedTime});
     if (response.data['code'] != 0) {
       throw 'reportHistory: code:${response.data['code']},message:${response.data['message']}';

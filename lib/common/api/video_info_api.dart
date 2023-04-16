@@ -4,21 +4,16 @@ import 'package:bili_you/common/models/local/video/part_info.dart';
 import 'package:bili_you/common/models/local/video/video_info.dart';
 import 'package:bili_you/common/models/network/video_info/video_info.dart';
 import 'package:bili_you/common/models/network/video_info/video_parts.dart';
-import 'package:bili_you/common/utils/my_dio.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:bili_you/common/utils/http_utils.dart';
 
 class VideoInfoApi {
   static Future<VideoInfoResponse> _requestVideoInfo(
       {required String bvid}) async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.videoInfo,
-        queryParameters: {'bvid': bvid},
-        options: Options(responseType: ResponseType.plain));
-    var ret = await compute((data) async {
-      return VideoInfoResponse.fromRawJson(data);
-    }, response.data);
-    return ret;
+    var response = await HttpUtils().get(
+      ApiConstants.videoInfo,
+      queryParameters: {'bvid': bvid},
+    );
+    return VideoInfoResponse.fromJson(response.data);
   }
 
   static Future<VideoInfo> getVideoInfo({required String bvid}) async {
@@ -66,14 +61,12 @@ class VideoInfoApi {
 
   static Future<VideoPartsResponse> _requestVideoParts(
       {required String bvid}) async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.videoParts,
-        queryParameters: {'bvid': bvid},
-        options: Options(responseType: ResponseType.plain));
-    var ret = await compute((data) {
-      return VideoPartsResponse.fromRawJson(data);
-    }, response.data);
-    return ret;
+    var response = await HttpUtils().get(
+      ApiConstants.videoParts,
+      queryParameters: {'bvid': bvid},
+    );
+
+    return VideoPartsResponse.fromJson(response.data);
   }
 
   static Future<List<PartInfo>> getVideoParts({required String bvid}) async {
@@ -89,5 +82,9 @@ class VideoInfoApi {
       list.add(PartInfo(title: i.datumPart ?? "", cid: i.cid ?? 0));
     }
     return list;
+  }
+
+  static Future<int> getFirstCid({required String bvid}) async {
+    return (await getVideoParts(bvid: bvid)).first.cid;
   }
 }

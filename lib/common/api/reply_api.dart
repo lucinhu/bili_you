@@ -8,9 +8,8 @@ import 'package:bili_you/common/models/local/reply/vip.dart';
 import 'package:bili_you/common/models/network/reply/reply.dart' as reply_raw;
 import 'package:bili_you/common/models/network/reply/reply_reply.dart'
     as reply_reply_raw;
+import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:bili_you/common/utils/index.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 import '../models/local/reply/official_verify.dart';
 
@@ -20,19 +19,16 @@ class ReplyApi {
       required int pageNum,
       required ReplyType type,
       ReplySort sort = ReplySort.like}) async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.reply,
-        queryParameters: {
-          'oid': oid,
-          'pn': pageNum,
-          'type': type.code,
-          'sort': sort.index
-        },
-        options: Options(responseType: ResponseType.plain));
-    var ret = await compute((data) async {
-      return reply_raw.ReplyResponse.fromRawJson(data);
-    }, response.data);
-    return ret;
+    var response = await HttpUtils().get(
+      ApiConstants.reply,
+      queryParameters: {
+        'oid': oid,
+        'pn': pageNum,
+        'type': type.code,
+        'sort': sort.index
+      },
+    );
+    return reply_raw.ReplyResponse.fromJson(response.data);
   }
 
   ///原始评论成员数据转评论成员数据
@@ -164,20 +160,18 @@ class ReplyApi {
     required int pageNum,
     int pageSize = 20,
   }) async {
-    var dio = MyDio.dio;
-    var response = await dio.get(ApiConstants.replyReply,
-        queryParameters: {
-          'type': type.code,
-          'oid': oid,
-          'root': rootId,
-          'pn': pageNum,
-          'ps': pageSize
-        },
-        options: Options(responseType: ResponseType.plain));
-    var ret = await compute((data) async {
-      return reply_reply_raw.ReplyReplyResponse.fromRawJson(data);
-    }, response.data);
-    return ret;
+    var response = await HttpUtils().get(
+      ApiConstants.replyReply,
+      queryParameters: {
+        'type': type.code,
+        'oid': oid,
+        'root': rootId,
+        'pn': pageNum,
+        'ps': pageSize
+      },
+    );
+
+    return reply_reply_raw.ReplyReplyResponse.fromJson(response.data);
   }
 
   ///获取评论的评论

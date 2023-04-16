@@ -1,6 +1,6 @@
 import 'package:bili_you/common/api/index.dart';
 import 'package:bili_you/common/models/local/history/video_view_history_item.dart';
-import 'package:bili_you/common/utils/index.dart';
+import 'package:bili_you/common/utils/http_utils.dart';
 
 class HistoryApi {
   ///max是上一个历史记录的id，或者是oid
@@ -9,7 +9,7 @@ class HistoryApi {
   static Future<List<VideoViewHistoryItem>> getVideoViewHistory(
       {int? max, int? viewAt}) async {
     var response =
-        await MyDio.dio.get(ApiConstants.viewHistory, queryParameters: {
+        await HttpUtils().get(ApiConstants.viewHistory, queryParameters: {
       'type': 'archive',
       'business': 'archive',
       'ps': 20,

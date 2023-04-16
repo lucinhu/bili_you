@@ -1,27 +1,21 @@
 import 'package:bili_you/common/models/local/home/recommend_item_info.dart';
 import 'package:bili_you/common/models/network/home/recommend_video.dart';
-import 'package:dio/dio.dart';
+import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:bili_you/common/api/api_constants.dart';
-import 'package:bili_you/common/utils/my_dio.dart';
-import 'package:flutter/foundation.dart';
 
 class HomeApi {
   static Future<RecommendVideoResponse> _requestRecommendVideos(
       int num, int refreshIdx) async {
-    Dio dio = MyDio.dio;
-    Response response;
-    response = await dio.get(ApiConstants.recommendItems,
-        queryParameters: {
-          'user-agent': ApiConstants.userAgent,
-          'feed_version': "V3",
-          'ps': num,
-          'fresh_idx': refreshIdx
-        },
-        options: Options(responseType: ResponseType.plain));
-    var ret = await compute((message) async {
-      return RecommendVideoResponse.fromRawJson(message);
-    }, response.data);
-    return ret;
+    var response = await HttpUtils().get(
+      ApiConstants.recommendItems,
+      queryParameters: {
+        'user-agent': ApiConstants.userAgent,
+        'feed_version': "V3",
+        'ps': num,
+        'fresh_idx': refreshIdx
+      },
+    );
+    return RecommendVideoResponse.fromJson(response.data);
   }
 
   ///#### 获取首页推荐
