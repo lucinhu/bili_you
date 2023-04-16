@@ -17,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/api/api_constants.dart';
-import '../../common/utils/my_dio.dart';
 
 class UiTestController extends GetxController {
   UiTestController();
