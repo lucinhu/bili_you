@@ -1,5 +1,6 @@
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/utils/settings.dart';
+import 'package:bili_you/common/widget/bili_url_scheme.dart';
 import 'package:bili_you/pages/dynamic/view.dart';
 import 'package:bili_you/pages/home/index.dart';
 import 'package:bili_you/pages/recommend/controller.dart';
@@ -20,6 +21,7 @@ class _MainPageState extends State<MainPage> {
   late MainController controller;
   @override
   void initState() {
+    BiliUrlScheme.init(context);
     //自动检查更新
     if (BiliYouStorage.settings
         .get(SettingsStorageKeys.autoCheckUpdate, defaultValue: true)) {
@@ -34,15 +36,16 @@ class _MainPageState extends State<MainPage> {
     if (value == controller.selectedIndex.value) {
       var currentPage = controller.pages[value];
       // 首页
-      if(currentPage is HomePage){
+      if (currentPage is HomePage) {
         var homeController = Get.find<HomeController>();
-        var controller = homeController.tabsList[homeController.tabController!.index]['controller'];
-        if(controller == 'RecommendController'){
+        var controller = homeController
+            .tabsList[homeController.tabController!.index]['controller'];
+        if (controller == 'RecommendController') {
           Get.find<RecommendController>().animateToTop();
         }
       }
       // 动态
-      if(currentPage is DynamicPage) {
+      if (currentPage is DynamicPage) {
         Get.find<DynamicController>().animateToTop();
       }
     }

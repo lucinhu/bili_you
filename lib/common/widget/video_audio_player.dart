@@ -366,17 +366,16 @@ class VideoAudioController {
       // 如果刷新时进度不是0,就跳转
       state.isPlaying = false;
       state.isBuffering = false;
-      state.isEnd = false;
 
       Timer(const Duration(milliseconds: 600), () async {
-        log('position:' + lastPosition.toString());
+        log('position:$lastPosition');
         await audioPlayer.pause();
         await videoPlayer.pause();
         await audioPlayer.seek(lastPosition);
         await videoPlayer.seek(lastPosition);
 
         //如果之前的state是播放，就播放
-        if (lastIsPlaying) {
+        if (lastIsPlaying && !state.isEnd) {
           await videoPlayer.play();
           await audioPlayer.play();
         }

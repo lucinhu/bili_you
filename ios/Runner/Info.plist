@@ -52,5 +52,15 @@
       <string>http</string>
 	  <string>https</string>
     </array>
+	<!-- url scheme -->
+	<key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>bilibili</string>
+        </array>
+      </dict>
+    </array>
 </dict>
 </plist>

@@ -12,7 +12,6 @@ import 'package:media_kit/media_kit.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
-  await HttpUtils().init();
   await BiliYouStorage.ensureInitialized();
   runApp(const MyApp());
   //状态栏、导航栏沉浸
@@ -31,6 +30,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(builder: ((lightDynamic, darkDynamic) {
       return GetMaterialApp(
+          onInit: () async {
+            await HttpUtils().init();
+          },
           navigatorObservers: [BiliVideoPage.routeObserver],
           useInheritedMediaQuery: true,
           themeMode: SettingsUtil.currentThemeMode,

@@ -62,7 +62,6 @@ dependencies:
   easy_refresh: ^3.3.1
   
   # 控件
-  video_player: ^2.6.1
   ns_danmaku:
     git: 
       url: https://github.com/lucinhu/flutter_ns_danmaku.git
@@ -100,6 +99,9 @@ dependencies:
 
   # 分享
   share_plus: ^6.3.1
+
+  # scheme 
+  appscheme: ^1.0.8
   
   
 
