@@ -12,6 +12,7 @@ import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
 import 'package:bili_you/pages/login/password_login/index.dart';
 import 'package:bili_you/pages/login/sms_login/index.dart';
+import 'package:bili_you/pages/ui_test/test_widget/media_kit_test_page.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -56,10 +57,9 @@ class UiTestController extends GetxController {
   @override
   void onInit() {
     _testPages = {
-      "评论测试": ReplyPage(
+      "评论测试": const ReplyPage(
         replyId: "170001",
         replyType: ReplyType.video,
-        pauseVideoCallback: () {},
       ),
       "许可": const LicensePage(
         applicationIcon: ImageIcon(
@@ -71,7 +71,7 @@ class UiTestController extends GetxController {
       "关于": const AboutPage(),
       "视频": AspectRatio(
         aspectRatio: 16 / 9,
-        child: BiliVideoPlayer(
+        child: BiliVideoPlayerWidget(
           biliVideoPlayerController,
           heroTagId: HeroTagId.lastId,
           buildDanmaku: (context, biliVideoPlayerController) {
@@ -130,7 +130,10 @@ class UiTestController extends GetxController {
         ),
       ),
       '密码登陆': const PasswordLoginPage(),
-      '短信登陆': const PhoneLoginPage()
+      '短信登陆': const PhoneLoginPage(),
+      '视频播放测试': Builder(
+        builder: (context) => const BiliVideoPlayer(),
+      ),
     };
     //初始化构建测试页面项列表
     _buildListTiles();

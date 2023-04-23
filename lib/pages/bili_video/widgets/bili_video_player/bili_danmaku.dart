@@ -25,8 +25,8 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
   GlobalKey visibilityKey = GlobalKey();
   DanmakuController? danmakuController;
   bool isListenerLocked = false;
-  bool isPlaying = false;
-  void videoPlayerStateChangedCallback(VideoAudioPlayerValue value) {
+  bool isPlaying = true;
+  void videoPlayerStateChangedCallback(VideoAudioState value) {
     if (value.isBuffering || !value.isPlaying) {
       danmakuController?.pause();
     } else if (value.isPlaying) {
@@ -44,7 +44,7 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
       if (!isListenerLocked && widget.controller._isInitialized) {
         isListenerLocked = true;
         var currentPosition =
-            (await widget.controller.biliVideoPlayerController.position)
+            (widget.controller.biliVideoPlayerController.position)
                 .inMilliseconds;
         if (widget.controller.currentSegmentIndex <
             widget.controller.dmSegList.length) {
@@ -94,7 +94,8 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
 
   Future<void> _requestDanmaku() async {
     widget.controller.segmentCount =
-        (widget.controller.biliVideoPlayerController.duration.inMinutes / 6)
+        (widget.controller.biliVideoPlayerController.videoPlayInfo!.timeLength /
+                (60 * 6))
             .ceil();
     for (int segmentIndex = 1;
         segmentIndex <= widget.controller.segmentCount;
@@ -109,8 +110,7 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
       widget.controller.dmSegList.add(response);
       widget.controller._isInitialized = true;
       _findPositionIndex(
-          (await widget.controller.biliVideoPlayerController.position)
-              .inMilliseconds);
+          widget.controller.biliVideoPlayerController.position.inMilliseconds);
     }
   }
 
@@ -197,25 +197,23 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
 
   @override
   Widget build(BuildContext context) {
-    return StatefulBuilder(builder: (context, builder) {
-      return Visibility(
-          key: visibilityKey,
-          visible: widget.controller._visible,
-          child: DanmakuView(
-            createdController: (danmakuController) {
-              if (widget.controller.dmSegList.isEmpty &&
-                  widget.controller._visible) {
-                //如果弹幕列表还是空的话，而且是可见的，就进行请求获取弹幕
-                _requestDanmaku();
-              }
-              this.danmakuController = danmakuController;
-            },
-            option: DanmakuOption(area: 0.5),
-            statusChanged: (isPlaying) {
-              this.isPlaying = isPlaying;
-            },
-          ));
-    });
+    return Visibility(
+        key: visibilityKey,
+        visible: widget.controller._visible,
+        child: DanmakuView(
+          createdController: (danmakuController) async {
+            // if (widget.controller.dmSegList.isEmpty &&
+            //     widget.controller._visible) {
+            //如果弹幕列表还是空的话，而且是可见的，就进行请求获取弹幕
+            await _requestDanmaku();
+            // }
+            this.danmakuController = danmakuController;
+          },
+          option: DanmakuOption(area: 0.5),
+          statusChanged: (isPlaying) {
+            this.isPlaying = isPlaying;
+          },
+        ));
   }
 }
 

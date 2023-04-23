@@ -3,10 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  battery_plus
   connectivity_plus
   dynamic_color
-  screen_brightness_windows
+  media_kit_libs_windows_video
+  media_kit_video
   share_plus
   url_launcher_windows
 )

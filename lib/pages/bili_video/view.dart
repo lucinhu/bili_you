@@ -1,13 +1,20 @@
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
+import 'package:bili_you/common/values/hero_tag_id.dart';
+import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/introduction/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'index.dart';
+import 'widgets/bili_video_player/bili_danmaku.dart';
+import 'widgets/bili_video_player/bili_video_player_panel.dart';
 import 'widgets/reply/controller.dart';
 
 class BiliVideoPage extends StatefulWidget {
+  static final RouteObserver<PageRoute> routeObserver =
+      RouteObserver<PageRoute>();
+
   const BiliVideoPage(
       {Key? key,
       required this.bvid,
@@ -28,13 +35,47 @@ class BiliVideoPage extends StatefulWidget {
   State<BiliVideoPage> createState() => _BiliVideoPageState();
 }
 
-class _BiliVideoPageState extends State<BiliVideoPage> {
+class _BiliVideoPageState extends State<BiliVideoPage> with RouteAware {
   int currentTabIndex = 0;
-  late BiliVideoController biliVideoController;
+  late BiliVideoController controller;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    //订阅路由监听
+    BiliVideoPage.routeObserver
+        .subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void didPushNext() async {
+    super.didPushNext();
+    //当进入下一个页面时
+    //暂停视频
+    await controller.biliVideoPlayerController.pause();
+  }
+
+  @override
+  void didPopNext() async {
+    super.didPopNext();
+    //回到当前页面时
+    //刷新页面
+    await controller.biliVideoPlayerController.refreshPlayer();
+  }
+
+  @override
+  void dispose() async {
+    // biliVideoController.onClose();
+    // biliVideoController.onDelete();
+    //取消路由监听
+    BiliVideoPage.routeObserver.unsubscribe(this);
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
-    biliVideoController = Get.put(
+    controller = Get.put(
       BiliVideoController(
           bvid: widget.bvid,
           cid: widget.cid,
@@ -44,11 +85,6 @@ class _BiliVideoPageState extends State<BiliVideoPage> {
       tag: widget.tag,
     );
     super.initState();
-  }
-
-  // 主视图
-  Widget _player(BiliVideoController controller) {
-    return controller.biliVideoPlayer;
   }
 
   Widget _buildView(context, BiliVideoController controller) {
@@ -96,7 +132,6 @@ class _BiliVideoPageState extends State<BiliVideoPage> {
             children: [
               IntroductionPage(
                 changePartCallback: controller.changeVideoPart,
-                pauseVideoCallback: controller.biliVideoPlayerController.pause,
                 refreshReply: controller.refreshReply,
                 bvid: controller.bvid,
                 cid: controller.cid,
@@ -108,8 +143,6 @@ class _BiliVideoPageState extends State<BiliVideoPage> {
                 return ReplyPage(
                   replyId: controller.bvid,
                   replyType: ReplyType.video,
-                  pauseVideoCallback:
-                      controller.biliVideoPlayerController.pause,
                 );
               })
             ],
@@ -120,14 +153,6 @@ class _BiliVideoPageState extends State<BiliVideoPage> {
   }
 
   @override
-  void dispose() {
-    // biliVideoController.onClose();
-    // biliVideoController.onDelete();
-    biliVideoController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: const SystemUiOverlayStyle(
@@ -135,8 +160,21 @@ class _BiliVideoPageState extends State<BiliVideoPage> {
         child: Scaffold(
           body: Column(
             children: [
-              _player(biliVideoController),
-              Expanded(child: _buildView(context, biliVideoController)),
+              BiliVideoPlayerWidget(
+                controller.biliVideoPlayerController,
+                heroTagId: HeroTagId.lastId,
+                buildControllPanel: (context, biliVideoPlayerController) {
+                  return BiliVideoPlayerPanel(
+                    BiliVideoPlayerPanelController(biliVideoPlayerController),
+                  );
+                },
+                buildDanmaku: (context, biliVideoPlayerController) {
+                  return BiliDanmaku(
+                      controller:
+                          BiliDanmakuController(biliVideoPlayerController));
+                },
+              ),
+              Expanded(child: _buildView(context, controller)),
             ],
           ),
         ));

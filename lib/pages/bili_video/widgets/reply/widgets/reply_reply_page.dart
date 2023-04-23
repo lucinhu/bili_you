@@ -16,12 +16,10 @@ class ReplyReplyPage extends StatefulWidget {
     required this.replyId,
     required this.rootId,
     required this.replyType,
-    required this.pauseVideoCallback,
   });
   final String replyId;
   final int rootId;
   final ReplyType replyType;
-  final Function() pauseVideoCallback;
 
   @override
   State<ReplyReplyPage> createState() => _ReplyReplyPageState();
@@ -52,7 +50,6 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
           hasFrontDivider: false,
           reply: replyReplyInfo.rootReply,
           isUp: replyReplyInfo.rootReply.member.mid == replyReplyInfo.upperMid,
-          pauseVideoPlayer: widget.pauseVideoCallback,
           showPreReply: false,
           officialVerifyType:
               replyReplyInfo.rootReply.member.officialVerify.type,
@@ -93,7 +90,6 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
         hasFrontDivider: _replyReplies.isNotEmpty,
         reply: i,
         isUp: i.member.mid == replyReplyInfo.upperMid,
-        pauseVideoPlayer: widget.pauseVideoCallback,
         showPreReply: false,
         officialVerifyType: i.member.officialVerify.type,
       ));

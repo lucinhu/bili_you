@@ -15,7 +15,7 @@ class HttpUtils {
   factory HttpUtils() => _instance;
   static late final Dio dio;
   static late CookieManager cookieManager;
-  final CancelToken _cancelToken = CancelToken();
+  CancelToken _cancelToken = CancelToken();
 
   ///初始化构造
   HttpUtils._internal() {
@@ -28,8 +28,7 @@ class HttpUtils {
       connectTimeout: const Duration(seconds: 5),
       receiveTimeout: const Duration(seconds: 5),
       contentType: Headers.jsonContentType,
-      receiveDataWhenStatusError: true,
-      maxRedirects: 5,
+      persistentConnection: true,
     );
     dio = Dio(options);
     dio.transformer = BackgroundTransformer();
@@ -50,7 +49,8 @@ class HttpUtils {
           CookieManager(PersistCookieJar(storage: FileStorage(cookiePath)));
     }
     dio.interceptors.add(cookieManager);
-    dio.httpClientAdapter = Http2Adapter(ConnectionManager());
+    dio.httpClientAdapter = Http2Adapter(
+        ConnectionManager(idleTimeout: const Duration(seconds: 8)));
     if ((await cookieManager.cookieJar
             .loadForRequest(Uri.parse(ApiConstants.bilibiliBase)))
         .isEmpty) {
@@ -65,6 +65,7 @@ class HttpUtils {
   // 关闭dio
   void cancelRequests({required CancelToken token}) {
     _cancelToken.cancel("cancelled");
+    _cancelToken = token;
   }
 
   Future<Response> get(

@@ -42,6 +42,7 @@ class SettingsStorageKeys {
   static const String preferVideoQuality = "preferVideoQuality";
   static const String autoPlayOnInit = "autoPlayOnInit";
   static const String fullScreenPlayOnEnter = "fullScreenPlayOnEnter";
+  static const String isHardwareDecode = "isHardwareDecode";
 
   ///首页推荐列数
   static const String recommendColumnCount = 'recommendColumnCount';

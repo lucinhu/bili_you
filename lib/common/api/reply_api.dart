@@ -10,6 +10,7 @@ import 'package:bili_you/common/models/network/reply/reply_reply.dart'
     as reply_reply_raw;
 import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:bili_you/common/utils/index.dart';
+import 'package:flutter/foundation.dart';
 
 import '../models/local/reply/official_verify.dart';
 
@@ -28,7 +29,9 @@ class ReplyApi {
         'sort': sort.index
       },
     );
-    return reply_raw.ReplyResponse.fromJson(response.data);
+    return await compute(
+        (response) => reply_raw.ReplyResponse.fromJson(response),
+        response.data);
   }
 
   ///原始评论成员数据转评论成员数据
@@ -135,21 +138,23 @@ class ReplyApi {
     if (response.data == null || response.data!.replies == null) {
       return ReplyInfo.zero;
     }
-    List<ReplyItem> replies = [];
-    for (var i in response.data!.replies!) {
-      replies.add(_replyItemRawToReplyItem(i));
-    }
-    List<ReplyItem> topReplies = [];
-    if (response.data!.topReplies != null) {
-      for (var i in response.data!.topReplies!) {
-        topReplies.add(_replyItemRawToReplyItem(i));
+    return await compute((response) {
+      List<ReplyItem> replies = [];
+      for (var i in response.data!.replies!) {
+        replies.add(_replyItemRawToReplyItem(i));
       }
-    }
-    return ReplyInfo(
-        replies: replies,
-        topReplies: topReplies,
-        upperMid: response.data!.upper?.mid ?? 0,
-        replyCount: response.data!.page?.acount ?? 0);
+      List<ReplyItem> topReplies = [];
+      if (response.data!.topReplies != null) {
+        for (var i in response.data!.topReplies!) {
+          topReplies.add(_replyItemRawToReplyItem(i));
+        }
+      }
+      return ReplyInfo(
+          replies: replies,
+          topReplies: topReplies,
+          upperMid: response.data!.upper?.mid ?? 0,
+          replyCount: response.data!.page?.acount ?? 0);
+    }, response);
   }
 
   //请求评论的评论

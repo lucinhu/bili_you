@@ -3,26 +3,39 @@ import 'package:get/get.dart';
 
 import 'index.dart';
 
-class UiTestPage extends GetView<UiTestController> {
+class UiTestPage extends StatefulWidget {
   const UiTestPage({Key? key}) : super(key: key);
 
+  @override
+  State<UiTestPage> createState() => _UiTestPageState();
+}
+
+class _UiTestPageState extends State<UiTestPage> {
+  late final UiTestController controller;
+  @override
+  void initState() {
+    controller = Get.put(UiTestController());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   Widget _buildView(BuildContext context) {
-    return ListView(
-      children: controller.listTiles,
+    return ListView.builder(
+      itemCount: controller.listTiles.length,
+      itemBuilder: (context, index) => controller.listTiles[index],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<UiTestController>(
-      init: UiTestController(),
-      id: "ui_test",
-      builder: (_) {
-        return Scaffold(
-          appBar: AppBar(title: const Text("ui_test")),
-          body: _buildView(context),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(title: const Text("ui_test")),
+      body: _buildView(context),
     );
   }
 }

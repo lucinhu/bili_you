@@ -28,7 +28,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
   static const Color textColor = Colors.white;
   static const Color iconColor = Colors.white;
 
-  void playStateChangedCallback(VideoAudioPlayerValue value) {
+  void playStateChangedCallback(VideoAudioState value) {
     widget.controller._isPlayerPlaying = value.isPlaying;
     widget.controller._isPlayerEnd = value.isEnd;
     widget.controller._isPlayerBuffering = value.isBuffering;
@@ -38,7 +38,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
   void playerListenerCallback() async {
     if (!widget.controller._isSliderDraging) {
       widget.controller._position =
-          await widget.controller._biliVideoPlayerController.position;
+          widget.controller._biliVideoPlayerController.position;
     }
     widget.controller._fartherestBuffed =
         widget.controller._biliVideoPlayerController.fartherestBuffered;
@@ -66,8 +66,6 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
         widget.controller._biliVideoPlayerController.isPlaying;
     //进入视频时如果没有在播放就显示
     widget.controller._show = !widget.controller._isPlayerPlaying;
-    widget.controller._duration =
-        widget.controller._biliVideoPlayerController.duration;
     widget.controller.asepectRatio =
         widget.controller._biliVideoPlayerController.videoAspectRatio;
     widget.controller._danmakuOpened = widget
@@ -162,9 +160,9 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
             onLongPress: () {
               widget.controller._selectingSpeed =
                   widget.controller._biliVideoPlayerController.speed;
-              //长按2倍速度
+              //长按4倍速度
               widget.controller._biliVideoPlayerController.setPlayBackSpeed(
-                  math.max(widget.controller._selectingSpeed, 2));
+                  math.max(widget.controller._selectingSpeed, 4));
               //振动
               HapticFeedback.selectionClick();
             },
@@ -284,8 +282,8 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                                         content: IntrinsicHeight(
                                           child: Slider(
                                             min: 0.25,
-                                            max: 2.50,
-                                            divisions: 9,
+                                            max: 4.00,
+                                            divisions: 15,
                                             label:
                                                 "${widget.controller._selectingSpeed}X",
                                             value: widget
@@ -413,35 +411,33 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                             return //播放按钮
                                 IconButton(
                                     color: iconColor,
-                                    onPressed: () {
-                                      setState(
-                                        () {
-                                          if (widget
-                                              .controller._isPlayerPlaying) {
-                                            widget.controller
-                                                ._biliVideoPlayerController
-                                                .pause();
-                                          } else {
-                                            if (widget
-                                                .controller
-                                                ._biliVideoPlayerController
-                                                .hasError) {
-                                              //如果是出错状态, 重新加载
-                                              widget.controller
-                                                  ._biliVideoPlayerController
-                                                  .reloadWidget();
-                                            } else {
-                                              //不是出错状态, 就继续播放
-                                              widget.controller
-                                                  ._biliVideoPlayerController
-                                                  .play();
-                                            }
-                                          }
-                                          widget.controller._isPlayerPlaying =
-                                              !widget
-                                                  .controller._isPlayerPlaying;
-                                        },
-                                      );
+                                    onPressed: () async {
+                                      if (widget
+                                          .controller
+                                          ._biliVideoPlayerController
+                                          .isPlaying) {
+                                        await widget.controller
+                                            ._biliVideoPlayerController
+                                            .pause();
+                                      } else {
+                                        if (widget
+                                            .controller
+                                            ._biliVideoPlayerController
+                                            .hasError) {
+                                          //如果是出错状态, 重新加载
+                                          await widget.controller
+                                              ._biliVideoPlayerController
+                                              .reloadWidget();
+                                        } else {
+                                          //不是出错状态, 就继续播放
+                                          await widget.controller
+                                              ._biliVideoPlayerController
+                                              .play();
+                                        }
+                                      }
+                                      widget.controller._isPlayerPlaying =
+                                          !widget.controller._isPlayerPlaying;
+                                      setState(() {});
                                     },
                                     icon: Icon(iconData));
                           },
@@ -454,13 +450,13 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                                 return Slider(
                                   min: 0,
                                   max: widget
-                                      .controller._duration.inMilliseconds
+                                      .controller
+                                      ._biliVideoPlayerController
+                                      .duration
+                                      .inMilliseconds
                                       .toDouble(),
-                                  value: (math.min(
-                                          widget.controller._position
-                                              .inMilliseconds,
-                                          widget.controller._duration
-                                              .inMilliseconds))
+                                  value: widget
+                                      .controller._position.inMilliseconds
                                       .toDouble(),
                                   secondaryTrackValue: widget.controller
                                       ._fartherestBuffed.inMilliseconds
@@ -497,7 +493,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                           key: durationTextKey,
                           builder: (context, setState) {
                             return Text(
-                              "${StringFormatUtils.timeLengthFormat(widget.controller._position.inSeconds)}/${StringFormatUtils.timeLengthFormat(widget.controller._duration.inSeconds)}",
+                              "${StringFormatUtils.timeLengthFormat(widget.controller._position.inSeconds)}/${StringFormatUtils.timeLengthFormat(widget.controller._biliVideoPlayerController.duration.inSeconds)}",
                               style: const TextStyle(color: textColor),
                             );
                           },
@@ -534,7 +530,6 @@ class BiliVideoPlayerPanelController {
   // bool isFullScreen = false;
   double asepectRatio = 1;
   double _selectingSpeed = 1;
-  late Duration _duration;
   Duration _position = Duration.zero;
   Duration _fartherestBuffed = Duration.zero;
   final BiliVideoPlayerController _biliVideoPlayerController;

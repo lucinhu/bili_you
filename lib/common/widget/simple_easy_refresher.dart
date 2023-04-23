@@ -25,6 +25,8 @@ class _SimpleEasyRefresherState extends State<SimpleEasyRefresher> {
   Widget build(BuildContext context) {
     return EasyRefresh.builder(
         refreshOnStart: true,
+        resetAfterRefresh: true,
+        simultaneously: true,
         onLoad: () async {
           await widget.onLoad?.call();
           setState(() {});
@@ -34,26 +36,29 @@ class _SimpleEasyRefresherState extends State<SimpleEasyRefresher> {
           setState(() {});
         },
         header: const ClassicHeader(
+          hitOver: true,
           safeArea: false,
           processedDuration: Duration.zero,
           showMessage: false,
-          processingText: "正在刷新...",
-          readyText: "正在刷新...",
-          armedText: "释放以刷新",
-          dragText: "下拉刷新",
-          processedText: "刷新成功",
-          failedText: "刷新失败",
+          showText: false,
+          // processingText: "正在刷新...",
+          // readyText: "正在刷新...",
+          // armedText: "释放以刷新",
+          // dragText: "下拉刷新",
+          // processedText: "刷新成功",
+          // failedText: "刷新失败",
         ),
         footer: const ClassicFooter(
           processedDuration: Duration.zero,
           showMessage: false,
-          processingText: "加载中...",
-          processedText: "加载成功",
-          readyText: "加载中...",
-          armedText: "释放以加载更多",
-          dragText: "上拉加载",
-          failedText: "加载失败",
-          noMoreText: "没有更多内容",
+          showText: false,
+          // processingText: "加载中...",
+          // processedText: "加载成功",
+          // readyText: "加载中...",
+          // armedText: "释放以加载更多",
+          // dragText: "上拉加载",
+          // failedText: "加载失败",
+          // noMoreText: "没有更多内容",
         ),
         controller: widget.easyRefreshController,
         childBuilder: widget.childBuilder);

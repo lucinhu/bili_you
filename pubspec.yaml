@@ -67,7 +67,18 @@ dependencies:
     git: 
       url: https://github.com/lucinhu/flutter_ns_danmaku.git
   cached_network_image: ^3.2.3
-  photo_view: ^0.14.0
+  photo_view: ^0.14.0  
+  card_swiper: ^2.0.4  
+
+  # 播放器
+  media_kit: ^0.0.5+2
+  media_kit_libs_android_video: ^1.0.0
+  media_kit_libs_ios_video: ^1.0.4
+  media_kit_libs_linux: ^1.0.2
+  media_kit_libs_macos_video: ^1.0.4
+  media_kit_libs_windows_video: ^1.0.2
+  media_kit_video: ^0.0.7
+
 
   # webview
   webview_cookie_manager: ^2.0.6
@@ -89,7 +100,6 @@ dependencies:
 
   # 分享
   share_plus: ^6.3.1
-  card_swiper: ^2.0.4
   
   
 

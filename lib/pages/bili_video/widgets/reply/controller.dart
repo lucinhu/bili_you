@@ -12,10 +12,10 @@ import 'package:get/get.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
 
 class ReplyController extends GetxController {
-  ReplyController(
-      {required this.bvid,
-      required this.replyType,
-      required this.pauseVideoCallback});
+  ReplyController({
+    required this.bvid,
+    required this.replyType,
+  });
   String bvid;
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
@@ -26,7 +26,6 @@ class ReplyController extends GetxController {
   RxString sortTypeText = "按热度".obs;
   RxString sortInfoText = "热门评论".obs;
   ReplySort _replySort = ReplySort.like;
-  final Function()? pauseVideoCallback;
 
   //切换排列方式
   void toggleSort() {
@@ -55,7 +54,6 @@ class ReplyController extends GetxController {
         isTop: isTop,
         isUp: i.member.mid == replyInfo.upperMid,
         hasFrontDivider: frontDivider,
-        pauseVideoPlayer: pauseVideoCallback,
         officialVerifyType: i.member.officialVerify.type,
       ),
     );

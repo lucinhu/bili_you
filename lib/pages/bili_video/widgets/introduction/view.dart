@@ -13,7 +13,6 @@ class IntroductionPage extends StatefulWidget {
   const IntroductionPage(
       {super.key,
       required this.changePartCallback,
-      required this.pauseVideoCallback,
       this.refreshReply,
       required this.bvid,
       this.cid,
@@ -36,7 +35,6 @@ class IntroductionPage extends StatefulWidget {
   final Function()? refreshReply;
 
   final Function(String bvid, int cid) changePartCallback;
-  final Function() pauseVideoCallback;
 
   @override
   State<IntroductionPage> createState() => _IntroductionPageState();
@@ -58,7 +56,6 @@ class _IntroductionPageState extends State<IntroductionPage>
       children: [
         GestureDetector(
           onTap: () {
-            controller.pauseVideo();
             // Get.to(
             //   () => UserSpacePage(
             //       key: ValueKey(
@@ -338,13 +335,13 @@ class _IntroductionPageState extends State<IntroductionPage>
   void initState() {
     controller = Get.put(
         IntroductionController(
-            changePartCallback: widget.changePartCallback,
-            bvid: widget.bvid,
-            refreshReply: widget.refreshReply ?? () {},
-            cid: widget.cid,
-            ssid: widget.ssid,
-            isBangumi: widget.isBangumi,
-            pauseVideo: widget.pauseVideoCallback),
+          changePartCallback: widget.changePartCallback,
+          bvid: widget.bvid,
+          refreshReply: widget.refreshReply ?? () {},
+          cid: widget.cid,
+          ssid: widget.ssid,
+          isBangumi: widget.isBangumi,
+        ),
         tag: widget.tag);
     super.initState();
   }

@@ -10,13 +10,11 @@ class ReplyPage extends StatefulWidget {
     Key? key,
     required this.replyId,
     required this.replyType,
-    this.pauseVideoCallback,
   })  : tag = "ReplyPage:$replyId",
         super(key: key);
   final String replyId;
   final ReplyType replyType;
   final String tag;
-  final Function()? pauseVideoCallback;
 
   @override
   State<ReplyPage> createState() => _ReplyPageState();
@@ -33,9 +31,9 @@ class _ReplyPageState extends State<ReplyPage>
   void initState() {
     controller = Get.put(
         ReplyController(
-            bvid: widget.replyId,
-            replyType: widget.replyType,
-            pauseVideoCallback: widget.pauseVideoCallback),
+          bvid: widget.replyId,
+          replyType: widget.replyType,
+        ),
         tag: widget.tag);
     super.initState();
   }

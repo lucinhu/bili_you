@@ -11,8 +11,8 @@ import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
-class BiliVideoPlayer extends StatefulWidget {
-  const BiliVideoPlayer(this.controller,
+class BiliVideoPlayerWidget extends StatefulWidget {
+  const BiliVideoPlayerWidget(this.controller,
       {super.key,
       this.buildDanmaku,
       this.buildControllPanel,
@@ -28,110 +28,15 @@ class BiliVideoPlayer extends StatefulWidget {
   final int heroTagId;
 
   @override
-  State<BiliVideoPlayer> createState() => _BiliVideoPlayerState();
+  State<BiliVideoPlayerWidget> createState() => _BiliVideoPlayerWidgetState();
 }
 
-class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
+class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
   GlobalKey aspectRatioKey = GlobalKey();
   BiliDanmaku? danmaku;
   Widget? controllPanel;
   //每15秒执行一次的timer，用来更新播放记录
   late Timer heartBeat;
-  bool isFirstEnter = true;
-
-  Future<bool> loadVideo(String bvid, int cid) async {
-    if (widget.controller._videoAudioController != null) {
-      return true;
-    }
-
-    if (widget.controller.videoPlayInfo == null) {
-      try {
-        //加载视频播放信息
-        widget.controller.videoPlayInfo =
-            await VideoPlayApi.getVideoPlay(bvid: bvid, cid: cid);
-      } catch (e) {
-        log("bili_video_player.loadVideo:$e");
-        return false;
-      }
-    }
-
-    var videoPlayInfo = widget.controller.videoPlayInfo;
-    if (widget.controller._videoPlayItem == null) {
-      //根据偏好选择画质
-      List<VideoPlayItem> tempMatchVideos = [];
-      //先匹配编码
-      for (var i in videoPlayInfo!.videos) {
-        if (i.codecs.contains(BiliYouStorage.settings
-            .get(SettingsStorageKeys.preferVideoCodec, defaultValue: 'hev'))) {
-          tempMatchVideos.add(i);
-        }
-      }
-      //如果编码没有匹配上，就只能不匹配编码了
-      if (tempMatchVideos.isEmpty) {
-        tempMatchVideos = videoPlayInfo.videos;
-      }
-      //根据VideoQuality下标判断最接近的画质
-      var matchedVideo = tempMatchVideos.first;
-      var preferVideoQualityIndex = SettingsUtil.getPreferVideoQuality().index;
-      for (var i in tempMatchVideos) {
-        if ((i.quality.index - preferVideoQualityIndex).abs() <
-            (matchedVideo.quality.index - preferVideoQualityIndex).abs()) {
-          matchedVideo = i;
-        }
-      }
-      widget.controller._videoPlayItem = matchedVideo;
-    }
-    if (widget.controller._audioPlayItem == null) {
-      //根据偏好选择音质
-      //根据AudioQuality下标判断最接近的音质
-      var matchedAudio = videoPlayInfo!.audios.first;
-      var preferAudioQualityIndex = SettingsUtil.getPreferAudioQuality().index;
-      for (var i in videoPlayInfo.audios) {
-        if ((i.quality.index - preferAudioQualityIndex).abs() <
-            (matchedAudio.quality.index - preferAudioQualityIndex).abs()) {
-          matchedAudio = i;
-        }
-      }
-      widget.controller._audioPlayItem = matchedAudio;
-    }
-    //获取视频，音频的url
-    String videoUrl = widget.controller._videoPlayItem!.urls.first;
-    String audioUrl = widget.controller._audioPlayItem!.urls.first;
-
-    //创建播放器
-    widget.controller._videoAudioController = VideoAudioController(
-        videoUrl: videoUrl,
-        audioUrl: audioUrl,
-        audioHeaders: VideoPlayApi.videoPlayerHttpHeaders,
-        videoHeaders: VideoPlayApi.videoPlayerHttpHeaders,
-        autoWakelock: true);
-    await widget.controller._videoAudioController!.ensureInitialized();
-    //是否是第一次进入
-    if (isFirstEnter) {
-      //是否进入就播放
-      if (widget.controller._playWhenInitialize) {
-        await widget.controller._videoAudioController!.play();
-      }
-      //是否进入就全屏
-      bool isFullScreenPlayOnEnter = BiliYouStorage.settings
-          .get(SettingsStorageKeys.fullScreenPlayOnEnter, defaultValue: false);
-      if (isFullScreenPlayOnEnter) {
-        widget.controller.isFullScreen = false;
-        widget.controller.toggleFullScreen();
-      }
-      isFirstEnter = false;
-    } else {
-      //如果不是第一次进入的话就是刷新
-      //刷新后是否播放
-      if (widget.controller._playWhenRefresh) {
-        await widget.controller._videoAudioController!.play();
-      }
-    }
-    widget.controller._videoAudioController!
-        .seekTo(widget.controller.initVideoPosition);
-
-    return true;
-  }
 
   updateWidget() {
     if (mounted) {
@@ -144,8 +49,7 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
     //是否进入时即播放
     widget.controller._playWhenInitialize = BiliYouStorage.settings
         .get(SettingsStorageKeys.autoPlayOnInit, defaultValue: true);
-
-    danmaku = widget.buildDanmaku?.call(context, widget.controller);
+    danmaku = widget.buildDanmaku!.call(context, widget.controller);
     controllPanel = widget.buildControllPanel?.call(context, widget.controller);
     widget.controller._updateAsepectRatioWidget = () {
       if (aspectRatioKey.currentState?.mounted ?? false) {
@@ -154,18 +58,18 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
     };
     //定时汇报历史记录
     widget.controller._reportHistory();
-    heartBeat = Timer.periodic(const Duration(seconds: 15), (timer) {
-      widget.controller._reportHistory();
+    heartBeat = Timer.periodic(const Duration(seconds: 15), (timer) async {
+      await widget.controller._reportHistory();
     });
     widget.controller.biliDanmakuController = danmaku?.controller;
     super.initState();
   }
 
   @override
-  void dispose() {
-    heartBeat.cancel();
-    widget.onDispose?.call(context, widget.controller);
+  void dispose() async {
     super.dispose();
+    heartBeat.cancel();
+    await widget.controller.dispose();
   }
 
   @override
@@ -173,72 +77,63 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
     widget.controller.updateWidget = updateWidget;
     widget.controller._size = MediaQuery.of(context).size;
     widget.controller._padding = MediaQuery.of(context).padding;
-    return Hero(
-      tag: widget.heroTagId,
-      transitionOnUserGestures: true,
-      child: Container(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        color: Colors.black,
-        child: FutureBuilder(
-          future: loadVideo(widget.controller.bvid, widget.controller.cid),
-          builder: (context, snapshot) {
-            return StatefulBuilder(
-                key: aspectRatioKey,
-                builder: (context, builder) {
-                  return AspectRatio(
-                      aspectRatio: widget.controller._aspectRatio,
-                      child: Builder(
-                        builder: (context) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            if (snapshot.data == true) {
-                              return Stack(children: [
-                                PhotoView.customChild(
-                                  // enableRotation: true,
-                                  child: Center(
-                                    child: AspectRatio(
-                                      aspectRatio: widget
-                                          .controller
-                                          ._videoAudioController!
-                                          .value
-                                          .aspectRatio,
-                                      child: VideoAudioPlayer(widget
-                                          .controller._videoAudioController!),
-                                    ),
+    return Container(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      color: Colors.black,
+      child: FutureBuilder(
+        future: widget.controller
+            .initPlayer(widget.controller.bvid, widget.controller.cid),
+        builder: (context, snapshot) {
+          return StatefulBuilder(
+              key: aspectRatioKey,
+              builder: (context, builder) {
+                return AspectRatio(
+                    aspectRatio: widget.controller._aspectRatio,
+                    child: Builder(
+                      builder: (context) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.data == true) {
+                            return Stack(children: [
+                              Center(
+                                child: PhotoView.customChild(
+                                  child: VideoAudioPlayer(
+                                    widget.controller._videoAudioController!,
+                                    asepectRatio: widget.controller
+                                            .videoPlayInfo!.videos.first.width /
+                                        widget.controller.videoPlayInfo!.videos
+                                            .first.height,
                                   ),
                                 ),
-                                Center(
-                                  child: danmaku,
-                                ),
-                                Center(
-                                  child: controllPanel,
-                                ),
-                              ]);
-                            } else {
-                              //加载失败,重试按钮
-                              return Center(
-                                child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        widget.controller._videoAudioController
-                                            ?.dispose();
-                                        widget.controller
-                                            ._videoAudioController = null;
-                                      });
-                                    },
-                                    icon: const Icon(Icons.refresh_rounded)),
-                              );
-                            }
+                              ),
+                              Center(
+                                child: danmaku,
+                              ),
+                              Center(
+                                child: controllPanel,
+                              ),
+                            ]);
                           } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
+                            //加载失败,重试按钮
+                            return Center(
+                              child: IconButton(
+                                  onPressed: () async {
+                                    await widget
+                                        .controller._videoAudioController
+                                        ?.play();
+                                    setState(() {});
+                                  },
+                                  icon: const Icon(Icons.refresh_rounded)),
                             );
                           }
-                        },
-                      ));
-                });
-          },
-        ),
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ));
+              });
+        },
       ),
     );
   }
@@ -252,7 +147,6 @@ class BiliVideoPlayerController {
   String bvid;
   int cid;
   bool isFullScreen = false;
-  bool _playWhenRefresh = true;
   bool _playWhenInitialize = true;
   //初始进度
   Duration initVideoPosition;
@@ -286,60 +180,138 @@ class BiliVideoPlayerController {
     _updateAsepectRatioWidget();
   }
 
-  void reloadWidget() {
-    _videoAudioController?.dispose();
-    _videoAudioController = null;
-    biliDanmakuController?.refreshDanmaku();
+  Future<void> reloadWidget() async {
     updateWidget();
+    await _videoAudioController?.refresh();
+    biliDanmakuController?.refreshDanmaku();
   }
 
-  void changeCid(String bvid, int cid) {
+  Future<void> changeCid(String bvid, int cid) async {
     videoPlayInfo = null;
     _videoPlayItem = null;
     _audioPlayItem = null;
     initVideoPosition = Duration.zero;
     this.bvid = bvid;
     this.cid = cid;
-    reloadWidget();
+    await loadVideoInfo(bvid, cid);
+    _videoAudioController?.audioUrl = audioPlayItem!.urls.first;
+    _videoAudioController?.videoUrl = videoPlayItem!.urls.first;
+    _videoAudioController?.state.position = Duration.zero;
+    await _videoAudioController?.refresh();
+    biliDanmakuController?.refreshDanmaku();
+  }
+
+  Future<bool> loadVideoInfo(String bvid, int cid) async {
+    if (videoPlayInfo == null) {
+      try {
+        //加载视频播放信息
+        videoPlayInfo = await VideoPlayApi.getVideoPlay(bvid: bvid, cid: cid);
+      } catch (e) {
+        log("bili_video_player.loadVideo:$e");
+        return false;
+      }
+    }
+    if (_videoPlayItem == null) {
+      //根据偏好选择画质
+      List<VideoPlayItem> tempMatchVideos = [];
+      //先匹配编码
+      for (var i in videoPlayInfo!.videos) {
+        if (i.codecs.contains(BiliYouStorage.settings
+            .get(SettingsStorageKeys.preferVideoCodec, defaultValue: 'hev'))) {
+          tempMatchVideos.add(i);
+        }
+      }
+      //如果编码没有匹配上，就只能不匹配编码了
+      if (tempMatchVideos.isEmpty) {
+        tempMatchVideos = videoPlayInfo!.videos;
+      }
+      //根据VideoQuality下标判断最接近的画质
+      var matchedVideo = tempMatchVideos.first;
+      var preferVideoQualityIndex = SettingsUtil.getPreferVideoQuality().index;
+      for (var i in tempMatchVideos) {
+        if ((i.quality.index - preferVideoQualityIndex).abs() <
+            (matchedVideo.quality.index - preferVideoQualityIndex).abs()) {
+          matchedVideo = i;
+        }
+      }
+      _videoPlayItem = matchedVideo;
+    }
+    if (_audioPlayItem == null) {
+      //根据偏好选择音质
+      //根据AudioQuality下标判断最接近的音质
+      var matchedAudio = videoPlayInfo!.audios.first;
+      var preferAudioQualityIndex = SettingsUtil.getPreferAudioQuality().index;
+      for (var i in videoPlayInfo!.audios) {
+        if ((i.quality.index - preferAudioQualityIndex).abs() <
+            (matchedAudio.quality.index - preferAudioQualityIndex).abs()) {
+          matchedAudio = i;
+        }
+      }
+      _audioPlayItem = matchedAudio;
+    }
+    return true;
+  }
+
+  Future<bool> initPlayer(String bvid, int cid) async {
+    //如果不是第一次的话就跳过
+    if (_videoAudioController != null) {
+      return true;
+    }
+    //加载视频播放信息
+    if (await loadVideoInfo(bvid, cid) == false) return false;
+    //获取视频，音频的url
+    String videoUrl = _videoPlayItem!.urls.first;
+    String audioUrl = _audioPlayItem!.urls.first;
+
+    //创建播放器
+    _videoAudioController = VideoAudioController(
+        videoUrl: videoUrl,
+        audioUrl: audioUrl,
+        audioHeaders: VideoPlayApi.videoPlayerHttpHeaders,
+        videoHeaders: VideoPlayApi.videoPlayerHttpHeaders,
+        autoWakelock: true,
+        initStart: _playWhenInitialize);
+
+    await _videoAudioController!.init();
+
+    //是否进入就全屏
+    bool isFullScreenPlayOnEnter = BiliYouStorage.settings
+        .get(SettingsStorageKeys.fullScreenPlayOnEnter, defaultValue: false);
+    if (isFullScreenPlayOnEnter) {
+      isFullScreen = false;
+      toggleFullScreen();
+    }
+    return true;
   }
 
   ///切换视频播放源/视频画质
   void changeVideoItem(VideoPlayItem videoPlayItem) {
     _videoPlayItem = videoPlayItem;
-    // _videoQuality = videoPlayItem.quality;
-    position.then(
-      (value) {
-        //将初始播放位置设为当前未知再刷新，这样就刷新后就能接上
-        initVideoPosition = value;
-        //刷新后是否播放
-        _playWhenRefresh = isPlaying;
-        reloadWidget();
-      },
-    );
+    _videoAudioController!.videoUrl = videoPlayItem.urls.first;
+    _videoAudioController!.refresh();
+    // reloadWidget();
   }
 
   ///切换音频播放源/音质
   void changeAudioItem(AudioPlayItem audioPlayItem) {
     _audioPlayItem = audioPlayItem;
-    position.then(
-      (value) {
-        //将初始播放位置设为当前未知再刷新，这样就刷新后就能接上
-        initVideoPosition = value;
-        //刷新后是否播放
-        _playWhenRefresh = isPlaying;
-        reloadWidget();
-      },
-    );
+    _videoAudioController!.audioUrl = audioPlayItem.urls.first;
+    _videoAudioController!.refresh();
+    // reloadWidget();
   }
 
   //汇报一次历史记录
   Future<void> _reportHistory() async {
     try {
       await VideoPlayApi.reportHistory(
-          bvid: bvid, cid: cid, playedTime: (await position).inSeconds);
+          bvid: bvid, cid: cid, playedTime: position.inSeconds);
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  Future<void> refreshPlayer() async {
+    await _videoAudioController?.refresh();
   }
 
   void toggleFullScreen() {
@@ -368,12 +340,11 @@ class BiliVideoPlayerController {
     _videoAudioController?.removeListener(listener);
   }
 
-  void addStateChangedListener(Function(VideoAudioPlayerValue value) listener) {
+  void addStateChangedListener(Function(VideoAudioState state) listener) {
     _videoAudioController?.addStateChangedListener(listener);
   }
 
-  void removeStateChangedListener(
-      Function(VideoAudioPlayerValue value) listener) {
+  void removeStateChangedListener(Function(VideoAudioState state) listener) {
     _videoAudioController?.removeStateChangedListener(listener);
   }
 
@@ -385,53 +356,49 @@ class BiliVideoPlayerController {
     _videoAudioController?.addSeekToListener(listener);
   }
 
-  void dispose() {
-    _reportHistory();
-    _videoAudioController?.dispose();
+  Future<void> dispose() async {
+    await _reportHistory();
+    await _videoAudioController?.dispose();
   }
 
-  Future<Duration> get position async {
-    return await _videoAudioController?.position ?? Duration.zero;
+  Duration get position {
+    return _videoAudioController?.state.position ?? Duration.zero;
   }
 
   Duration get duration {
-    return _videoAudioController?.value.duration ?? Duration.zero;
+    return _videoAudioController?.state.duration ?? Duration.zero;
   }
 
-  double get speed => _videoAudioController?.value.speed ?? 1;
+  double get speed => _videoAudioController?.state.speed ?? 1;
 
-  double get videoAspectRatio => _videoAudioController?.value.aspectRatio ?? 1;
+  double get videoAspectRatio =>
+      _videoAudioController!.state.width / _videoAudioController!.state.height;
 
   bool get isPlaying {
-    return _videoAudioController?.value.isPlaying ?? false;
+    return _videoAudioController?.state.isPlaying ?? false;
   }
 
   bool get isBuffering {
-    return _videoAudioController?.value.isBuffering ?? false;
+    return _videoAudioController?.state.isBuffering ?? false;
   }
 
   bool get hasError {
-    return _videoAudioController?.hasError ?? false;
+    return _videoAudioController?.state.hasError ?? false;
   }
 
   Duration get fartherestBuffered {
     if (_videoAudioController == null) {
       return Duration.zero;
     }
-    if (_videoAudioController!.value.buffered.isNotEmpty) {
-      return _videoAudioController!.value.buffered.last.end;
-    } else {
-      return Duration.zero;
-    }
+
+    return _videoAudioController!.state.buffered;
   }
 
   Future<void> play() async {
-    _playWhenRefresh = true;
     await _videoAudioController?.play();
   }
 
   Future<void> pause() async {
-    _playWhenRefresh = false;
     await _videoAudioController?.pause();
   }
 

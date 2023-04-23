@@ -17,31 +17,10 @@ class HomeController extends GetxController {
 
   RxString defaultSearchWord = "搜索".obs;
   final List<Map<String, String>> tabsList = [
-    {
-      'text': '直播',
-      'id': '',
-      'controller': ''
-    },
-    {
-      'text': '推荐',
-      'id': '',
-      'controller': 'RecommendController'
-    },
-    {
-      'text': '热门',
-      'id': '',
-      'controller': ''
-    },
-    {
-      'text': '直播',
-      'id': '',
-      'controller': ''
-    },
-    {
-      'text': '番剧',
-      'id': '',
-      'controller': ''
-    }
+    {'text': '直播', 'id': '', 'controller': ''},
+    {'text': '推荐', 'id': '', 'controller': 'RecommendController'},
+    {'text': '热门', 'id': '', 'controller': ''},
+    {'text': '番剧', 'id': '', 'controller': ''}
   ];
   late TabController? tabController;
   final int tabInitIndex = 1;
@@ -92,9 +71,4 @@ class HomeController extends GetxController {
     var box = BiliYouStorage.user;
     faceUrl.value = box.get(UserStorageKeys.userFace) ?? ApiConstants.noface;
   }
-
-  // @override
-  // void onClose() {
-  //   super.onClose();
-  // }
 }

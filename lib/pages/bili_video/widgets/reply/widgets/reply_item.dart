@@ -9,7 +9,7 @@ import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
-import 'package:bili_you/pages/bili_video/widgets/reply/widgets/view_image.dart';
+import 'package:bili_you/common/widget/view_image.dart';
 import 'package:bili_you/pages/search_result/view.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:bili_you/pages/webview/browser.dart';
@@ -27,14 +27,12 @@ class ReplyItemWidget extends StatelessWidget {
       this.isUp = false,
       this.showPreReply = true,
       this.hasFrontDivider = false,
-      this.pauseVideoPlayer,
       this.officialVerifyType});
   final ReplyItem reply;
   final bool isTop; //是否是置顶
   final bool isUp; //是否是up主
   final bool showPreReply; //是否显示评论的外显示评论
   final bool hasFrontDivider; //是否前面有分界线
-  final Function()? pauseVideoPlayer;
   final OfficialVerifyType? officialVerifyType;
 
   static final CacheManager emoteCacheManager =
@@ -97,12 +95,10 @@ class ReplyItemWidget extends StatelessWidget {
         onTap: () {
           var url = Uri.tryParse(i.url);
           if (url == null || !url.hasScheme) {
-            pauseVideoPlayer?.call();
             //若不是链接,去搜索
             Navigator.of(context).push(
                 GetPageRoute(page: () => SearchResultPage(keyWord: i.url)));
           } else {
-            pauseVideoPlayer?.call();
             //若是链接跳转到webview
             Navigator.of(context).push(GetPageRoute(
                 page: () => BiliBrowser(
@@ -121,12 +117,10 @@ class ReplyItemWidget extends StatelessWidget {
       spans.add(WidgetSpan(
           child: GestureDetector(
         onTap: () {
-          // pauseVideoPlayer?.call();
-          // Get.to(
-          //     () => ViewImage(key: ValueKey("ViewImage:${i.url}"), url: i.url));
-          Navigator.of(context).push(
-            GetPageRoute(
-              page: () => ViewImagePage(
+          showDialog(
+            context: context,
+            builder: (context) => Dialog.fullscreen(
+              child: ViewImagePage(
                 key: ValueKey("ViewImage:${i.url}"),
                 urls: content.pictures.map<String>((e) => e.url).toList(),
                 initIndex: content.pictures.indexOf(i),
@@ -181,7 +175,6 @@ class ReplyItemWidget extends StatelessWidget {
                       officialVerifyType: officialVerifyType,
                       radius: 45 / 2,
                       onPressed: () {
-                        pauseVideoPlayer?.call();
                         // Get.to(() => UserSpacePage(
                         //     key: ValueKey("UserSpacePage:${reply.member.mid}"),
                         //     mid: reply.member.mid));
@@ -216,7 +209,6 @@ class ReplyItemWidget extends StatelessWidget {
                               left: 10, top: 5, bottom: 5),
                           child: GestureDetector(
                             onTap: () {
-                              pauseVideoPlayer?.call();
                               // Get.to(() => UserSpacePage(
                               //     key:
                               //         ValueKey("UserSpacePage:${reply.member.mid}"),
@@ -409,8 +401,6 @@ class ReplyItemWidget extends StatelessWidget {
                                             replyId: reply.oid.toString(),
                                             replyType: reply.type,
                                             rootId: reply.rpid,
-                                            pauseVideoCallback:
-                                                pauseVideoPlayer ?? () {},
                                           ),
                                           backgroundColor:
                                               Theme.of(context).cardColor,

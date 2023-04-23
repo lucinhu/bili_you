@@ -24,7 +24,6 @@ class IntroductionController extends GetxController {
       required this.ssid,
       required this.isBangumi,
       required this.changePartCallback,
-      required this.pauseVideo,
       required this.refreshReply});
   String bvid;
   int? cid;
@@ -38,7 +37,6 @@ class IntroductionController extends GetxController {
   final bool isBangumi;
   final Function(String bvid, int cid) changePartCallback;
   final Function() refreshReply;
-  final Function() pauseVideo;
   Function()? refreshOperationButton; //刷新操作按钮(如点赞之类的按钮)
   final CacheManager cacheManager =
       CacheManager(Config(CacheKeys.relatedVideosItemCoverKey));
@@ -147,7 +145,6 @@ class IntroductionController extends GetxController {
         heroTagId: heroTagId,
         onTap: (context) {
           HeroTagId.lastId = heroTagId;
-          pauseVideo();
           Navigator.of(context).push(GetPageRoute(
             page: () => BiliVideoPage(
               key: ValueKey("BiliVideoPage:${i.bvid}"),

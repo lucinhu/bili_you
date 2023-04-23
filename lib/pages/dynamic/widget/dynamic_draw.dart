@@ -1,11 +1,10 @@
 import 'package:bili_you/common/models/local/dynamic/dynamic_content.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
-import 'package:bili_you/pages/bili_video/widgets/reply/widgets/view_image.dart';
+import 'package:bili_you/common/widget/view_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:get/get.dart';
 
 class DynamicDrawWidget extends StatelessWidget {
   DynamicDrawWidget({super.key, required this.content});
@@ -21,12 +20,15 @@ class DynamicDrawWidget extends StatelessWidget {
         : (ratio > 0.77 ? ratio : 0.7);
     if (content.draws.length == 1) {
       return GestureDetector(
-        onTap: () => Navigator.of(context).push(GetPageRoute(
-          page: () => ViewImagePage(
-            urls: content.draws.map((e) => e.picUrl).toList(),
-            initIndex: 0,
+        onTap: () => showDialog(
+          context: context,
+          builder: (context) => Dialog.fullscreen(
+            child: ViewImagePage(
+              urls: content.draws.map((e) => e.picUrl).toList(),
+              initIndex: 0,
+            ),
           ),
-        )),
+        ),
         child: SizedBox(
           width: (newRatio == 1.9 || newRatio == 0.7)
               ? MediaQuery.of(context).size.width * 2 / 3
@@ -64,12 +66,14 @@ class DynamicDrawWidget extends StatelessWidget {
             viewportFraction: 0.75,
             itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: () => Navigator.of(context).push(GetPageRoute(
-                  page: () => ViewImagePage(
-                    urls: content.draws.map((e) => e.picUrl).toList(),
-                    initIndex: index,
-                  ),
-                )),
+                onTap: () => showDialog(
+                    context: context,
+                    builder: (context) => Dialog.fullscreen(
+                          child: ViewImagePage(
+                            urls: content.draws.map((e) => e.picUrl).toList(),
+                            initIndex: index,
+                          ),
+                        )),
                 child: RepaintBoundary(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),

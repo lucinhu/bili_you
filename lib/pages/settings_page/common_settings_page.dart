@@ -1,6 +1,6 @@
+import 'package:bili_you/common/index.dart';
 import 'package:bili_you/common/models/local/video/audio_play_item.dart';
 import 'package:bili_you/common/models/local/video/video_play_item.dart';
-import 'package:bili_you/common/utils/index.dart';
 import 'package:bili_you/common/widget/settings_label.dart';
 import 'package:bili_you/common/widget/settings_radios_tile.dart';
 import 'package:bili_you/common/widget/settings_switch_tile.dart';
@@ -63,6 +63,17 @@ class CommonSettingsPage extends StatelessWidget {
               settingsKey: SettingsStorageKeys.defaultShowDanmaku,
               defualtValue: true),
           const SettingsLabel(text: '视频'),
+          SettingsSwitchTile(
+            title: '启用硬解',
+            subTitle: '是否启用硬件解码否则使用软解',
+            settingsKey: SettingsStorageKeys.isHardwareDecode,
+            defualtValue: true,
+            apply: () async {
+              //应用该设置项
+              await PlayersSingleton().dispose();
+              await PlayersSingleton().init();
+            },
+          ),
           const SettingsSwitchTile(
               title: '详情页直接播放',
               subTitle: '是否在进入详情页后自动播放',
