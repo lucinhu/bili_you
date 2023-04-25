@@ -163,15 +163,14 @@ class _BiliVideoPageState extends State<BiliVideoPage> with RouteAware {
               BiliVideoPlayerWidget(
                 controller.biliVideoPlayerController,
                 heroTagId: HeroTagId.lastId,
-                buildControllPanel: (context, biliVideoPlayerController) {
+                buildControllPanel: () {
                   return BiliVideoPlayerPanel(
-                    BiliVideoPlayerPanelController(biliVideoPlayerController),
+                    controller.biliVideoPlayerPanelController,
                   );
                 },
-                buildDanmaku: (context, biliVideoPlayerController) {
+                buildDanmaku: () {
                   return BiliDanmaku(
-                      controller:
-                          BiliDanmakuController(biliVideoPlayerController));
+                      controller: controller.biliDanmakuController);
                 },
               ),
               Expanded(child: _buildView(context, controller)),

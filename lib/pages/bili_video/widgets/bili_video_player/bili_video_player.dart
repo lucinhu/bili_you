@@ -9,6 +9,7 @@ import 'package:bili_you/common/utils/index.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 
 class BiliVideoPlayerWidget extends StatefulWidget {
@@ -16,15 +17,10 @@ class BiliVideoPlayerWidget extends StatefulWidget {
       {super.key,
       this.buildDanmaku,
       this.buildControllPanel,
-      this.onDispose,
       required this.heroTagId});
   final BiliVideoPlayerController controller;
-  final BiliDanmaku Function(BuildContext context,
-      BiliVideoPlayerController biliVideoPlayerController)? buildDanmaku;
-  final Widget Function(BuildContext context,
-      BiliVideoPlayerController biliVideoPlayerController)? buildControllPanel;
-  final Function(BuildContext context,
-      BiliVideoPlayerController biliVideoPlayerController)? onDispose;
+  final BiliDanmaku Function()? buildDanmaku;
+  final Widget Function()? buildControllPanel;
   final int heroTagId;
 
   @override
@@ -36,7 +32,7 @@ class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
   BiliDanmaku? danmaku;
   Widget? controllPanel;
   //每15秒执行一次的timer，用来更新播放记录
-  late Timer heartBeat;
+  Timer? heartBeat;
 
   updateWidget() {
     if (mounted) {
@@ -46,94 +42,96 @@ class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
 
   @override
   void initState() {
-    //是否进入时即播放
-    widget.controller._playWhenInitialize = BiliYouStorage.settings
-        .get(SettingsStorageKeys.autoPlayOnInit, defaultValue: true);
-    danmaku = widget.buildDanmaku!.call(context, widget.controller);
-    controllPanel = widget.buildControllPanel?.call(context, widget.controller);
-    widget.controller._updateAsepectRatioWidget = () {
-      if (aspectRatioKey.currentState?.mounted ?? false) {
-        aspectRatioKey.currentState!.setState(() {});
-      }
-    };
-    //定时汇报历史记录
-    widget.controller._reportHistory();
-    heartBeat = Timer.periodic(const Duration(seconds: 15), (timer) async {
-      await widget.controller._reportHistory();
-    });
-    widget.controller.biliDanmakuController = danmaku?.controller;
+    danmaku = widget.buildDanmaku?.call();
+    controllPanel = widget.buildControllPanel?.call();
+    if (!widget.controller._isInitializedState) {
+      //是否进入时即播放
+      widget.controller._playWhenInitialize = BiliYouStorage.settings
+          .get(SettingsStorageKeys.autoPlayOnInit, defaultValue: true);
+      //定时汇报历史记录
+      widget.controller._reportHistory();
+      heartBeat = Timer.periodic(const Duration(seconds: 15), (timer) async {
+        await widget.controller._reportHistory();
+      });
+      widget.controller.biliDanmakuController = danmaku?.controller;
+      widget.controller.buildDanmaku = widget.buildDanmaku;
+      widget.controller.buildControllPanel = widget.buildControllPanel;
+    }
+    widget.controller._isInitializedState = true;
+
     super.initState();
   }
 
   @override
   void dispose() async {
     super.dispose();
-    heartBeat.cancel();
-    await widget.controller.dispose();
+    heartBeat?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
     widget.controller.updateWidget = updateWidget;
-    widget.controller._size = MediaQuery.of(context).size;
-    widget.controller._padding = MediaQuery.of(context).padding;
-    return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      color: Colors.black,
-      child: FutureBuilder(
-        future: widget.controller
-            .initPlayer(widget.controller.bvid, widget.controller.cid),
-        builder: (context, snapshot) {
-          return StatefulBuilder(
-              key: aspectRatioKey,
-              builder: (context, builder) {
-                return AspectRatio(
-                    aspectRatio: widget.controller._aspectRatio,
-                    child: Builder(
-                      builder: (context) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.data == true) {
-                            return Stack(children: [
-                              Center(
-                                child: PhotoView.customChild(
-                                  child: VideoAudioPlayer(
-                                    widget.controller._videoAudioController!,
-                                    asepectRatio: widget.controller
-                                            .videoPlayInfo!.videos.first.width /
-                                        widget.controller.videoPlayInfo!.videos
-                                            .first.height,
-                                  ),
-                                ),
-                              ),
-                              Center(
-                                child: danmaku,
-                              ),
-                              Center(
-                                child: controllPanel,
-                              ),
-                            ]);
-                          } else {
-                            //加载失败,重试按钮
-                            return Center(
-                              child: IconButton(
-                                  onPressed: () async {
-                                    await widget
-                                        .controller._videoAudioController
-                                        ?.play();
-                                    setState(() {});
-                                  },
-                                  icon: const Icon(Icons.refresh_rounded)),
-                            );
-                          }
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                    ));
-              });
-        },
+    return WillPopScope(
+      onWillPop: () async {
+        if (widget.controller.isFullScreen) {
+          await widget.controller.toggleFullScreen();
+        }
+        return true;
+      },
+      child: Container(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        color: Colors.black,
+        child: FutureBuilder(
+          future: widget.controller
+              .initPlayer(widget.controller.bvid, widget.controller.cid),
+          builder: (context, snapshot) {
+            return AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Builder(
+                builder: (context) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.data == true) {
+                      return Stack(children: [
+                        Center(
+                          child: PhotoView.customChild(
+                            child: VideoAudioPlayer(
+                              widget.controller._videoAudioController!,
+                              asepectRatio: widget.controller.videoPlayInfo!
+                                      .videos.first.width /
+                                  widget.controller.videoPlayInfo!.videos.first
+                                      .height,
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: danmaku,
+                        ),
+                        Center(
+                          child: controllPanel,
+                        ),
+                      ]);
+                    } else {
+                      //加载失败,重试按钮
+                      return Center(
+                        child: IconButton(
+                            onPressed: () async {
+                              await widget.controller._videoAudioController
+                                  ?.play();
+                              setState(() {});
+                            },
+                            icon: const Icon(Icons.refresh_rounded)),
+                      );
+                    }
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -146,15 +144,15 @@ class BiliVideoPlayerController {
       this.initVideoPosition = Duration.zero});
   String bvid;
   int cid;
+  bool _isInitializedState = false;
   bool isFullScreen = false;
   bool _playWhenInitialize = true;
   //初始进度
   Duration initVideoPosition;
-  late Size _size;
-  late EdgeInsets _padding;
 
   late Function() updateWidget;
-  late Function() _updateAsepectRatioWidget;
+  late BiliDanmaku Function()? buildDanmaku;
+  late Widget Function()? buildControllPanel;
   VideoAudioController? _videoAudioController;
   BiliDanmakuController? biliDanmakuController;
   VideoPlayInfo? videoPlayInfo;
@@ -177,13 +175,12 @@ class BiliVideoPlayerController {
   double get aspectRatio => _aspectRatio;
   set aspectRatio(double asepectRatio) {
     _aspectRatio = asepectRatio;
-    _updateAsepectRatioWidget();
   }
 
   Future<void> reloadWidget() async {
     updateWidget();
     await _videoAudioController?.refresh();
-    biliDanmakuController?.refreshDanmaku();
+    biliDanmakuController?.reloadDanmaku?.call();
   }
 
   Future<void> changeCid(String bvid, int cid) async {
@@ -198,7 +195,7 @@ class BiliVideoPlayerController {
     _videoAudioController?.videoUrl = videoPlayItem!.urls.first;
     _videoAudioController?.state.position = Duration.zero;
     await _videoAudioController?.refresh();
-    biliDanmakuController?.refreshDanmaku();
+    biliDanmakuController?.reloadDanmaku?.call();
   }
 
   Future<bool> loadVideoInfo(String bvid, int cid) async {
@@ -314,21 +311,34 @@ class BiliVideoPlayerController {
     await _videoAudioController?.refresh();
   }
 
-  void toggleFullScreen() {
+  Future<void> toggleFullScreen() async {
     if (isFullScreen) {
+      //退出全屏
       isFullScreen = false;
-      exitFullScreen();
-      portraitUp().then((value) => aspectRatio = 16 / 9);
+      Navigator.pop(Get.context!);
+      await exitFullScreen();
+      await portraitUp();
     } else {
+      //进入全屏
       isFullScreen = true;
-      enterFullScreen().then((value) {
-        if (videoAspectRatio >= 1) {
-          landScape().then((value) => aspectRatio = _size.flipped.aspectRatio);
-        } else {
-          portraitUp().then((value) =>
-              aspectRatio = _size.width / (_size.height - _padding.top));
-        }
-      });
+      await enterFullScreen();
+      if (videoAspectRatio >= 1) {
+        await landScape();
+      } else {
+        await portraitUp();
+      }
+      showDialog(
+        context: Get.context!,
+        useSafeArea: false,
+        builder: (context) => Dialog.fullscreen(
+            backgroundColor: Colors.black,
+            child: BiliVideoPlayerWidget(
+              this,
+              heroTagId: -1,
+              buildControllPanel: buildControllPanel,
+              buildDanmaku: buildDanmaku,
+            )),
+      );
     }
   }
 

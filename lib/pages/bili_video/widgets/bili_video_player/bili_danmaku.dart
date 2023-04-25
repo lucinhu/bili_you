@@ -22,7 +22,6 @@ class BiliDanmaku extends StatefulWidget {
 }
 
 class _BiliDanmakuState extends State<BiliDanmaku> {
-  GlobalKey visibilityKey = GlobalKey();
   DanmakuController? danmakuController;
   bool isListenerLocked = false;
   bool isPlaying = true;
@@ -40,59 +39,60 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
   }
 
   void videoPlayerListenerCallback() {
-    () async {
-      if (!isListenerLocked && widget.controller._isInitialized) {
-        isListenerLocked = true;
-        var currentPosition =
-            (widget.controller.biliVideoPlayerController.position)
-                .inMilliseconds;
-        if (widget.controller.currentSegmentIndex <
-            widget.controller.dmSegList.length) {
-          if (widget.controller.currentIndex <
-              widget.controller.dmSegList[widget.controller.currentSegmentIndex]
-                  .elems.length) {
-            var element = widget
-                .controller
-                .dmSegList[widget.controller.currentSegmentIndex]
-                .elems[widget.controller.currentIndex];
-            var delta = currentPosition - element.progress;
-            if (delta >= 0) {
-              late DanmakuItemType type;
-              if (element.mode >= 1 && element.mode <= 3) {
-                type = DanmakuItemType.scroll;
-              } else if (element.mode == 4) {
-                type = DanmakuItemType.bottom;
-              } else if (element.mode == 5) {
-                type = DanmakuItemType.top;
-              }
-              danmakuController?.addItems([
-                DanmakuItem(element.content,
-                    color: Color.fromARGB(
-                        255,
-                        (element.color << 8) >> 24,
-                        (element.color << 16) >> 24,
-                        (element.color << 24) >> 24),
-                    time: element.progress,
-                    type: type)
-              ]);
-              widget.controller.currentIndex++;
+    if (!widget.controller.isDanmakuOpened) {
+      danmakuController?.clear();
+    }
+    if (!isListenerLocked &&
+        widget.controller._isInitialized &&
+        widget.controller.isDanmakuOpened) {
+      isListenerLocked = true;
+      var currentPosition =
+          (widget.controller.biliVideoPlayerController.position).inMilliseconds;
+      if (widget.controller.currentSegmentIndex <
+          widget.controller.dmSegList.length) {
+        if (widget.controller.currentIndex <
+            widget.controller.dmSegList[widget.controller.currentSegmentIndex]
+                .elems.length) {
+          var element = widget
+              .controller
+              .dmSegList[widget.controller.currentSegmentIndex]
+              .elems[widget.controller.currentIndex];
+          var delta = currentPosition - element.progress;
+          if (delta >= 0) {
+            late DanmakuItemType type;
+            if (element.mode >= 1 && element.mode <= 3) {
+              type = DanmakuItemType.scroll;
+            } else if (element.mode == 4) {
+              type = DanmakuItemType.bottom;
+            } else if (element.mode == 5) {
+              type = DanmakuItemType.top;
             }
-          } else {
-            //换下一节
-            widget.controller.currentIndex = 0;
-            widget.controller.currentSegmentIndex++;
+            danmakuController?.addItems([
+              DanmakuItem(element.content,
+                  color: Color.fromARGB(255, (element.color << 8) >> 24,
+                      (element.color << 16) >> 24, (element.color << 24) >> 24),
+                  time: element.progress,
+                  type: type)
+            ]);
+            widget.controller.currentIndex++;
           }
+        } else {
+          //换下一节
+          widget.controller.currentIndex = 0;
+          widget.controller.currentSegmentIndex++;
         }
-        // updateWidget();
-        danmakuController?.updateOption(DanmakuOption(
-            area: 0.5,
-            duration: 5 / widget.controller.biliVideoPlayerController.speed));
-        isListenerLocked = false;
       }
-    }();
+      // updateWidget();
+      danmakuController?.updateOption(DanmakuOption(
+          area: 0.5,
+          duration: widget.controller.initDuration /
+              widget.controller.biliVideoPlayerController.speed));
+      isListenerLocked = false;
+    }
   }
 
   Future<void> _requestDanmaku() async {
+    widget.controller.dmSegList.clear();
     widget.controller.segmentCount =
         (widget.controller.biliVideoPlayerController.videoPlayInfo!.timeLength /
                 (60 * 6))
@@ -163,57 +163,66 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
   @override
   void initState() {
     var controller = widget.controller;
-    if (BiliYouStorage.settings
-        .get(SettingsStorageKeys.defaultShowDanmaku, defaultValue: true)) {
-      controller._visible = true;
-    } else {
-      controller._visible = false;
+    if (!controller._isInitializedState) {
+      if (BiliYouStorage.settings
+          .get(SettingsStorageKeys.defaultShowDanmaku, defaultValue: true)) {
+        controller._isDanmakuOpened = true;
+      } else {
+        controller._isDanmakuOpened = false;
+      }
+      widget.controller.reloadDanmaku = () {
+        widget.controller._isInitialized = false;
+        widget.controller.currentIndex = 0;
+        widget.controller.currentSegmentIndex = 0;
+        widget.controller.dmSegList.clear();
+        widget.controller.segmentCount = 0;
+        if (mounted) {
+          setState(() {});
+        }
+      };
     }
-    addAllListeners();
-    controller.updateWidget = () {
-      danmakuController?.clear();
-      danmakuController = null;
-      setState(() {});
-    };
-    controller.refreshDanmaku = () {
-      controller._isInitialized = false;
-      controller.currentIndex = 0;
-      controller.currentSegmentIndex = 0;
-      controller.dmSegList.clear();
-      controller.segmentCount = 0;
-      controller.updateWidget();
-    };
+    widget.controller._isInitializedState = true;
 
+    addAllListeners();
     super.initState();
   }
 
   @override
   void dispose() {
-    danmakuController?.clear();
-    danmakuController = null;
+    if (!widget.controller.biliVideoPlayerController.isFullScreen) {
+      danmakuController?.clear();
+      danmakuController = null;
+    }
     removeAllListeners();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Visibility(
-        key: visibilityKey,
-        visible: widget.controller._visible,
-        child: DanmakuView(
-          createdController: (danmakuController) async {
-            // if (widget.controller.dmSegList.isEmpty &&
-            //     widget.controller._visible) {
+    return LayoutBuilder(builder: (context, box) {
+      widget.controller.initDuration = box.maxWidth / 80;
+      return DanmakuView(
+        createdController: (danmakuController) async {
+          if (widget.controller.dmSegList.isEmpty &&
+              widget.controller.isDanmakuOpened) {
             //如果弹幕列表还是空的话，而且是可见的，就进行请求获取弹幕
-            await _requestDanmaku();
-            // }
-            this.danmakuController = danmakuController;
-          },
-          option: DanmakuOption(area: 0.5),
-          statusChanged: (isPlaying) {
-            this.isPlaying = isPlaying;
-          },
-        ));
+            _requestDanmaku();
+          } else {
+            _findPositionIndex(widget
+                .controller.biliVideoPlayerController.position.inMilliseconds);
+          }
+
+          this.danmakuController = danmakuController;
+        },
+        option: DanmakuOption(
+            area: 0.5,
+            duration: widget.controller.initDuration /
+                widget.controller.biliVideoPlayerController.speed),
+        statusChanged: (isPlaying) {
+          this.isPlaying = isPlaying;
+        },
+      );
+    });
   }
 }
 
@@ -223,16 +232,19 @@ class BiliDanmakuController {
   int segmentCount = 1;
   int currentIndex = 0;
   int currentSegmentIndex = 0;
+  double initDuration = 0;
   List<DmSegMobileReply> dmSegList = [];
+  bool _isInitializedState = false;
   bool _isInitialized = false;
 
-  late void Function() updateWidget;
-  late void Function() refreshDanmaku;
+  void Function()? clearAllDanmaku;
+  void Function()? reloadDanmaku;
 
-  bool _visible = true;
-  bool get visible => _visible;
-  set visible(bool visible) {
-    _visible = visible;
-    updateWidget();
+  bool _isDanmakuOpened = true;
+  bool get isDanmakuOpened => _isDanmakuOpened;
+
+  void toggleDanmaku() {
+    _isDanmakuOpened = !_isDanmakuOpened;
+    clearAllDanmaku?.call();
   }
 }
