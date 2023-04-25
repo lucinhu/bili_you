@@ -29,6 +29,7 @@ class SettingsSwitchTile extends StatelessWidget {
           onChanged: (value) async {
             await BiliYouStorage.settings.put(settingsKey, value);
             setState(() {});
+            apply?.call();
           },
         );
       }),

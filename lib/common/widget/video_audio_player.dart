@@ -250,6 +250,7 @@ class VideoAudioController {
     await audioPlayer.open(Media(audioUrl), play: false);
     // 视频缓冲监听
     PlayersSingleton().videoBufferingListen!.onData((event) async {
+      log('videoBuffering');
       //如果视频变为缓冲状态，而声音在播放时且不为缓冲时，暂停声音
       if (event && audioPlayer.state.playing && !audioPlayer.state.buffering) {
         await audioPlayer.pause();
@@ -275,10 +276,12 @@ class VideoAudioController {
     // 以音频为准，同步视频
     // 进度监听
     PlayersSingleton().audioPositionListen!.onData((event) async {
+      log('position');
       if (state.isEnd) return;
       state.position = event >= Duration.zero ? event : Duration.zero;
       var delta = audioPlayer.state.position.inMilliseconds -
           videoPlayer.state.position.inMilliseconds;
+      if (delta >= audioPlayer.state.duration.inMilliseconds) delta = 0;
       log(delta.toString());
       if (delta > -18 && delta < 18) {
         if (state.speed != videoPlayer.state.rate) {
@@ -301,6 +304,7 @@ class VideoAudioController {
     });
     // 播放监听
     PlayersSingleton().audioPlayingListen!.onData((event) async {
+      log('play');
       if (!state.isBuffering) {
         state.isPlaying = event;
       }
@@ -308,6 +312,7 @@ class VideoAudioController {
     });
     // 缓冲状态
     PlayersSingleton().audioBufferingListen!.onData((event) async {
+      log('buffering');
       state.isBuffering = event;
       // 声音变为缓冲状态而视频没在缓冲且在播放则暂停视频
       if (event && !videoPlayer.state.buffering && videoPlayer.state.playing) {
@@ -327,6 +332,7 @@ class VideoAudioController {
       _callStateChangeListeners();
     });
     PlayersSingleton().audioCompletedListen!.onData((event) async {
+      log('complete');
       // if (event) {
       //   // await videoPlayer.seek(audioPlayer.state.position);
       //   await videoPlayer.pause();
@@ -335,6 +341,9 @@ class VideoAudioController {
       //   state.isEnd = false;
       // }
       log(event.toString());
+      if (event) {
+        await videoPlayer.seek(audioPlayer.state.position);
+      }
       state.isEnd = event;
       state.position = audioPlayer.state.duration;
       for (var i in _listeners) {
@@ -371,9 +380,10 @@ class VideoAudioController {
         log('position:$lastPosition');
         await audioPlayer.pause();
         await videoPlayer.pause();
-        await audioPlayer.seek(lastPosition);
-        await videoPlayer.seek(lastPosition);
-
+        if (lastPosition.inMilliseconds < state.duration.inMilliseconds) {
+          await audioPlayer.seek(lastPosition);
+          await videoPlayer.seek(lastPosition);
+        }
         //如果之前的state是播放，就播放
         if (lastIsPlaying && !state.isEnd) {
           await videoPlayer.play();

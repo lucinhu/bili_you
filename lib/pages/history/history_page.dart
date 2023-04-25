@@ -1,4 +1,6 @@
+import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/common/widget/simple_easy_refresher.dart';
+import 'package:bili_you/common/widget/video_view_history_tile.dart';
 import 'package:bili_you/pages/history/history_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,9 +36,12 @@ class _HistoryPageState extends State<HistoryPage> {
         easyRefreshController: controller.easyRefreshController,
         childBuilder: (context, physics) => ListView.builder(
           physics: physics,
-          itemCount: controller.widgetList.length,
+          itemCount: controller.videoViewHistoryItems.length,
           controller: controller.scrollController,
-          itemBuilder: (context, index) => controller.widgetList[index],
+          itemBuilder: (context, index) => VideoViewHistoryTile(
+              videoViewHistoryItem: controller.videoViewHistoryItems[index],
+              cacheManager: controller.cacheManager,
+              heroTagId: HeroTagId.id++),
         ),
       ),
     );

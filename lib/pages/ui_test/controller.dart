@@ -4,10 +4,7 @@ import 'package:bili_you/common/api/video_operation_api.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/utils/bvid_avid_util.dart';
 import 'package:bili_you/common/utils/http_utils.dart';
-import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/pages/about/about_page.dart';
-import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
-import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player_panel.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
 import 'package:bili_you/pages/login/password_login/index.dart';
@@ -69,21 +66,21 @@ class UiTestController extends GetxController {
         applicationName: "Bili You",
       ),
       "关于": const AboutPage(),
-      "视频": AspectRatio(
-        aspectRatio: 16 / 9,
-        child: BiliVideoPlayerWidget(
-          biliVideoPlayerController,
-          heroTagId: HeroTagId.lastId,
-          buildDanmaku: (context, biliVideoPlayerController) {
-            return BiliDanmaku(
-                controller: BiliDanmakuController(biliVideoPlayerController));
-          },
-          buildControllPanel: (context, biliVideoPlayerController) {
-            return BiliVideoPlayerPanel(
-                BiliVideoPlayerPanelController(biliVideoPlayerController));
-          },
-        ),
-      ),
+      // "视频": AspectRatio(
+      //   aspectRatio: 16 / 9,
+      //   child: BiliVideoPlayerWidget(
+      //     biliVideoPlayerController,
+      //     heroTagId: HeroTagId.lastId,
+      //     buildDanmaku: (context, biliVideoPlayerController) {
+      //       return BiliDanmaku(
+      //           controller: BiliDanmakuController(biliVideoPlayerController));
+      //     },
+      //     buildControllPanel: (context, biliVideoPlayerController) {
+      //       return BiliVideoPlayerPanel(
+      //           BiliVideoPlayerPanelController(biliVideoPlayerController));
+      //     },
+      //   ),
+      // ),
       "用户投稿": const UserSpacePage(
         mid: 16752607,
       ),

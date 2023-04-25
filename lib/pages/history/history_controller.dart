@@ -2,9 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/history_api.dart';
 import 'package:bili_you/common/models/local/history/video_view_history_item.dart';
-import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/common/values/index.dart';
-import 'package:bili_you/common/widget/video_view_history_tile.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -17,11 +15,11 @@ class HistoryController extends GetxController {
   int max = 0;
   int viewAt = 0;
   ScrollController scrollController = ScrollController();
-  List<Widget> widgetList = [];
+  List<VideoViewHistoryItem> videoViewHistoryItems = [];
   CacheManager cacheManager =
       CacheManager(Config(CacheKeys.searchResultItemCoverKey));
 
-  Future<bool> _loadBuildWidgetList() async {
+  Future<bool> _loadVideoViewHistoryItemList() async {
     late List<VideoViewHistoryItem> list;
     try {
       if (max == 0 && viewAt == 0) {
@@ -37,17 +35,12 @@ class HistoryController extends GetxController {
       log(e.toString());
       return false;
     }
-    for (var i in list) {
-      widgetList.add(VideoViewHistoryTile(
-          videoViewHistoryItem: i,
-          cacheManager: cacheManager,
-          heroTagId: HeroTagId.id++));
-    }
+    videoViewHistoryItems.addAll(list);
     return true;
   }
 
   Future<void> onLoad() async {
-    if (await _loadBuildWidgetList()) {
+    if (await _loadVideoViewHistoryItemList()) {
       easyRefreshController.finishLoad(IndicatorResult.success);
       easyRefreshController.resetFooter();
     } else {
@@ -56,11 +49,11 @@ class HistoryController extends GetxController {
   }
 
   Future<void> onRefresh() async {
-    widgetList.clear();
+    videoViewHistoryItems.clear();
     max = 0;
     viewAt = 0;
     await cacheManager.emptyCache();
-    if (await _loadBuildWidgetList()) {
+    if (await _loadVideoViewHistoryItemList()) {
       easyRefreshController.finishRefresh(IndicatorResult.success);
     } else {
       easyRefreshController.finishRefresh(IndicatorResult.fail);

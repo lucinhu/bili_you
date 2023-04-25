@@ -1,5 +1,7 @@
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
+import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/widget/simple_easy_refresher.dart';
+import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -51,9 +53,41 @@ class _ReplyPageState extends State<ReplyPage>
         controller: controller.scrollController,
         physics: physics,
         padding: const EdgeInsets.all(0),
-        itemCount: controller.replyList.length,
+        itemCount:
+            controller.replyItems.length + controller.topReplyItems.length,
         itemBuilder: (context, index) {
-          return controller.replyList[index];
+          late ReplyItem item;
+          if (index < controller.topReplyItems.length) {
+            //置顶评论
+            item = controller.topReplyItems[index];
+          } else if (index >= controller.topReplyItems.length) {
+            //普通评论
+            item =
+                controller.replyItems[index - controller.topReplyItems.length];
+          }
+          if (index == 0) {
+            //在首个元素前放置排列方式切换控件
+            return Column(
+              children: [
+                SortReplyItemWidget(replyController: controller),
+                ReplyItemWidget(
+                  reply: item,
+                  isTop: controller.topReplyItems.contains(item),
+                  isUp: item.member.mid == controller.upperMid,
+                  hasFrontDivider: false,
+                  officialVerifyType: item.member.officialVerify.type,
+                ),
+              ],
+            );
+          } else {
+            return ReplyItemWidget(
+              reply: item,
+              isTop: controller.topReplyItems.contains(item),
+              isUp: item.member.mid == controller.upperMid,
+              hasFrontDivider: true,
+              officialVerifyType: item.member.officialVerify.type,
+            );
+          }
         },
       ),
       onLoad: controller.onReplyLoad,
@@ -66,5 +100,44 @@ class _ReplyPageState extends State<ReplyPage>
   Widget build(BuildContext context) {
     super.build(context);
     return _buildView(controller);
+  }
+}
+
+class SortReplyItemWidget extends StatelessWidget {
+  const SortReplyItemWidget({super.key, required this.replyController});
+  final ReplyController replyController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Padding(
+            padding: const EdgeInsets.only(left: 12, right: 12),
+            child: Obx(
+              () => Text(
+                  "${replyController.sortInfoText.value} ${StringFormatUtils.numFormat(replyController.replyCount)}"),
+            )),
+        const Spacer(),
+        //排列方式按钮
+        MaterialButton(
+          child: Row(
+            children: [
+              Icon(Icons.sort_rounded,
+                  size: 16, color: Get.textTheme.bodyMedium!.color),
+              Obx(
+                () => Text(
+                  replyController.sortTypeText.value,
+                  style: TextStyle(color: Get.textTheme.bodyMedium!.color),
+                ),
+              )
+            ],
+          ),
+          //点击切换评论排列方式
+          onPressed: () {
+            replyController.toggleSort();
+          },
+        ),
+      ],
+    );
   }
 }

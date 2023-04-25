@@ -5,7 +5,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:path_provider/path_provider.dart';
@@ -21,9 +20,9 @@ class HttpUtils {
   HttpUtils._internal() {
     BaseOptions options = BaseOptions(
       headers: {
-        // 'keep-alive': true,
+        'keep-alive': true,
         'user-agent': ApiConstants.userAgent,
-        // 'Accept-Encoding': 'gzip'
+        'Accept-Encoding': 'gzip'
       },
       connectTimeout: const Duration(seconds: 5),
       receiveTimeout: const Duration(seconds: 5),
@@ -49,8 +48,6 @@ class HttpUtils {
           CookieManager(PersistCookieJar(storage: FileStorage(cookiePath)));
     }
     dio.interceptors.add(cookieManager);
-    dio.httpClientAdapter = Http2Adapter(
-        ConnectionManager(idleTimeout: const Duration(seconds: 8)));
     if ((await cookieManager.cookieJar
             .loadForRequest(Uri.parse(ApiConstants.bilibiliBase)))
         .isEmpty) {
@@ -112,35 +109,36 @@ class ErrorInterceptor extends Interceptor {
   @override
   Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
     switch (err.type) {
-      case DioErrorType.badCertificate:
-        Get.rawSnackbar(message: 'bad certificate');
-        break;
-      case DioErrorType.badResponse:
-        Get.rawSnackbar(message: 'bad response');
-        break;
-      case DioErrorType.cancel:
-        Get.rawSnackbar(message: 'canceled');
-        break;
-      case DioErrorType.connectionError:
-        Get.rawSnackbar(message: 'connection error');
-        break;
-      case DioErrorType.connectionTimeout:
-        Get.rawSnackbar(message: 'connection timeout');
-        break;
-      case DioErrorType.receiveTimeout:
-        Get.rawSnackbar(message: 'receive timeout');
-        break;
-      case DioErrorType.sendTimeout:
-        Get.rawSnackbar(message: 'send timeout');
-        break;
+      // case DioErrorType.badCertificate:
+      //   Get.rawSnackbar(message: 'bad certificate');
+      //   break;
+      // case DioErrorType.badResponse:
+      //   Get.rawSnackbar(message: 'bad response');
+      //   break;
+      // case DioErrorType.cancel:
+      //   Get.rawSnackbar(message: 'canceled');
+      //   break;
+      // case DioErrorType.connectionError:
+      //   Get.rawSnackbar(message: 'connection error');
+      //   break;
+      // case DioErrorType.connectionTimeout:
+      //   Get.rawSnackbar(message: 'connection timeout');
+      //   break;
+      // case DioErrorType.receiveTimeout:
+      //   Get.rawSnackbar(message: 'receive timeout');
+      //   break;
+      // case DioErrorType.sendTimeout:
+      //   Get.rawSnackbar(message: 'send timeout');
+      //   break;
       case DioErrorType.unknown:
         if (!await isConnected()) {
           //网络未连接
           Get.rawSnackbar(title: '网络未连接 ', message: '请检查网络状态');
           handler.reject(err);
-        } else {
-          Get.rawSnackbar(message: '未知网络错误');
         }
+        // else {
+        //   Get.rawSnackbar(message: '未知网络错误');
+        // }
         break;
       default:
     }

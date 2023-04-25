@@ -7,11 +7,7 @@ import 'package:bili_you/common/models/local/video/click_add_coin_result.dart';
 import 'package:bili_you/common/models/local/video/click_add_share_result.dart';
 import 'package:bili_you/common/models/local/video/click_like_result.dart';
 import 'package:bili_you/common/models/local/video/video_info.dart';
-import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
-import 'package:bili_you/common/values/hero_tag_id.dart';
-import 'package:bili_you/common/widget/video_tile_item.dart';
-import 'package:bili_you/pages/bili_video/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
@@ -43,7 +39,7 @@ class IntroductionController extends GetxController {
   final ScrollController scrollController = ScrollController();
 
   final List<Widget> partButtons = []; //分p按钮列表
-  final List<Widget> relatedVideos = []; //相关视频列表
+  final List<RelatedVideoInfo> relatedVideoInfos = []; //相关视频列表
 
 //加载视频信息
   Future<bool> loadVideoInfo() async {
@@ -71,10 +67,6 @@ class IntroductionController extends GetxController {
     isInitialized = true;
     return true;
   }
-
-  // _initData() {
-  //   update(["introduction"]);
-  // }
 
   //添加一个分p/剧集按钮
   void _addAButtion(String bvid, int cid, String text, int index) {
@@ -131,37 +123,7 @@ class IntroductionController extends GetxController {
     } catch (e) {
       log("构造相关视频失败:${e.toString()}");
     }
-    for (var i in list) {
-      int heroTagId = HeroTagId.id++;
-      relatedVideos.add(VideoTileItem(
-        picUrl: i.coverUrl,
-        bvid: i.bvid,
-        title: i.title,
-        upName: i.upName,
-        duration: StringFormatUtils.timeLengthFormat(i.timeLength),
-        playNum: i.playNum,
-        pubDate: i.pubDate,
-        cacheManager: cacheManager,
-        heroTagId: heroTagId,
-        onTap: (context) {
-          HeroTagId.lastId = heroTagId;
-          Navigator.of(context).push(GetPageRoute(
-            page: () => BiliVideoPage(
-              key: ValueKey("BiliVideoPage:${i.bvid}"),
-              bvid: i.bvid,
-              cid: i.cid,
-            ),
-          ));
-          // Get.to(
-          //   () => BiliVideoPage(
-          //     key: ValueKey("BiliVideoPage:${i.bvid}"),
-          //     bvid: i.bvid,
-          //     cid: i.cid,
-          //   ),
-          // );
-        },
-      ));
-    }
+    relatedVideoInfos.addAll(list);
   }
 
   ///点赞按钮点击时
@@ -194,11 +156,6 @@ class IntroductionController extends GetxController {
       ));
     }
     refreshOperationButton!.call();
-    // Get.showSnackbar(GetSnackBar(
-    //   message:
-    //       'isSuccess:${result.isSuccess}, error:${result.error}, haslike:${result.haslike}',
-    //   duration: const Duration(milliseconds: 1000),
-    // ));
   }
 
   Future<void> onAddCoinPressed() async {
@@ -238,17 +195,6 @@ class IntroductionController extends GetxController {
     }
     refreshOperationButton!.call();
   }
-
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  // }
-
-  // @override
-  // void onReady() {
-  //   super.onReady();
-  //   // _initData();
-  // }
 
   @override
   void onClose() {

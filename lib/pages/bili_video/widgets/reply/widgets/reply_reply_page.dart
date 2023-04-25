@@ -30,8 +30,10 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
   int _pageNum = 1;
   final EasyRefreshController _refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
-  Widget _rootReply = const SizedBox();
-  final List<Widget> _replyReplies = [];
+  ReplyItem? _rootReply;
+  int _upperMid = 0;
+  final List<ReplyItem> _replyReplyItems = [];
+
   Future<bool> _addReplyReply() async {
     late ReplyReplyInfo replyReplyInfo;
     try {
@@ -40,26 +42,12 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
           oid: widget.replyId,
           rootId: widget.rootId,
           pageNum: _pageNum);
+      _rootReply ??= replyReplyInfo.rootReply;
+      _upperMid = replyReplyInfo.upperMid;
     } catch (e) {
       log("_addReplyReply:$e");
       return false;
     }
-    _rootReply = Column(
-      children: [
-        ReplyItemWidget(
-          hasFrontDivider: false,
-          reply: replyReplyInfo.rootReply,
-          isUp: replyReplyInfo.rootReply.member.mid == replyReplyInfo.upperMid,
-          showPreReply: false,
-          officialVerifyType:
-              replyReplyInfo.rootReply.member.officialVerify.type,
-        ),
-        Divider(
-          color: Theme.of(Get.context!).colorScheme.primaryContainer,
-          thickness: 2,
-        )
-      ],
-    );
     //更新页码
     //如果当前页不为空的话，下一次加载就进入下一页
     if (replyReplyInfo.replies.isNotEmpty) {
@@ -69,14 +57,13 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
       _pageNum--;
     }
     //删除重复项
-    final int minIndex = _replyReplies.length -
+    final int minIndex = _replyReplyItems.length -
         replyReplyInfo
             .replies.length; //必须要先求n,因为replyReplyInfo.replies是动态删除的,长度会变
-    for (var i = _replyReplies.length - 1; i >= minIndex; i--) {
+    for (var i = _replyReplyItems.length - 1; i >= minIndex; i--) {
       if (i < 0) break;
-      if (_replyReplies[i] is! ReplyItemWidget) break;
       replyReplyInfo.replies.removeWhere((element) {
-        if (element.rpid == (_replyReplies[i] as ReplyItemWidget).reply.rpid) {
+        if (element.rpid == _replyReplyItems[i].rpid) {
           log('same${replyReplyInfo.replies.length}');
           return true;
         } else {
@@ -85,15 +72,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
       });
     }
     //添加评论
-    for (var i in replyReplyInfo.replies) {
-      _replyReplies.add(ReplyItemWidget(
-        hasFrontDivider: _replyReplies.isNotEmpty,
-        reply: i,
-        isUp: i.member.mid == replyReplyInfo.upperMid,
-        showPreReply: false,
-        officialVerifyType: i.member.officialVerify.type,
-      ));
-    }
+    _replyReplyItems.addAll(replyReplyInfo.replies);
     return true;
   }
 
@@ -107,7 +86,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
   }
 
   _onRefresh() async {
-    _replyReplies.clear();
+    _replyReplyItems.clear();
     _pageNum = 1;
 
     if (await _addReplyReply()) {
@@ -126,15 +105,37 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
       onRefresh: _onRefresh,
       childBuilder: (context, physics) => ListView.builder(
         physics: physics,
-        itemCount: _replyReplies.length + 1,
+        itemCount: _replyReplyItems.length + 1,
         itemBuilder: (context, index) {
+          if (_rootReply == null) return const SizedBox();
           if (index == 0) {
             return Padding(
               padding: const EdgeInsets.only(top: 10),
-              child: _rootReply,
+              child: Column(
+                children: [
+                  ReplyItemWidget(
+                    hasFrontDivider: false,
+                    reply: _rootReply!,
+                    isUp: _rootReply!.member.mid == _upperMid,
+                    showPreReply: false,
+                    officialVerifyType: _rootReply!.member.officialVerify.type,
+                  ),
+                  Divider(
+                    color: Theme.of(Get.context!).colorScheme.primaryContainer,
+                    thickness: 2,
+                  )
+                ],
+              ),
             );
           }
-          return _replyReplies[index - 1];
+          return ReplyItemWidget(
+            hasFrontDivider: index - 1 > 0,
+            reply: _replyReplyItems[index - 1],
+            isUp: _replyReplyItems[index - 1].member.mid == _upperMid,
+            showPreReply: false,
+            officialVerifyType:
+                _replyReplyItems[index - 1].member.officialVerify.type,
+          );
         },
         clipBehavior: Clip.antiAlias,
       ),

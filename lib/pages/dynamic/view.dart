@@ -1,4 +1,5 @@
 import 'package:bili_you/common/widget/simple_easy_refresher.dart';
+import 'package:bili_you/pages/dynamic/widget/dynamic_item_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -35,8 +36,9 @@ class _DynamicPageState extends State<DynamicPage> {
             cacheExtent: MediaQuery.of(context).size.height,
             controller: controller.scrollController,
             physics: physics,
-            itemCount: controller.dynamicItemCards.length,
-            itemBuilder: (context, index) => controller.dynamicItemCards[index],
+            itemCount: controller.dynamicItems.length,
+            itemBuilder: (context, index) =>
+                DynamicItemCard(dynamicItem: controller.dynamicItems[index]),
           ),
           onLoad: controller.onLoad,
           onRefresh: controller.onRefresh,
