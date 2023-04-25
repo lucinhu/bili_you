@@ -47,14 +47,666 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>            
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="bilibili"
-                     />
+                <data android:scheme="bilibili" android:host="forward" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="comment"
+                    android:pathPattern="/detail/.*/.*/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="comment2" android:path="/detail" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="qrscan" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="qrcode" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="bilipay"
+                    android:path="/alipay_signing_result" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="bilipay" android:path="/bcoin/record" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="bilipay"
+                    android:path="/bcoin/recharge" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="ad" android:path="/page/imax" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="bw" android:path="/2019/shanghai" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="ar" android:path="/container" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="following2"
+                    android:path="/publishInfo" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="uper" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="live.bilibili.com"
+                    android:pathPattern="/live/.*" />
+                <data android:scheme="https" android:host="live.bilibili.com"
+                    android:pathPattern="/live/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="www.bilibili.tv"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="www.bilibili.tv"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="www.bilibili.cn"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="www.bilibili.cn"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/mobile/video/.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/mobile/video/.*" />
+                <data android:scheme="http" android:host="m.bilibili.com"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="m.bilibili.com"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="m.acg.tv" android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="m.acg.tv" android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/story/.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/story/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/bangumi/i/.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/bangumi/i/.*" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/mobile/bangumi/i/.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/mobile/bangumi/i/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="bangumi.bilibili.com"
+                    android:pathPattern="/.*" />
+                <data android:scheme="https" android:host="bangumi.bilibili.com"
+                    android:pathPattern="/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/bangumi/.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/bangumi/.*" />
+                <data android:scheme="http" android:host="m.bilibili.com"
+                    android:pathPattern="/bangumi/.*" />
+                <data android:scheme="https" android:host="m.bilibili.com"
+                    android:pathPattern="/bangumi/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="pgc" android:pathPattern="/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="cheese"
+                    android:pathPattern="/season.*" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/cheese/play/ss.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/cheese/play/ss.*" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/cheese/play/ep.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/cheese/play/ep.*" />
+                <data android:scheme="http" android:host="m.bilibili.com"
+                    android:pathPattern="/bangumi/play/ss.*" />
+                <data android:scheme="https" android:host="m.bilibili.com"
+                    android:pathPattern="/cheese/play/ss.*" />
+                <data android:scheme="http" android:host="m.bilibili.com"
+                    android:pathPattern="/cheese/play/ep.*" />
+                <data android:scheme="https" android:host="m.bilibili.com"
+                    android:pathPattern="/cheese/play/ep.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/read/cv.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/read/cv.*" />
+                <data android:scheme="bilibili" android:host="article"
+                    android:pathPattern="/readlist" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="game" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="advertise" android:path="/home" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="clip" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="search" />
+                <data android:scheme="bilibili" android:host="stardust-search" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="mall" />
+                <data android:scheme="http" android:host="mall.bilibili.com"
+                    android:pathPattern=".*" />
+                <data android:scheme="https" android:host="mall.bilibili.com"
+                    android:pathPattern=".*" />
+                <data android:scheme="http" android:host="show.bilibili.com"
+                    android:pathPattern="/.*" />
+                <data android:scheme="https" android:host="show.bilibili.com"
+                    android:pathPattern="/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="smallapp" />
+                <data android:scheme="http" android:host="miniapp.bilibili.com"
+                    android:pathPattern="/.*" />
+                <data android:scheme="https" android:host="miniapp.bilibili.com"
+                    android:pathPattern="/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="music" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="bangumi"
+                    android:pathPattern="/season.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="bangumi" android:pathPattern="/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="www.bilibili.com" android:path="/review/" />
+                <data android:scheme="https" android:host="www.bilibili.com" android:path="/review/" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="pictureshow"
+                    android:pathPrefix="/creative_center" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="cliparea" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="im" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="im" android:path="/notifications" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="following" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="following"
+                    android:pathPattern="/detail/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="following"
+                    android:path="/publishInfo/" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="laser" android:pathPattern="/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/blackboard/dynamic/.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/blackboard/dynamic/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="livearea" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="live" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="b23.tv" />
+                <data android:scheme="https" android:host="b23.tv" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="bili2233.cn" />
+                <data android:scheme="https" android:host="bili2233.cn" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="bili23.cn" />
+                <data android:scheme="https" android:host="bili23.cn" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="bili33.cn" />
+                <data android:scheme="https" android:host="bili33.cn" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="bili22.cn" />
+                <data android:scheme="https" android:host="bili22.cn" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="catalog" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="browser" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="user_center" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="game_center" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="login" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="space" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="author" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="tag" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="rank" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="external" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="blank" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="home" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="root" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="space.bilibili.com"
+                    android:pathPattern=".*" />
+                <data android:scheme="https" android:host="space.bilibili.com"
+                    android:pathPattern=".*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="bilibili.kankanews.com"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="bilibili.kankanews.com"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="bilibili.tv"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="bilibili.tv"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="bilibili.cn"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="bilibili.cn"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="bilibili.com"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="bilibili.com"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="www.bilibili.tv"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="www.bilibili.tv"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="www.bilibili.cn"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="www.bilibili.cn"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="bilibili.smgbb.cn"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="bilibili.smgbb.cn"
+                    android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="m.acg.tv" android:pathPattern="/video/.*" />
+                <data android:scheme="https" android:host="m.acg.tv" android:pathPattern="/video/.*" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/mobile/video/.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/mobile/video/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="abiliav" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="video" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="story" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="podcast" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="region" android:pathPattern=".*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="search" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="main" android:path="/favorite" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/pegasus/channel/v2/.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/pegasus/channel/v2/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="pgc" android:path="/theater/match" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="pgc" android:path="/theater/square" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="m.bilibili.com"
+                    android:path="/topic-detail" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="article" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="category" android:pathPrefix="/65541" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="pegasus"
+                    android:pathPattern="/channel/v2/.*" />
+                <data android:scheme="http" android:host="www.bilibili.com"
+                    android:pathPattern="/h5/channel/.*" />
+                <data android:scheme="https" android:host="www.bilibili.com"
+                    android:pathPattern="/h5/channel/.*" />
+                <data android:scheme="bilibili" android:host="feed" android:pathPattern="/channel" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="vip" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="user_center" android:path="/vip" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="history" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="charge" android:path="/rank" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="assistant" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="assistant" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="feedback" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bilibili" android:host="auth" android:path="/launch" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="bilibili" android:host="auth.zhima" />
             </intent-filter>
 
         </activity>
