@@ -78,59 +78,62 @@ class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
         }
         return true;
       },
-      child: Container(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        color: Colors.black,
-        child: FutureBuilder(
-          future: widget.controller
-              .initPlayer(widget.controller.bvid, widget.controller.cid),
-          builder: (context, snapshot) {
-            return AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Builder(
-                builder: (context) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.data == true) {
-                      return Stack(children: [
-                        Center(
-                          child: PhotoView.customChild(
-                            child: VideoAudioPlayer(
-                              widget.controller._videoAudioController!,
-                              asepectRatio: widget.controller.videoPlayInfo!
-                                      .videos.first.width /
-                                  widget.controller.videoPlayInfo!.videos.first
-                                      .height,
+      child: Hero(
+        tag: widget.heroTagId,
+        child: Container(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+          color: Colors.black,
+          child: FutureBuilder(
+            future: widget.controller
+                .initPlayer(widget.controller.bvid, widget.controller.cid),
+            builder: (context, snapshot) {
+              return AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Builder(
+                  builder: (context) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.data == true) {
+                        return Stack(children: [
+                          Center(
+                            child: PhotoView.customChild(
+                              child: VideoAudioPlayer(
+                                widget.controller._videoAudioController!,
+                                asepectRatio: widget.controller.videoPlayInfo!
+                                        .videos.first.width /
+                                    widget.controller.videoPlayInfo!.videos
+                                        .first.height,
+                              ),
                             ),
                           ),
-                        ),
-                        Center(
-                          child: danmaku,
-                        ),
-                        Center(
-                          child: controllPanel,
-                        ),
-                      ]);
+                          Center(
+                            child: danmaku,
+                          ),
+                          Center(
+                            child: controllPanel,
+                          ),
+                        ]);
+                      } else {
+                        //加载失败,重试按钮
+                        return Center(
+                          child: IconButton(
+                              onPressed: () async {
+                                await widget.controller._videoAudioController
+                                    ?.play();
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.refresh_rounded)),
+                        );
+                      }
                     } else {
-                      //加载失败,重试按钮
-                      return Center(
-                        child: IconButton(
-                            onPressed: () async {
-                              await widget.controller._videoAudioController
-                                  ?.play();
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.refresh_rounded)),
+                      return const Center(
+                        child: CircularProgressIndicator(),
                       );
                     }
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              ),
-            );
-          },
+                  },
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -419,5 +422,9 @@ class BiliVideoPlayerController {
 
   Future<void> setPlayBackSpeed(double speed) async {
     await _videoAudioController?.setPlayBackSpeed(speed);
+  }
+
+  void changeCanvasScale(double scale) {
+    _videoAudioController?.changeCanvasScale(scale);
   }
 }
