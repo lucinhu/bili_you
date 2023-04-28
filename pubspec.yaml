@@ -112,7 +112,10 @@ dependencies:
 dev_dependencies:
   build_runner: ^2.3.3
   test: ^1.24.1
-  flutter_launcher_icons: ^0.13.0
+  flutter_launcher_icons:
+    git:
+      url: https://github.com/nvi9/flutter_launcher_icons.git
+      ref: e045d40
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -135,6 +138,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
       - assets/icon/bili.png
+      - assets/icon/bili_mono.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
@@ -185,6 +189,7 @@ flutter_icons:
   image_path: "assets/icon/bili.png"
   adaptive_icon_background: "#ffffff"
   adaptive_icon_foreground: "assets/icon/bili.png"
+  adaptive_icon_monochrome: "assets/icon/bili_mono.png"
   remove_alpha_ios: true
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
