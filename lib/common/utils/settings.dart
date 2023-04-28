@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:bili_you/common/api/github_api.dart';
@@ -42,10 +43,14 @@ class SettingsUtil {
       {bool showSnackBar = true}) async {
     var packageInfo = await PackageInfo.fromPlatform();
     var data = await GithubApi.requestLatestRelease();
-    var latestVersion = data.name?.replaceFirst(RegExp(r'v'), '');
+    var latestVersionData = data.name?.replaceFirst('v', '').split('+');
+    var latestVersionName = latestVersionData?.first ?? '';
+    log('latestVersionName:$latestVersionName');
+    var latestVersionCode = latestVersionData?[1] ?? 1;
+    log('versionCode:$latestVersionCode');
     var currentVersion = packageInfo.version;
     // log(data.toRawJson());
-    if (latestVersion == currentVersion) {
+    if (latestVersionName == currentVersion) {
       if (showSnackBar) {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context)
@@ -58,7 +63,7 @@ class SettingsUtil {
           builder: (context) {
             return AlertDialog(
               scrollable: true,
-              title: Text("有新版本:$latestVersion"),
+              title: Text("有新版本:$latestVersionName"),
               content: SelectableText(data.body!),
               actions: [
                 TextButton(
