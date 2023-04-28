@@ -423,8 +423,4 @@ class BiliVideoPlayerController {
   Future<void> setPlayBackSpeed(double speed) async {
     await _videoAudioController?.setPlayBackSpeed(speed);
   }
-
-  void changeCanvasScale(double scale) {
-    _videoAudioController?.changeCanvasScale(scale);
-  }
 }
