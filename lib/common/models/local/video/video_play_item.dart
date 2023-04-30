@@ -7,16 +7,25 @@ class VideoPlayItem {
     required this.width,
     required this.height,
     required this.frameRate,
+    // required this.mimeType,
+    // required this.segmentBase,
+    required this.sar,
+    // required this.timeLength
   });
 
   static VideoPlayItem get zero => VideoPlayItem(
-      urls: [],
-      quality: VideoQuality.unknown,
-      bandWidth: 0,
-      codecs: "",
-      width: 0,
-      height: 0,
-      frameRate: 0);
+        urls: [],
+        quality: VideoQuality.unknown,
+        bandWidth: 0,
+        codecs: "",
+        width: 0,
+        height: 0,
+        frameRate: 0,
+        // mimeType: '',
+        // segmentBase: SegmentBase(indexRange: '', initialization: ''),
+        sar: 1 / 1,
+        // timeLength: 0
+      );
 
   ///清晰度
   VideoQuality quality;
@@ -38,6 +47,21 @@ class VideoPlayItem {
 
   ///帧率
   double frameRate;
+
+  // String mimeType;
+
+  // SegmentBase segmentBase;
+
+  double sar;
+
+  // //时长,秒为单位
+  // int timeLength;
+}
+
+class SegmentBase {
+  SegmentBase({required this.initialization, required this.indexRange});
+  String initialization = '';
+  String indexRange = '';
 }
 
 enum VideoQuality {
@@ -83,7 +107,7 @@ extension VideoQualityCode on VideoQuality {
     return VideoQuality.values[index];
   }
 
-  get code => _codeList[index];
+  int get code => _codeList[index];
 }
 
 extension VideoQualityDescription on VideoQuality {

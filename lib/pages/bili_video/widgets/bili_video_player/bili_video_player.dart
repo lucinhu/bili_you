@@ -10,7 +10,6 @@ import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_danmaku.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:photo_view/photo_view.dart';
 
 class BiliVideoPlayerWidget extends StatefulWidget {
   const BiliVideoPlayerWidget(this.controller,
@@ -28,7 +27,6 @@ class BiliVideoPlayerWidget extends StatefulWidget {
 }
 
 class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
-  GlobalKey aspectRatioKey = GlobalKey();
   BiliDanmaku? danmaku;
   Widget? controllPanel;
   //每15秒执行一次的timer，用来更新播放记录
@@ -53,8 +51,8 @@ class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
       heartBeat = Timer.periodic(const Duration(seconds: 15), (timer) async {
         await widget.controller._reportHistory();
       });
-      widget.controller.biliDanmakuController = danmaku?.controller;
       widget.controller.buildDanmaku = widget.buildDanmaku;
+      widget.controller.biliDanmakuController = danmaku!.controller;
       widget.controller.buildControllPanel = widget.buildControllPanel;
     }
     widget.controller._isInitializedState = true;
@@ -83,57 +81,49 @@ class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
         child: Container(
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
           color: Colors.black,
-          child: FutureBuilder(
-            future: widget.controller
-                .initPlayer(widget.controller.bvid, widget.controller.cid),
-            builder: (context, snapshot) {
-              return AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Builder(
-                  builder: (context) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.data == true) {
-                        return Stack(children: [
-                          Center(
-                            child: PhotoView.customChild(
-                              child: VideoAudioPlayer(
-                                widget.controller._videoAudioController!,
-                                asepectRatio: widget.controller.videoPlayInfo!
-                                        .videos.first.width /
-                                    widget.controller.videoPlayInfo!.videos
-                                        .first.height,
-                              ),
-                            ),
-                          ),
-                          Center(
-                            child: danmaku,
-                          ),
-                          Center(
-                            child: controllPanel,
-                          ),
-                        ]);
-                      } else {
-                        //加载失败,重试按钮
-                        return Center(
-                          child: IconButton(
-                              onPressed: () async {
-                                await widget.controller._videoAudioController
-                                    ?.play();
-                                setState(() {});
-                              },
-                              icon: const Icon(Icons.refresh_rounded)),
-                        );
-                      }
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
+          child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: FutureBuilder(
+                future: widget.controller
+                    .initPlayer(widget.controller.bvid, widget.controller.cid),
+                builder: (context, snapshot) {
+                  late Widget centrolWidget;
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.data == true) {
+                      centrolWidget = VideoAudioPlayer(
+                        widget.controller._videoAudioController!,
+                        asepectRatio:
+                            (widget.controller.videoPlayItem!.width.toDouble() /
+                                    widget.controller.videoPlayItem!.height
+                                        .toDouble()) *
+                                widget.controller.videoPlayItem!.sar,
                       );
+                    } else {
+                      //加载失败,重试按钮
+                      centrolWidget = IconButton(
+                          onPressed: () async {
+                            await widget.controller._videoAudioController
+                                ?.play();
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.refresh_rounded));
                     }
-                  },
-                ),
-              );
-            },
-          ),
+                    return Stack(fit: StackFit.expand, children: [
+                      Center(
+                        child: centrolWidget,
+                      ),
+                      Center(
+                        child: danmaku,
+                      ),
+                      Center(
+                        child: controllPanel,
+                      ),
+                    ]);
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              )),
         ),
       ),
     );
@@ -173,13 +163,6 @@ class BiliVideoPlayerController {
   // VideoQuality? get videoQuality => _videoQuality;
   // AudioQuality? get audioQuality => _audioQuality;
 
-  double _aspectRatio = 16 / 9;
-
-  double get aspectRatio => _aspectRatio;
-  set aspectRatio(double asepectRatio) {
-    _aspectRatio = asepectRatio;
-  }
-
   Future<void> reloadWidget() async {
     updateWidget();
     await _videoAudioController?.refresh();
@@ -197,8 +180,7 @@ class BiliVideoPlayerController {
     _videoAudioController?.audioUrl = audioPlayItem!.urls.first;
     _videoAudioController?.videoUrl = videoPlayItem!.urls.first;
     _videoAudioController?.state.position = Duration.zero;
-    await _videoAudioController?.refresh();
-    biliDanmakuController?.reloadDanmaku?.call();
+    await reloadWidget();
   }
 
   Future<bool> loadVideoInfo(String bvid, int cid) async {
@@ -226,7 +208,9 @@ class BiliVideoPlayerController {
         tempMatchVideos = videoPlayInfo!.videos;
       }
       //根据VideoQuality下标判断最接近的画质
-      var matchedVideo = tempMatchVideos.first;
+      var matchedVideo = tempMatchVideos.isNotEmpty
+          ? tempMatchVideos.first
+          : VideoPlayItem.zero;
       var preferVideoQualityIndex = SettingsUtil.getPreferVideoQuality().index;
       for (var i in tempMatchVideos) {
         if ((i.quality.index - preferVideoQualityIndex).abs() <
@@ -239,7 +223,9 @@ class BiliVideoPlayerController {
     if (_audioPlayItem == null) {
       //根据偏好选择音质
       //根据AudioQuality下标判断最接近的音质
-      var matchedAudio = videoPlayInfo!.audios.first;
+      var matchedAudio = videoPlayInfo!.audios.isNotEmpty
+          ? videoPlayInfo!.audios.first
+          : AudioPlayItem.zero;
       var preferAudioQualityIndex = SettingsUtil.getPreferAudioQuality().index;
       for (var i in videoPlayInfo!.audios) {
         if ((i.quality.index - preferAudioQualityIndex).abs() <
@@ -260,15 +246,15 @@ class BiliVideoPlayerController {
     //加载视频播放信息
     if (await loadVideoInfo(bvid, cid) == false) return false;
     //获取视频，音频的url
-    String videoUrl = _videoPlayItem!.urls.first;
-    String audioUrl = _audioPlayItem!.urls.first;
-
+    String videoUrl =
+        _videoPlayItem!.urls.isNotEmpty ? _videoPlayItem!.urls.first : '';
+    String audioUrl =
+        _audioPlayItem!.urls.isNotEmpty ? _audioPlayItem!.urls.first : '';
     //创建播放器
     _videoAudioController = VideoAudioController(
         videoUrl: videoUrl,
         audioUrl: audioUrl,
-        audioHeaders: VideoPlayApi.videoPlayerHttpHeaders,
-        videoHeaders: VideoPlayApi.videoPlayerHttpHeaders,
+        headers: VideoPlayApi.videoPlayerHttpHeaders,
         autoWakelock: true,
         initStart: _playWhenInitialize);
 
@@ -385,7 +371,8 @@ class BiliVideoPlayerController {
   double get speed => _videoAudioController?.state.speed ?? 1;
 
   double get videoAspectRatio =>
-      _videoAudioController!.state.width / _videoAudioController!.state.height;
+      (_videoAudioController?.state.width ?? 1) /
+      (_videoAudioController?.state.height ?? 1);
 
   bool get isPlaying {
     return _videoAudioController?.state.isPlaying ?? false;
@@ -423,4 +410,8 @@ class BiliVideoPlayerController {
   Future<void> setPlayBackSpeed(double speed) async {
     await _videoAudioController?.setPlayBackSpeed(speed);
   }
+
+  // void changeCanvasScale(double scale) {
+  //   //TODO
+  // }
 }

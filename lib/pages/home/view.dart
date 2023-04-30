@@ -27,7 +27,10 @@ class _HomePageState extends State<HomePage>
   void initState() {
     controller = Get.put(HomeController());
     tabsList = controller.tabsList;
-    controller.tabController = TabController(length: tabsList.length, vsync: this, initialIndex: controller.tabInitIndex);
+    controller.tabController = TabController(
+        length: tabsList.length,
+        vsync: this,
+        initialIndex: controller.tabInitIndex);
     super.initState();
   }
 

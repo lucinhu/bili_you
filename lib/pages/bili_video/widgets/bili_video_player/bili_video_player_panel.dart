@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:math' as math;
 
 import 'package:bili_you/common/models/local/video/audio_play_item.dart';
 import 'package:bili_you/common/models/local/video/video_play_item.dart';
@@ -42,6 +41,8 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
     if (!widget.controller._isSliderDraging) {
       widget.controller._position =
           widget.controller._biliVideoPlayerController.position;
+      widget.controller._duration =
+          widget.controller._biliVideoPlayerController.duration;
     }
     widget.controller._fartherestBuffed =
         widget.controller._biliVideoPlayerController.fartherestBuffered;
@@ -68,14 +69,16 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
       widget.controller._show = !widget.controller._isPlayerPlaying;
       widget.controller.asepectRatio =
           widget.controller._biliVideoPlayerController.videoAspectRatio;
+      widget.controller._duration =
+          widget.controller._biliVideoPlayerController.duration;
     }
     widget.controller._isInitializedState = true;
     widget.controller._biliVideoPlayerController
         .addStateChangedListener(playStateChangedCallback);
     widget.controller._biliVideoPlayerController
         .addListener(playerListenerCallback);
-    super.initState();
     initControl();
+    super.initState();
   }
 
   Future<void> initControl() async {
@@ -133,79 +136,90 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
 
   @override
   Widget build(BuildContext context) {
-    widget.controller._duration =
-        widget.controller._biliVideoPlayerController.duration;
     return Stack(
       alignment: Alignment.center,
       children: [
         //手势识别层
-        GestureDetector(onTap: () {
-          //点击显示面板
-          widget.controller._show = !(widget.controller._show);
-          setState(() {});
-        }, onDoubleTap: () {
-          //双击暂停/播放
-          if (widget.controller._isPlayerPlaying) {
-            widget.controller._biliVideoPlayerController.pause();
+        GestureDetector(
+          onTap: () {
+            //点击显示面板
+            widget.controller._show = !(widget.controller._show);
+            setState(() {});
+          },
+          onDoubleTap: () {
+            //双击暂停/播放
+            if (widget.controller._isPlayerPlaying) {
+              widget.controller._biliVideoPlayerController.pause();
+              widget.controller._show = true;
+            } else {
+              widget.controller._biliVideoPlayerController.play();
+              widget.controller._show = false;
+            }
+            setState(() {});
+          },
+          onLongPress: () {
+            widget.controller._selectingSpeed =
+                widget.controller._biliVideoPlayerController.speed;
+            //长按2倍速度
+            widget.controller._biliVideoPlayerController
+                .setPlayBackSpeed(widget.controller._selectingSpeed * 2);
+            //振动
+            HapticFeedback.selectionClick();
+          },
+          onLongPressEnd: (details) {
+            //长按结束时恢复本来的速度
+            widget.controller._biliVideoPlayerController
+                .setPlayBackSpeed(widget.controller._selectingSpeed);
+          },
+          onHorizontalDragStart: (details) {
+            widget.controller._isPreviousShow = widget.controller._show;
+            widget.controller._isPreviousPlaying =
+                widget.controller._isPlayerPlaying;
             widget.controller._show = true;
-          } else {
-            widget.controller._biliVideoPlayerController.play();
-            widget.controller._show = false;
-          }
-          setState(() {});
-        }, onLongPress: () {
-          widget.controller._selectingSpeed =
-              widget.controller._biliVideoPlayerController.speed;
-          //长按3倍速度
-          widget.controller._biliVideoPlayerController
-              .setPlayBackSpeed(widget.controller._selectingSpeed * 2);
-          //振动
-          HapticFeedback.selectionClick();
-        }, onLongPressEnd: (details) {
-          //长按结束时恢复本来的速度
-          widget.controller._biliVideoPlayerController
-              .setPlayBackSpeed(widget.controller._selectingSpeed);
-        }, onHorizontalDragStart: (details) {
-          widget.controller._isPreviousShow = widget.controller._show;
-          widget.controller._isPreviousPlaying =
-              widget.controller._isPlayerPlaying;
-          widget.controller._show = true;
-          widget.controller._biliVideoPlayerController.pause();
-          widget.controller._isSliderDraging = true;
-          setState(() {});
-        }, onHorizontalDragUpdate: (details) {
-          double scale = 0.5 / 1000;
-          Duration pos = widget.controller._position +
-              widget.controller._duration * details.delta.dx * scale;
-          widget.controller._position = Duration(
-              milliseconds: pos.inMilliseconds
-                  .clamp(0, widget.controller._duration.inMilliseconds));
-          setState(() {});
-        }, onHorizontalDragEnd: (details) {
-          widget.controller.biliVideoPlayerController
-              .seekTo(widget.controller._position);
-          if (widget.controller._isPreviousPlaying) {
-            widget.controller._biliVideoPlayerController.play();
-          }
-          if (!widget.controller._isPreviousShow) {
-            widget.controller._show = false;
-          }
-          widget.controller._isSliderDraging = false;
-          setState(() {});
-        }, onVerticalDragUpdate: (details) {
-          var add = details.delta.dy / 500;
-          if (details.localPosition.dx > context.size!.width / 2) {
-            widget.controller._volume -= add;
-            widget.controller._volume = widget.controller._volume.clamp(0, 1);
-            VolumeController().setVolume(widget.controller._volume);
-          } else {
-            widget.controller._brightness -= add;
-            widget.controller._brightness =
-                widget.controller._brightness.clamp(0, 1);
-            ScreenBrightness()
-                .setScreenBrightness(widget.controller._brightness);
-          }
-        }),
+            widget.controller._biliVideoPlayerController.pause();
+            widget.controller._isSliderDraging = true;
+            setState(() {});
+          },
+          onHorizontalDragUpdate: (details) {
+            double scale = 0.5 / 1000;
+            Duration pos = widget.controller._position +
+                widget.controller._duration * details.delta.dx * scale;
+            widget.controller._position = Duration(
+                milliseconds: pos.inMilliseconds
+                    .clamp(0, widget.controller._duration.inMilliseconds));
+            setState(() {});
+          },
+          onHorizontalDragEnd: (details) {
+            widget.controller.biliVideoPlayerController
+                .seekTo(widget.controller._position);
+            if (widget.controller._isPreviousPlaying) {
+              widget.controller._biliVideoPlayerController.play();
+            }
+            if (!widget.controller._isPreviousShow) {
+              widget.controller._show = false;
+            }
+            widget.controller._isSliderDraging = false;
+            setState(() {});
+          },
+          onVerticalDragUpdate: (details) {
+            var add = details.delta.dy / 500;
+            if (details.localPosition.dx > context.size!.width / 2) {
+              widget.controller._volume -= add;
+              widget.controller._volume = widget.controller._volume.clamp(0, 1);
+              VolumeController().setVolume(widget.controller._volume);
+            } else {
+              widget.controller._brightness -= add;
+              widget.controller._brightness =
+                  widget.controller._brightness.clamp(0, 1);
+              ScreenBrightness()
+                  .setScreenBrightness(widget.controller._brightness);
+            }
+          },
+          // onScaleUpdate: (details) {
+          //   widget.controller._biliVideoPlayerController
+          //       .changeCanvasScale(details.scale);
+          // },
+        ),
         //面板层
         Visibility(
             visible: widget.controller._show,
@@ -261,10 +275,11 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                                       builder: (context, setState) {
                                         return Checkbox(
                                           value: widget
-                                              .controller
-                                              .biliVideoPlayerController
-                                              .biliDanmakuController!
-                                              .isDanmakuOpened,
+                                                  .controller
+                                                  .biliVideoPlayerController
+                                                  .biliDanmakuController
+                                                  ?.isDanmakuOpened ??
+                                              false,
                                           onChanged: (value) {
                                             if (value != null) {
                                               toggleDanmaku();
@@ -481,12 +496,12 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                             builder: (context, setState) {
                               return Slider(
                                 min: 0,
-                                max: widget
-                                    .controller
-                                    ._biliVideoPlayerController
-                                    .duration
-                                    .inMilliseconds
-                                    .toDouble(),
+                                max: widget.controller._duration.inMilliseconds
+                                            .toDouble() ==
+                                        0
+                                    ? 1
+                                    : widget.controller._duration.inMilliseconds
+                                        .toDouble(),
                                 value: widget
                                     .controller._position.inMilliseconds
                                     .toDouble(),
@@ -522,7 +537,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                         key: durationTextKey,
                         builder: (context, setState) {
                           return Text(
-                            "${StringFormatUtils.timeLengthFormat(widget.controller._position.inSeconds)}/${StringFormatUtils.timeLengthFormat(widget.controller._biliVideoPlayerController.duration.inSeconds)}",
+                            "${StringFormatUtils.timeLengthFormat(widget.controller._position.inSeconds)}/${StringFormatUtils.timeLengthFormat(widget.controller._duration.inSeconds)}",
                             style: const TextStyle(color: textColor),
                           );
                         },

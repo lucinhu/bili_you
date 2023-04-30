@@ -2,7 +2,8 @@ import 'package:bili_you/common/api/api_constants.dart';
 import 'package:bili_you/common/models/local/video/audio_play_item.dart';
 import 'package:bili_you/common/models/local/video/video_play_info.dart';
 import 'package:bili_you/common/models/local/video/video_play_item.dart';
-import 'package:bili_you/common/models/network/video_play/video_play.dart';
+import 'package:bili_you/common/models/network/video_play/video_play.dart'
+    hide SegmentBase;
 import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:dio/dio.dart';
 
@@ -59,13 +60,33 @@ class VideoPlayApi {
         urls.addAll(i.backupUrl!);
       }
       videos.add(VideoPlayItem(
-          urls: urls,
-          quality: VideoQualityCode.fromCode(i.id ?? -1),
-          bandWidth: i.bandwidth ?? 0,
-          codecs: i.codecs ?? "",
-          width: i.width ?? 0,
-          height: i.height ?? 0,
-          frameRate: double.tryParse(i.frameRate ?? "0") ?? 0));
+        urls: urls,
+        quality: VideoQualityCode.fromCode(i.id ?? -1),
+        bandWidth: i.bandwidth ?? 0,
+        codecs: i.codecs ?? "",
+        width: i.width ?? 0,
+        height: i.height ?? 0,
+        frameRate: double.tryParse(i.frameRate ?? "0") ?? 0,
+        // mimeType: i.mimeType ?? '',
+        // segmentBase: SegmentBase(
+        //     initialization: i.segmentBase?.initialization ?? '',
+        //     indexRange: i.segmentBase?.indexRange ?? ''),
+        sar: double.parse(i.sar?.split(':').first ?? '1') /
+            double.parse(i.sar?.split(':').last ?? '1'),
+        // timeLength: response.data?.timelength ?? 0
+      ));
+    }
+    // //如果是空的话,就放入一个空的VideoPlayItem用来占位
+    // if (videos.isEmpty) {
+    //   videos.add(VideoPlayItem.zero);
+    // }
+    //如果有dolby的话
+    for (var i in response.data!.dash?.dolby?.audio ?? <VideoOrAudioRaw>[]) {
+      response.data!.dash?.audio?.add(i);
+    }
+    //如果有flac的话
+    if (response.data!.dash?.flac?.audio != null) {
+      response.data!.dash?.audio?.add(response.data!.dash!.flac!.audio!);
     }
     //获取音频
     List<AudioPlayItem> audios = [];
@@ -78,39 +99,28 @@ class VideoPlayApi {
         urls.addAll(i.backupUrl!);
       }
       audios.add(AudioPlayItem(
-          urls: urls,
-          quality: AudioQualityCode.fromCode(i.id ?? -1),
-          bandWidth: i.bandwidth ?? 0,
-          codecs: i.codecs ?? ""));
+        urls: urls,
+        quality: AudioQualityCode.fromCode(i.id ?? -1),
+        bandWidth: i.bandwidth ?? 0,
+        codecs: i.codecs ?? "",
+        // mimeType: i.mimeType ?? '',
+        // segmentBase: SegmentBase(
+        //   initialization: i.segmentBase?.initialization ?? '',
+        //   indexRange: i.segmentBase?.indexRange ?? '',
+        // ),
+        // timeLength: response.data?.timelength ?? 0
+      ));
     }
-    //如果有dolby的话
-    for (var i in response.data!.dash?.dolby?.audio ?? <VideoOrAudioRaw>[]) {
-      List<String> urls = [];
-      if (i.baseUrl != null) {
-        urls.add(i.baseUrl!);
-      }
-      if (i.backupUrl != null) {
-        urls.addAll(i.backupUrl!);
-      }
-      audios.add(AudioPlayItem(
-          urls: urls,
-          quality: AudioQualityCode.fromCode(i.id ?? -1),
-          bandWidth: i.bandwidth ?? 0,
-          codecs: i.codecs ?? ""));
-    }
-    //如果有flac的话
-    List<String> flacUrls = [];
-    if (response.data!.dash?.flac?.audio?.baseUrl != null) {
-      flacUrls.add(response.data!.dash!.flac!.audio!.baseUrl!);
-    }
-    if (response.data!.dash?.flac?.audio?.backupUrl != null) {
-      flacUrls.addAll(response.data!.dash!.flac!.audio!.backupUrl!);
-    }
+
     List<AudioQuality> supportAudioQualities = [];
     //获取支持的音质
     for (var i in audios) {
       supportAudioQualities.add(i.quality);
     }
+    // //如果是空的话,就放入一个空的AudioPlayItem用来占位
+    // if (audios.isEmpty) {
+    //   audios.add(AudioPlayItem.zero);
+    // }
     return VideoPlayInfo(
         // defualtVideoQuality:
         //     VideoQualityCode.fromCode(response.data!.quality ?? -1),

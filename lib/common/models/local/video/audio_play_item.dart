@@ -1,15 +1,28 @@
 class AudioPlayItem {
-  AudioPlayItem(
-      {required this.urls,
-      required this.quality,
-      required this.bandWidth,
-      required this.codecs});
+  AudioPlayItem({
+    required this.urls,
+    required this.quality,
+    required this.bandWidth,
+    required this.codecs,
+    // required this.mimeType,
+    // required this.segmentBase,
+    // required this.timeLength
+  });
   static AudioPlayItem get zero => AudioPlayItem(
-      urls: [], quality: AudioQuality.unknown, bandWidth: 0, codecs: "");
+      urls: [], quality: AudioQuality.unknown, bandWidth: 0, codecs: ""
+      // ,
+      // mimeType: '',
+      // segmentBase: SegmentBase(initialization: '', indexRange: ''),
+      // timeLength: 0
+      );
   List<String> urls;
   AudioQuality quality;
   int bandWidth;
   String codecs;
+  // String mimeType;
+  // SegmentBase segmentBase;
+  // //时长,秒为单位
+  // int timeLength;
 }
 
 enum AudioQuality {
