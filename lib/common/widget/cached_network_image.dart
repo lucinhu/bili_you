@@ -9,7 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart' as image;
 class CachedNetworkImage extends image.CachedNetworkImage {
   CachedNetworkImage(
       {super.key,
-      required super.imageUrl,
+      required String imageUrl,
       super.cacheManager,
       final Map<String, String>? headers,
       super.width,
@@ -21,6 +21,9 @@ class CachedNetworkImage extends image.CachedNetworkImage {
       int? cacheWidth,
       int? cacheHeight})
       : super(
+            imageUrl: imageUrl.startsWith('http://')
+                ? imageUrl.replaceFirst('http://', 'https://')
+                : imageUrl,
             httpHeaders: headers,
             placeholder:
                 placeholder == null ? null : (context, url) => placeholder(),
