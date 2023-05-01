@@ -93,6 +93,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
         .removeStateChangedListener(playStateChangedCallback);
     widget.controller._biliVideoPlayerController
         .removeListener(playerListenerCallback);
+    ScreenBrightness().resetScreenBrightness();
     super.dispose();
   }
 
