@@ -3,22 +3,26 @@ import 'dart:developer';
 import 'package:bili_you/common/models/local/video/audio_play_item.dart';
 import 'package:bili_you/common/models/local/video/video_play_item.dart';
 import 'package:bili_you/common/utils/index.dart';
-import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 class BiliVideoPlayerPanel extends StatefulWidget {
   const BiliVideoPlayerPanel(this.controller, {super.key});
+
   final BiliVideoPlayerPanelController controller;
+
   @override
   State<BiliVideoPlayerPanel> createState() => _BiliVideoPlayerPanelState();
 }
 
 class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
+  Box videoBox = BiliYouStorage.video;
+
   GlobalKey danmakuCheckBoxKey = GlobalKey();
   GlobalKey playButtonKey = GlobalKey();
   GlobalKey sliderKey = GlobalKey();
@@ -84,6 +88,15 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
   Future<void> initControl() async {
     widget.controller._volume = await VolumeController().getVolume();
     widget.controller._brightness = await ScreenBrightness().current;
+
+    // 设置视频播放速度
+    if (videoBox.containsKey(VideoStorageKeys.speed)) {
+      final speed =
+          videoBox.get(VideoStorageKeys.speed, defaultValue: 1.0) as double;
+      widget.controller._biliVideoPlayerController.setPlayBackSpeed(speed);
+
+      widget.controller._selectingSpeed = speed;
+    }
     setState(() {});
   }
 
@@ -372,6 +385,10 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                                                   .setPlayBackSpeed(widget
                                                       .controller
                                                       ._selectingSpeed);
+                                              videoBox.put(
+                                                  VideoStorageKeys.speed,
+                                                  widget.controller
+                                                      ._selectingSpeed);
                                               Navigator.pop(context);
                                             },
                                             child: const Text("确定")),
@@ -565,6 +582,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
 
 class BiliVideoPlayerPanelController {
   BiliVideoPlayerPanelController(this._biliVideoPlayerController);
+
   bool _isInitializedState = false;
   bool _show = false;
   bool _isPlayerPlaying = false;
@@ -573,6 +591,7 @@ class BiliVideoPlayerPanelController {
   bool _isSliderDraging = false;
   bool _isPreviousPlaying = false;
   bool _isPreviousShow = false;
+
   // bool isFullScreen = false;
   double asepectRatio = 1;
   double _selectingSpeed = 1;
@@ -582,6 +601,7 @@ class BiliVideoPlayerPanelController {
   Duration _duration = Duration.zero;
   Duration _fartherestBuffed = Duration.zero;
   final BiliVideoPlayerController _biliVideoPlayerController;
+
   BiliVideoPlayerController get biliVideoPlayerController =>
       _biliVideoPlayerController;
 }

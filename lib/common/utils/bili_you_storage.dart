@@ -6,6 +6,7 @@ class BiliYouStorage {
   static late final Box networkData;
   static late final Box settings;
   static late final Box history;
+  static late final Box video;
   static bool _initialized = false;
   static Future<void> ensureInitialized() async {
     if (!_initialized) {
@@ -14,6 +15,7 @@ class BiliYouStorage {
       networkData = await Hive.openBox("networkData");
       settings = await Hive.openBox("settings");
       history = await Hive.openBox("history");
+      video = await Hive.openBox("video");
       _initialized = true;
     }
   }
@@ -53,4 +55,8 @@ class SettingsStorageKeys {
   ///偏好视频编码（avc或hev）
   static const String preferVideoCodec = "preferVideoCodec";
   static const String preferAudioQuality = "preferAudioQuality";
+}
+
+class VideoStorageKeys {
+  static const String speed = "speed";
 }
