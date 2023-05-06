@@ -68,17 +68,16 @@ class ReplyController extends GetxController {
     //删除重复项
     final int minIndex = replyItems.length -
         replyInfo.replies.length; //必须要先求n,因为replyInfo.replies是动态删除的,长度会变
-    if (minIndex > 0) {
-      for (var i = replyItems.length - 1; i >= minIndex; i--) {
-        replyInfo.replies.removeWhere((element) {
-          if (element.rpid == replyItems[i].rpid) {
-            log('same${replyInfo.replies.length}');
-            return true;
-          } else {
-            return false;
-          }
-        });
-      }
+    for (var i = replyItems.length - 1; i >= minIndex; i--) {
+      if (i < 0) break;
+      replyInfo.replies.removeWhere((element) {
+        if (element.rpid == replyItems[i].rpid) {
+          log('same${replyInfo.replies.length}');
+          return true;
+        } else {
+          return false;
+        }
+      });
     }
     if (topReplyItems.isEmpty) {
       topReplyItems.addAll(replyInfo.topReplies);
