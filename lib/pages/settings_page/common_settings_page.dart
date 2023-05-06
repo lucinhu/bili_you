@@ -62,6 +62,11 @@ class CommonSettingsPage extends StatelessWidget {
               subTitle: '在进入视频的时候是否默认打开弹幕',
               settingsKey: SettingsStorageKeys.defaultShowDanmaku,
               defualtValue: true),
+          const SettingsSwitchTile(
+              title: '保持弹幕开关状态',
+              subTitle: '是否在切换视频后保持弹幕开关状态',
+              settingsKey: SettingsStorageKeys.rememberDanmakuSwitch,
+              defualtValue: false),
           const SettingsLabel(text: '视频'),
           SettingsSwitchTile(
             title: '启用硬解',

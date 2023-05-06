@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:bili_you/common/models/local/video/audio_play_item.dart';
 import 'package:bili_you/common/models/local/video/video_play_item.dart';
 import 'package:bili_you/common/utils/index.dart';
-import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +56,15 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
   void toggleDanmaku() {
     widget.controller._biliVideoPlayerController.biliDanmakuController!
         .toggleDanmaku();
+    //保持弹幕状态
+    if (BiliYouStorage.settings.get(SettingsStorageKeys.rememberDanmakuSwitch,
+            defaultValue: false) ==
+        true) {
+      BiliYouStorage.settings.put(
+          SettingsStorageKeys.defaultShowDanmaku,
+          widget.controller._biliVideoPlayerController.biliDanmakuController!
+              .isDanmakuOpened);
+    }
     danmakuCheckBoxKey.currentState!.setState(() {});
   }
 

@@ -32,17 +32,41 @@ class UserStorageKeys {
 }
 
 class SettingsStorageKeys {
+  ///主题
   static const String themeMode = "themeMode";
   static const String biliTheme = "biliTheme";
+
+  ///自动更新
   static const String autoCheckUpdate = "autoCheckUpdate";
+
+  ///显示搜索默认词
   static const String showSearchDefualtWord = "showSearchDefualtWord";
+
+  ///显示搜索历史
   static const String showSearchHistory = "showSearchHistory";
+
+  ///显示热词
   static const String showHotSearch = "showHotSearch";
+
+  ///默认开启弹幕
   static const String defaultShowDanmaku = "defaultShowDanmaku";
+
+  ///保持弹幕开关状态
+  static const String rememberDanmakuSwitch = "rememberDanmakuSwitch";
+
+  ///偏好视频画质
   static const String preferVideoQuality = "preferVideoQuality";
+
+  ///进入播放页面时自动播放
   static const String autoPlayOnInit = "autoPlayOnInit";
+
+  ///进入播放页面时全屏
   static const String fullScreenPlayOnEnter = "fullScreenPlayOnEnter";
+
+  ///是否硬解
   static const String isHardwareDecode = "isHardwareDecode";
+
+  ///是否后台播放
   static const String isBackGroundPlay = "isBackGroundPlay";
 
   ///首页推荐列数
