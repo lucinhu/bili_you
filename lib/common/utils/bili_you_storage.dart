@@ -78,4 +78,7 @@ class SettingsStorageKeys {
   ///偏好视频编码（avc或hev）
   static const String preferVideoCodec = "preferVideoCodec";
   static const String preferAudioQuality = "preferAudioQuality";
+
+  ///默认播放播放速度
+  static const String defaultVideoPlaybackSpeed = "defaultVideoPlaybackSpeed";
 }

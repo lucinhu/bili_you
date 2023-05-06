@@ -258,7 +258,10 @@ class BiliVideoPlayerController {
         audioUrl: audioUrl,
         headers: VideoPlayApi.videoPlayerHttpHeaders,
         autoWakelock: true,
-        initStart: _playWhenInitialize);
+        initStart: _playWhenInitialize,
+        initSpeed: SettingsUtil.getValue(
+            SettingsStorageKeys.defaultVideoPlaybackSpeed,
+            defaultValue: 1.0));
 
     await _videoAudioController!.init();
 

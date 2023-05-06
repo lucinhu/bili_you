@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bili_you/common/models/local/video/audio_play_item.dart';
 import 'package:bili_you/common/models/local/video/video_play_item.dart';
 import 'package:bili_you/common/utils/index.dart';
+import 'package:bili_you/common/widget/slider_dialog.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
   GlobalKey playButtonKey = GlobalKey();
   GlobalKey sliderKey = GlobalKey();
   GlobalKey durationTextKey = GlobalKey();
+  late double tempSpeed;
 
   final panelDecoration = const BoxDecoration(boxShadow: [
     BoxShadow(color: Colors.black45, blurRadius: 15, spreadRadius: 5)
@@ -167,18 +169,17 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
             setState(() {});
           },
           onLongPress: () {
-            widget.controller._selectingSpeed =
-                widget.controller._biliVideoPlayerController.speed;
+            tempSpeed = widget.controller._biliVideoPlayerController.speed;
             //长按2倍速度
             widget.controller._biliVideoPlayerController
-                .setPlayBackSpeed(widget.controller._selectingSpeed * 2);
+                .setPlayBackSpeed(tempSpeed * 2);
             //振动
             HapticFeedback.selectionClick();
           },
           onLongPressEnd: (details) {
             //长按结束时恢复本来的速度
             widget.controller._biliVideoPlayerController
-                .setPlayBackSpeed(widget.controller._selectingSpeed);
+                .setPlayBackSpeed(tempSpeed);
           },
           onHorizontalDragStart: (details) {
             widget.controller._isPreviousShow = widget.controller._show;
@@ -332,61 +333,22 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                                 break;
                               case "播放速度":
                                 showDialog(
-                                  context: context,
-                                  builder: (context) => StatefulBuilder(
-                                      builder: (context, setState) {
-                                    return AlertDialog(
-                                      title: const Text("播放速度"),
-                                      content: IntrinsicHeight(
-                                        child: Slider(
+                                    context: context,
+                                    builder: (context) => SliderDialog(
+                                          title: "播放速度",
+                                          initValue: widget.controller
+                                              ._biliVideoPlayerController.speed,
                                           min: 0.25,
                                           max: 4.00,
                                           divisions: 15,
-                                          label:
-                                              "${widget.controller._selectingSpeed}X",
-                                          value:
-                                              widget.controller._selectingSpeed,
-                                          onChanged: (value) {
-                                            setState(
-                                              () {
-                                                widget.controller
-                                                    ._selectingSpeed = value;
-                                              },
-                                            );
+                                          onYes: (value) {
+                                            widget.controller
+                                                ._biliVideoPlayerController
+                                                .setPlayBackSpeed(value);
                                           },
-                                        ),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () {
-                                              widget.controller
-                                                      ._selectingSpeed =
-                                                  widget
-                                                      .controller
-                                                      ._biliVideoPlayerController
-                                                      .speed;
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text(
-                                              "取消",
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .hintColor),
-                                            )),
-                                        TextButton(
-                                            onPressed: () {
-                                              widget.controller
-                                                  ._biliVideoPlayerController
-                                                  .setPlayBackSpeed(widget
-                                                      .controller
-                                                      ._selectingSpeed);
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text("确定")),
-                                      ],
-                                    );
-                                  }),
-                                );
+                                          buildLabel: (selectingValue) =>
+                                              "${selectingValue}X",
+                                        ));
 
                                 break;
                               case "画质":
@@ -583,7 +545,6 @@ class BiliVideoPlayerPanelController {
   bool _isPreviousShow = false;
   // bool isFullScreen = false;
   double asepectRatio = 1;
-  double _selectingSpeed = 1;
   Duration _position = Duration.zero;
   double _volume = 0;
   double _brightness = 0;

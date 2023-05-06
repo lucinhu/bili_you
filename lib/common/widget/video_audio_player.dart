@@ -156,6 +156,7 @@ class VideoAudioController {
     this.headers,
     this.autoWakelock = false,
     this.initStart = false,
+    this.initSpeed = 1,
     this.initDuration = Duration.zero,
   });
   String videoUrl;
@@ -163,6 +164,7 @@ class VideoAudioController {
   final Map<String, String>? headers;
   bool autoWakelock;
   final bool initStart;
+  final double initSpeed;
   final Duration initDuration;
 
   final VideoAudioState state = VideoAudioState();
@@ -186,6 +188,7 @@ class VideoAudioController {
     await refresh();
     if (initStart) {
       await play();
+      await PlayersSingleton().player?.setRate(initSpeed);
     }
     _initialized = true;
   }
@@ -263,11 +266,14 @@ class VideoAudioController {
         element();
       }
     });
-    // 播放监听
+    // 播放/暂停监听
     PlayersSingleton().playingListen!.onData((event) async {
       log('play:$event');
       if (!state.isBuffering) {
         state.isPlaying = event;
+      }
+      if (state.speed != PlayersSingleton().player?.state.rate) {
+        PlayersSingleton().player?.setRate(state.speed);
       }
       _callStateChangeListeners();
     });
