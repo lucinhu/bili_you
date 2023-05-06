@@ -14,7 +14,9 @@ class VideoPlayApi {
   };
 
   static Future<VideoPlayResponse> _requestVideoPlay(
-      {required String bvid, required int cid, int fnval = 16}) async {
+      {required String bvid,
+      required int cid,
+      int fnval = FnvalValue.all}) async {
     var response = await HttpUtils().get(ApiConstants.videoPlay,
         queryParameters: {
           'bvid': bvid,
@@ -35,7 +37,7 @@ class VideoPlayApi {
     required int cid,
   }) async {
     var response =
-        await _requestVideoPlay(bvid: bvid, cid: cid, fnval: _Fnval.dash.code);
+        await _requestVideoPlay(bvid: bvid, cid: cid, fnval: FnvalValue.all);
     if (response.code != 0) {
       throw "getVideoPlay: code:${response.code}, message:${response.message}";
     }
@@ -150,5 +152,7 @@ enum _Fnval { dash, hdr, fourK, dolby, dolbyVision, eightK, av1 }
 ///视频流格式标识代码
 // ignore: library_private_types_in_public_api
 extension FnvalValue on _Fnval {
-  int get code => [16, 64, 128, 256, 512, 1024, 2048][index];
+  static final List<int> _codeList = [16, 64, 128, 256, 512, 1024, 2048];
+  int get code => _codeList[index];
+  static const int all = 4048; //_codeList所有值之或
 }

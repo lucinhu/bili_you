@@ -3,9 +3,7 @@ class ApiConstants {
       'https://api.github.com/repos/lucinhu/bili_you/releases/latest';
 
   static const String userAgent =
-      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.0.0';
-  static const String mobileUserAgent =
-      'Mozilla/5.0 (iPhone; CPU iPhone OS 14_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/7.0.18(0x1700122f) NetType/3G Language/zh_CN';
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15';
 
   static const String bilibiliBase = "https://www.bilibili.com";
 

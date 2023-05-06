@@ -104,7 +104,7 @@ class CommonSettingsPage extends StatelessWidget {
             subTitle: '默认偏好选择的视频编码',
             buildTrailingText: () => BiliYouStorage.settings
                 .get(SettingsStorageKeys.preferVideoCodec, defaultValue: 'hev'),
-            itemNameValue: const {'hev': 'hev', 'avc': 'avc'},
+            itemNameValue: const {'hev': 'hev', 'avc': 'avc', 'av01': 'av01'},
             buildGroupValue: () => BiliYouStorage.settings
                 .get(SettingsStorageKeys.preferVideoCodec, defaultValue: 'hev'),
             applyValue: (value) {
