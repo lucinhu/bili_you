@@ -1,4 +1,5 @@
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
+import 'package:bili_you/common/utils/index.dart';
 import 'package:bili_you/common/values/hero_tag_id.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/introduction/index.dart';
@@ -35,9 +36,24 @@ class BiliVideoPage extends StatefulWidget {
   State<BiliVideoPage> createState() => _BiliVideoPageState();
 }
 
-class _BiliVideoPageState extends State<BiliVideoPage> with RouteAware {
+class _BiliVideoPageState extends State<BiliVideoPage>
+    with RouteAware, WidgetsBindingObserver {
   int currentTabIndex = 0;
   late BiliVideoController controller;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    //当应用切换后台时
+    //如果不允许后台播放,就暂停视频
+    if (state == AppLifecycleState.inactive) {
+      if (BiliYouStorage.settings
+              .get(SettingsStorageKeys.isBackGroundPlay, defaultValue: true) ==
+          false) {
+        controller.biliVideoPlayerController.pause();
+      }
+    }
+    super.didChangeAppLifecycleState(state);
+  }
 
   @override
   void didChangeDependencies() {
@@ -69,6 +85,7 @@ class _BiliVideoPageState extends State<BiliVideoPage> with RouteAware {
     // biliVideoController.onDelete();
     //取消路由监听
     BiliVideoPage.routeObserver.unsubscribe(this);
+    WidgetsBinding.instance.removeObserver(this);
     controller.dispose();
     super.dispose();
   }
@@ -84,6 +101,7 @@ class _BiliVideoPageState extends State<BiliVideoPage> with RouteAware {
           ssid: widget.ssid),
       tag: widget.tag,
     );
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 

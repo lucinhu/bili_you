@@ -43,6 +43,7 @@ class SettingsStorageKeys {
   static const String autoPlayOnInit = "autoPlayOnInit";
   static const String fullScreenPlayOnEnter = "fullScreenPlayOnEnter";
   static const String isHardwareDecode = "isHardwareDecode";
+  static const String isBackGroundPlay = "isBackGroundPlay";
 
   ///首页推荐列数
   static const String recommendColumnCount = 'recommendColumnCount';

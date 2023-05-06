@@ -75,6 +75,11 @@ class CommonSettingsPage extends StatelessWidget {
             },
           ),
           const SettingsSwitchTile(
+              title: '后台播放',
+              subTitle: '是否在应用进入到后台时继续播放',
+              settingsKey: SettingsStorageKeys.isBackGroundPlay,
+              defualtValue: true),
+          const SettingsSwitchTile(
               title: '详情页直接播放',
               subTitle: '是否在进入详情页后自动播放',
               settingsKey: SettingsStorageKeys.autoPlayOnInit,
