@@ -597,10 +597,6 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                                   if (widget.controller._isSliderDraging) {
                                     widget.controller._position =
                                         Duration(milliseconds: value.toInt());
-                                  } else {
-                                    widget.controller._biliVideoPlayerController
-                                        .seekTo(Duration(
-                                            milliseconds: value.toInt()));
                                   }
                                 },
                                 onChangeStart: (value) {
