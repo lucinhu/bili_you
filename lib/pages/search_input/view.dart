@@ -35,10 +35,12 @@ class _SearchInputPageState extends State<SearchInputPage> {
 
   Widget _defaultHintView() {
     List<Widget> list = [];
-    bool showHotSearch = BiliYouStorage.settings
-        .get(SettingsStorageKeys.showHotSearch, defaultValue: true);
-    bool showSearchHistory = BiliYouStorage.settings
-        .get(SettingsStorageKeys.showSearchHistory, defaultValue: true);
+    bool showHotSearch = SettingsUtil.getValue(
+        SettingsStorageKeys.showHotSearch,
+        defaultValue: true);
+    bool showSearchHistory = SettingsUtil.getValue(
+        SettingsStorageKeys.showSearchHistory,
+        defaultValue: true);
     if (showHotSearch) {
       list.addAll([
         const Padding(

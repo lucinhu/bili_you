@@ -23,8 +23,9 @@ class RecommendController extends GetxController {
 
   @override
   void onInit() {
-    recommendColumnCount = BiliYouStorage.settings
-        .get(SettingsStorageKeys.recommendColumnCount, defaultValue: 2);
+    recommendColumnCount = SettingsUtil.getValue(
+        SettingsStorageKeys.recommendColumnCount,
+        defaultValue: 2);
     super.onInit();
   }
 

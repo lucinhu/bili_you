@@ -37,6 +37,8 @@ class _RecommendPageState extends State<RecommendPage>
       onLoad: controller.onLoad,
       onRefresh: controller.onRefresh,
       childBuilder: (context, physics) => GridView.builder(
+        addAutomaticKeepAlives: false,
+        addRepaintBoundaries: false,
         controller: controller.scrollController,
         physics: physics,
         padding: const EdgeInsets.all(8),

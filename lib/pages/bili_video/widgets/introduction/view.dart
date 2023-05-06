@@ -71,6 +71,8 @@ class _IntroductionPageState extends State<IntroductionPage>
           height: 20,
         ),
         ListView.builder(
+          addAutomaticKeepAlives: false,
+          addRepaintBoundaries: false,
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),

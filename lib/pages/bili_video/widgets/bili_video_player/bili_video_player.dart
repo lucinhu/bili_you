@@ -44,8 +44,9 @@ class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
     controllPanel = widget.buildControllPanel?.call();
     if (!widget.controller._isInitializedState) {
       //是否进入时即播放
-      widget.controller._playWhenInitialize = BiliYouStorage.settings
-          .get(SettingsStorageKeys.autoPlayOnInit, defaultValue: true);
+      widget.controller._playWhenInitialize = SettingsUtil.getValue(
+          SettingsStorageKeys.autoPlayOnInit,
+          defaultValue: true);
       //定时汇报历史记录
       widget.controller._reportHistory();
       heartBeat = Timer.periodic(const Duration(seconds: 15), (timer) async {
@@ -198,8 +199,9 @@ class BiliVideoPlayerController {
       List<VideoPlayItem> tempMatchVideos = [];
       //先匹配编码
       for (var i in videoPlayInfo!.videos) {
-        if (i.codecs.contains(BiliYouStorage.settings
-            .get(SettingsStorageKeys.preferVideoCodec, defaultValue: 'hev'))) {
+        if (i.codecs.contains(SettingsUtil.getValue(
+            SettingsStorageKeys.preferVideoCodec,
+            defaultValue: 'hev'))) {
           tempMatchVideos.add(i);
         }
       }
@@ -261,8 +263,9 @@ class BiliVideoPlayerController {
     await _videoAudioController!.init();
 
     //是否进入就全屏
-    bool isFullScreenPlayOnEnter = BiliYouStorage.settings
-        .get(SettingsStorageKeys.fullScreenPlayOnEnter, defaultValue: false);
+    bool isFullScreenPlayOnEnter = SettingsUtil.getValue(
+        SettingsStorageKeys.fullScreenPlayOnEnter,
+        defaultValue: false);
     if (isFullScreenPlayOnEnter) {
       isFullScreen = false;
       toggleFullScreen();

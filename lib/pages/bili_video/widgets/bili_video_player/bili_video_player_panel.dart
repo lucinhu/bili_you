@@ -57,10 +57,10 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
     widget.controller._biliVideoPlayerController.biliDanmakuController!
         .toggleDanmaku();
     //保持弹幕状态
-    if (BiliYouStorage.settings.get(SettingsStorageKeys.rememberDanmakuSwitch,
+    if (SettingsUtil.getValue(SettingsStorageKeys.rememberDanmakuSwitch,
             defaultValue: false) ==
         true) {
-      BiliYouStorage.settings.put(
+      SettingsUtil.setValue(
           SettingsStorageKeys.defaultShowDanmaku,
           widget.controller._biliVideoPlayerController.biliDanmakuController!
               .isDanmakuOpened);

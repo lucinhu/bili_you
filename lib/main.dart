@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
               : MediaQuery(
                   data: MediaQuery.of(context).copyWith(
                       textScaleFactor: MediaQuery.of(context).textScaleFactor *
-                          BiliYouStorage.settings.get(
+                          SettingsUtil.getValue(
                               SettingsStorageKeys.textScaleFactor,
                               defaultValue: 1.0)),
                   child: child));

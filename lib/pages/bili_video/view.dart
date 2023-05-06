@@ -45,9 +45,9 @@ class _BiliVideoPageState extends State<BiliVideoPage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     //当应用切换后台时
     //如果不允许后台播放,就暂停视频
-    if (state == AppLifecycleState.inactive) {
-      if (BiliYouStorage.settings
-              .get(SettingsStorageKeys.isBackGroundPlay, defaultValue: true) ==
+    if (state == AppLifecycleState.paused) {
+      if (SettingsUtil.getValue(SettingsStorageKeys.isBackGroundPlay,
+              defaultValue: true) ==
           false) {
         controller.biliVideoPlayerController.pause();
       }

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bili_you/common/api/index.dart';
 import 'package:bili_you/common/models/local/login/login_user_info.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
+import 'package:bili_you/common/utils/settings.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:flutter/material.dart';
 
@@ -32,8 +33,8 @@ class HomeController extends GetxController {
 
   //刷新搜索框默认词
   refreshDefaultSearchWord() async {
-    if (!BiliYouStorage.settings
-        .get(SettingsStorageKeys.showSearchDefualtWord, defaultValue: true)) {
+    if (!SettingsUtil.getValue(SettingsStorageKeys.showSearchDefualtWord,
+        defaultValue: true)) {
       //如果没有开启默认词的话，就直接跳出
       defaultSearchWord.value = "搜索";
       return;

@@ -164,8 +164,8 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
   void initState() {
     var controller = widget.controller;
     if (!controller._isInitializedState) {
-      if (BiliYouStorage.settings
-          .get(SettingsStorageKeys.defaultShowDanmaku, defaultValue: true)) {
+      if (SettingsUtil.getValue(SettingsStorageKeys.defaultShowDanmaku,
+          defaultValue: true)) {
         controller._isDanmakuOpened = true;
       } else {
         controller._isDanmakuOpened = false;

@@ -30,7 +30,6 @@ class _VideoAudioPlayerState extends State<VideoAudioPlayer> {
   void initState() {
     Future.microtask(() async {
       await widget.controller.init();
-      setState(() {});
     });
     super.initState();
   }
@@ -127,8 +126,9 @@ class PlayersSingleton {
       await cancelSubscriptions();
       initSubscriptions();
       videoController = await VideoController.create(player!,
-          enableHardwareAcceleration: BiliYouStorage.settings
-              .get(SettingsStorageKeys.isHardwareDecode, defaultValue: true));
+          enableHardwareAcceleration: SettingsUtil.getValue(
+              SettingsStorageKeys.isHardwareDecode,
+              defaultValue: true));
       await Future.doWhile(() async {
         await Future.delayed(const Duration(milliseconds: 100));
         if (_isPlayerReady) {

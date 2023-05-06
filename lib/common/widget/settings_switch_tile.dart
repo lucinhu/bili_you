@@ -1,4 +1,4 @@
-import 'package:bili_you/common/utils/bili_you_storage.dart';
+import 'package:bili_you/common/utils/settings.dart';
 import 'package:flutter/material.dart';
 
 class SettingsSwitchTile extends StatelessWidget {
@@ -24,10 +24,9 @@ class SettingsSwitchTile extends StatelessWidget {
       subtitle: Text(subTitle),
       trailing: StatefulBuilder(builder: (context, setState) {
         return Switch(
-          value: BiliYouStorage.settings
-              .get(settingsKey, defaultValue: defualtValue),
+          value: SettingsUtil.getValue(settingsKey, defaultValue: defualtValue),
           onChanged: (value) async {
-            await BiliYouStorage.settings.put(settingsKey, value);
+            await SettingsUtil.setValue(settingsKey, value);
             setState(() {});
             apply?.call();
           },

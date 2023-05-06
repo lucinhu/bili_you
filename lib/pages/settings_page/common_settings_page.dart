@@ -25,15 +25,17 @@ class CommonSettingsPage extends StatelessWidget {
           SettingsRadiosTile(
             title: '推荐列数',
             subTitle: '首页推荐卡片的列数',
-            buildTrailingText: () => BiliYouStorage.settings
-                .get(SettingsStorageKeys.recommendColumnCount, defaultValue: 2)
+            buildTrailingText: () => SettingsUtil.getValue(
+                    SettingsStorageKeys.recommendColumnCount,
+                    defaultValue: 2)
                 .toString(),
             itemNameValue: const {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5},
-            buildGroupValue: () => BiliYouStorage.settings
-                .get(SettingsStorageKeys.recommendColumnCount, defaultValue: 2),
+            buildGroupValue: () => SettingsUtil.getValue(
+                SettingsStorageKeys.recommendColumnCount,
+                defaultValue: 2),
             applyValue: (value) async {
-              await BiliYouStorage.settings
-                  .put(SettingsStorageKeys.recommendColumnCount, value);
+              await SettingsUtil.setValue(
+                  SettingsStorageKeys.recommendColumnCount, value);
               Get.find<RecommendController>().recommendColumnCount = value;
               await Get.find<RecommendController>()
                   .refreshController
@@ -112,14 +114,16 @@ class CommonSettingsPage extends StatelessWidget {
           SettingsRadiosTile(
             title: '偏好视频编码',
             subTitle: '默认偏好选择的视频编码',
-            buildTrailingText: () => BiliYouStorage.settings
-                .get(SettingsStorageKeys.preferVideoCodec, defaultValue: 'hev'),
+            buildTrailingText: () => SettingsUtil.getValue(
+                SettingsStorageKeys.preferVideoCodec,
+                defaultValue: 'hev'),
             itemNameValue: const {'hev': 'hev', 'avc': 'avc', 'av01': 'av01'},
-            buildGroupValue: () => BiliYouStorage.settings
-                .get(SettingsStorageKeys.preferVideoCodec, defaultValue: 'hev'),
+            buildGroupValue: () => SettingsUtil.getValue(
+                SettingsStorageKeys.preferVideoCodec,
+                defaultValue: 'hev'),
             applyValue: (value) {
-              BiliYouStorage.settings
-                  .put(SettingsStorageKeys.preferVideoCodec, value);
+              SettingsUtil.setValue(
+                  SettingsStorageKeys.preferVideoCodec, value);
             },
           ),
           SettingsRadiosTile(

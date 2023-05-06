@@ -50,6 +50,8 @@ class _ReplyPageState extends State<ReplyPage>
   Widget _buildView(ReplyController controller) {
     return SimpleEasyRefresher(
       childBuilder: (context, physics) => ListView.builder(
+        addAutomaticKeepAlives: false,
+        addRepaintBoundaries: false,
         controller: controller.scrollController,
         physics: physics,
         padding: const EdgeInsets.all(0),
