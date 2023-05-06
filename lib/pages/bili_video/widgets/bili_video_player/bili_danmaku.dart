@@ -35,7 +35,7 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
 
   void videoPlayerSeekToCallback(Duration position) {
     danmakuController?.clear();
-    _findPositionIndex(position.inMilliseconds);
+    widget.controller._findPositionIndex(position.inMilliseconds);
   }
 
   void videoPlayerListenerCallback() {
@@ -58,7 +58,7 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
               .dmSegList[widget.controller.currentSegmentIndex]
               .elems[widget.controller.currentIndex];
           var delta = currentPosition - element.progress;
-          if (delta >= 0) {
+          if (delta >= 0 && delta < 200) {
             late DanmakuItemType type;
             if (element.mode >= 1 && element.mode <= 3) {
               type = DanmakuItemType.scroll;
@@ -75,6 +75,9 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
                   type: type)
             ]);
             widget.controller.currentIndex++;
+          } else {
+            widget.controller._findPositionIndex(widget
+                .controller.biliVideoPlayerController.position.inMilliseconds);
           }
         } else {
           //换下一节
@@ -88,55 +91,6 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
           duration: widget.controller.initDuration /
               widget.controller.biliVideoPlayerController.speed));
       isListenerLocked = false;
-    }
-  }
-
-  Future<void> _requestDanmaku() async {
-    widget.controller.dmSegList.clear();
-    widget.controller.segmentCount =
-        (widget.controller.biliVideoPlayerController.videoPlayInfo!.timeLength /
-                (60 * 6))
-            .ceil();
-    for (int segmentIndex = 1;
-        segmentIndex <= widget.controller.segmentCount;
-        segmentIndex++) {
-      log(widget.controller.biliVideoPlayerController.cid.toString());
-      var response = await DanmakuApi.requestDanmaku(
-          cid: widget.controller.biliVideoPlayerController.cid,
-          segmentIndex: segmentIndex);
-      response.elems.sort((a, b) {
-        return a.progress - b.progress;
-      });
-      widget.controller.dmSegList.add(response);
-      widget.controller._isInitialized = true;
-      _findPositionIndex(
-          widget.controller.biliVideoPlayerController.position.inMilliseconds);
-    }
-  }
-
-  void _findPositionIndex(int videoPosition) {
-    //使用二分查找法查距离最近的弹幕的位置
-    var controller = widget.controller;
-    int segIndex = (videoPosition / 360000).ceil() - 1;
-    if (segIndex < 0) segIndex = 0;
-    if (segIndex < controller.dmSegList.length) {
-      int left = 0;
-      int right = controller.dmSegList[segIndex].elems.length;
-      while (left < right) {
-        int mid = (right + left) ~/ 2;
-        var midPosition = controller.dmSegList[segIndex].elems[mid].progress;
-        if (midPosition >= videoPosition) {
-          right = mid;
-        } else {
-          left = mid + 1;
-        }
-      }
-      controller.currentSegmentIndex = segIndex;
-      controller.currentIndex = right;
-    } else {
-      //如果还没加载好这部分的内容,则设index为0
-      controller.currentSegmentIndex = segIndex;
-      controller.currentIndex = 0;
     }
   }
 
@@ -180,6 +134,9 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
           setState(() {});
         }
       };
+      widget.controller.refreshDanmaku = () {
+        if (mounted) setState(() {});
+      };
     }
     widget.controller._isInitializedState = true;
 
@@ -203,15 +160,7 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
       widget.controller.initDuration = box.maxWidth / 80;
       return DanmakuView(
         createdController: (danmakuController) async {
-          if (widget.controller.dmSegList.isEmpty &&
-              widget.controller.isDanmakuOpened) {
-            //如果弹幕列表还是空的话，而且是可见的，就进行请求获取弹幕
-            _requestDanmaku();
-          } else {
-            _findPositionIndex(widget
-                .controller.biliVideoPlayerController.position.inMilliseconds);
-          }
-
+          widget.controller.initDanmaku();
           this.danmakuController = danmakuController;
         },
         option: DanmakuOption(
@@ -239,12 +188,67 @@ class BiliDanmakuController {
 
   void Function()? clearAllDanmaku;
   void Function()? reloadDanmaku;
+  void Function()? refreshDanmaku;
 
   bool _isDanmakuOpened = true;
   bool get isDanmakuOpened => _isDanmakuOpened;
 
+  Future<void> _requestDanmaku() async {
+    dmSegList.clear();
+    segmentCount =
+        (biliVideoPlayerController.videoPlayInfo!.timeLength / (60 * 6)).ceil();
+    for (int segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) {
+      log(biliVideoPlayerController.cid.toString());
+      var response = await DanmakuApi.requestDanmaku(
+          cid: biliVideoPlayerController.cid, segmentIndex: segmentIndex);
+      response.elems.sort((a, b) {
+        return a.progress - b.progress;
+      });
+      dmSegList.add(response);
+      _isInitialized = true;
+      _findPositionIndex(biliVideoPlayerController.position.inMilliseconds);
+    }
+  }
+
+  void _findPositionIndex(int videoPosition) {
+    //使用二分查找法查距离最近的弹幕的位置
+    var controller = this;
+    int segIndex = (videoPosition / 360000).ceil() - 1;
+    if (segIndex < 0) segIndex = 0;
+    if (segIndex < controller.dmSegList.length) {
+      int left = 0;
+      int right = controller.dmSegList[segIndex].elems.length;
+      while (left < right) {
+        int mid = (right + left) ~/ 2;
+        var midPosition = controller.dmSegList[segIndex].elems[mid].progress;
+        if (midPosition >= videoPosition) {
+          right = mid;
+        } else {
+          left = mid + 1;
+        }
+      }
+      controller.currentSegmentIndex = segIndex;
+      controller.currentIndex = right;
+    } else {
+      //如果还没加载好这部分的内容,则设index为0
+      controller.currentSegmentIndex = segIndex;
+      controller.currentIndex = 0;
+    }
+  }
+
+  void initDanmaku() {
+    if (!_isInitialized && dmSegList.isEmpty && isDanmakuOpened) {
+      //如果弹幕列表还是空的话，而且是可见的，就进行请求获取弹幕
+      _requestDanmaku();
+    } else {
+      _findPositionIndex(biliVideoPlayerController.position.inMilliseconds);
+    }
+  }
+
   void toggleDanmaku() {
     _isDanmakuOpened = !_isDanmakuOpened;
     clearAllDanmaku?.call();
+    refreshDanmaku?.call();
+    initDanmaku();
   }
 }
