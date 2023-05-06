@@ -61,15 +61,20 @@ class CommonSettingsPage extends StatelessWidget {
               defualtValue: true),
           const SettingsLabel(text: '弹幕'),
           const SettingsSwitchTile(
-              title: '默认显示弹幕',
+              title: '默认打开弹幕',
               subTitle: '在进入视频的时候是否默认打开弹幕',
               settingsKey: SettingsStorageKeys.defaultShowDanmaku,
               defualtValue: true),
           const SettingsSwitchTile(
-              title: '保持弹幕开关状态',
-              subTitle: '是否在切换视频后保持弹幕开关状态',
+              title: '记住弹幕开关状态',
+              subTitle: '是否在切换视频后记住上一次视频的弹幕开关状态',
               settingsKey: SettingsStorageKeys.rememberDanmakuSwitch,
               defualtValue: false),
+          const SettingsSwitchTile(
+              title: '记住弹幕设置',
+              subTitle: '是否在切换视频后记住字体大小、不透明度、播放速度',
+              settingsKey: SettingsStorageKeys.rememberDanmakuSettings,
+              defualtValue: true),
           SettingsSliderTile(
             title: '字体大小',
             subTitle: '弹幕字体大小缩放',
@@ -77,18 +82,20 @@ class CommonSettingsPage extends StatelessWidget {
             defualtValue: 1.0,
             min: 0.25,
             max: 4,
-            divisions: 15,
-            buildLabel: (selectingValue) => "${selectingValue}X",
+            divisions: 100,
+            buildLabel: (selectingValue) =>
+                "${selectingValue.toStringAsFixed(2)}X",
           ),
           SettingsSliderTile(
             title: '不透明度',
             subTitle: '弹幕字体不透明度',
             settingsKey: SettingsStorageKeys.defaultDanmakuOpacity,
-            defualtValue: 1.0,
+            defualtValue: 0.6,
             min: 0.01,
             max: 1.0,
             divisions: 100,
-            buildLabel: (selectingValue) => selectingValue.toStringAsFixed(2),
+            buildLabel: (selectingValue) =>
+                "${(selectingValue * 100).toStringAsFixed(0)}%",
           ),
           SettingsSliderTile(
             title: '播放速度',
@@ -98,7 +105,7 @@ class CommonSettingsPage extends StatelessWidget {
             min: 0.25,
             max: 4,
             divisions: 15,
-            buildLabel: (selectingValue) => "$selectingValue",
+            buildLabel: (selectingValue) => "${selectingValue}X",
           ),
           const SettingsLabel(text: '视频'),
           SettingsSwitchTile(

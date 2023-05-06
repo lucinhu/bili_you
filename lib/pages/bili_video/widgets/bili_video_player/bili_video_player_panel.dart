@@ -326,7 +326,13 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                               PopupMenuItem(
                                   value: "音质",
                                   child: Text(
-                                      "音质: ${widget.controller._biliVideoPlayerController.audioPlayItem!.quality.description ?? "未知"}"))
+                                      "音质: ${widget.controller._biliVideoPlayerController.audioPlayItem!.quality.description ?? "未知"}")),
+                              const PopupMenuItem(
+                                  value: "弹幕字体大小", child: Text("弹幕字体大小")),
+                              const PopupMenuItem(
+                                  value: "弹幕不透明度", child: Text("弹幕不透明度")),
+                              const PopupMenuItem(
+                                  value: "弹幕速度", child: Text("弹幕速度"))
                             ];
                           },
                           onSelected: (value) {
@@ -344,7 +350,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                                           min: 0.25,
                                           max: 4.00,
                                           divisions: 15,
-                                          onYes: (value) {
+                                          onOk: (value) {
                                             widget.controller
                                                 ._biliVideoPlayerController
                                                 .setPlayBackSpeed(value);
@@ -404,6 +410,111 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                                       ),
                                     );
                                   },
+                                );
+                                break;
+                              case '弹幕字体大小':
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => SliderDialog(
+                                    title: '弹幕字体大小',
+                                    initValue: widget
+                                        .controller
+                                        ._biliVideoPlayerController
+                                        .biliDanmakuController!
+                                        .fontScale,
+                                    showCancelButton: false,
+                                    min: 0.25,
+                                    max: 4,
+                                    divisions: 100,
+                                    buildLabel: (selectingValue) =>
+                                        "${selectingValue.toStringAsFixed(2)}X",
+                                    onChanged: (selectingValue) {
+                                      widget
+                                          .controller
+                                          ._biliVideoPlayerController
+                                          .biliDanmakuController!
+                                          .fontScale = selectingValue;
+                                      if (SettingsUtil.getValue(
+                                          SettingsStorageKeys
+                                              .rememberDanmakuSettings,
+                                          defaultValue: true)) {
+                                        SettingsUtil.setValue(
+                                            SettingsStorageKeys
+                                                .defaultDanmakuScale,
+                                            selectingValue);
+                                      }
+                                    },
+                                  ),
+                                );
+                                break;
+                              case '弹幕不透明度':
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => SliderDialog(
+                                    title: '弹幕不透明度',
+                                    initValue: widget
+                                        .controller
+                                        ._biliVideoPlayerController
+                                        .biliDanmakuController!
+                                        .fontOpacity,
+                                    showCancelButton: false,
+                                    min: 0.01,
+                                    max: 1.0,
+                                    divisions: 100,
+                                    buildLabel: (selectingValue) =>
+                                        "${(selectingValue * 100).toStringAsFixed(0)}%",
+                                    onChanged: (selectingValue) {
+                                      widget
+                                          .controller
+                                          ._biliVideoPlayerController
+                                          .biliDanmakuController!
+                                          .fontOpacity = selectingValue;
+                                      if (SettingsUtil.getValue(
+                                          SettingsStorageKeys
+                                              .rememberDanmakuSettings,
+                                          defaultValue: true)) {
+                                        SettingsUtil.setValue(
+                                            SettingsStorageKeys
+                                                .defaultDanmakuOpacity,
+                                            selectingValue);
+                                      }
+                                    },
+                                  ),
+                                );
+                                break;
+                              case '弹幕速度':
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => SliderDialog(
+                                    title: '弹幕速度',
+                                    initValue: widget
+                                        .controller
+                                        ._biliVideoPlayerController
+                                        .biliDanmakuController!
+                                        .speed,
+                                    showCancelButton: false,
+                                    min: 0.25,
+                                    max: 4,
+                                    divisions: 15,
+                                    buildLabel: (selectingValue) =>
+                                        "${selectingValue}X",
+                                    onChanged: (selectingValue) {
+                                      widget
+                                          .controller
+                                          ._biliVideoPlayerController
+                                          .biliDanmakuController!
+                                          .speed = selectingValue;
+                                      if (SettingsUtil.getValue(
+                                          SettingsStorageKeys
+                                              .rememberDanmakuSettings,
+                                          defaultValue: true)) {
+                                        SettingsUtil.setValue(
+                                            SettingsStorageKeys
+                                                .defaultDanmakuSpeed,
+                                            selectingValue);
+                                      }
+                                    },
+                                  ),
                                 );
                                 break;
                               default:

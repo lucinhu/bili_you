@@ -261,7 +261,7 @@ class BiliDanmakuController {
           defaultValue: 1.0);
       fontOpacity = SettingsUtil.getValue(
           SettingsStorageKeys.defaultDanmakuOpacity,
-          defaultValue: 1.0);
+          defaultValue: 0.6);
     } else {
       _findPositionIndex(biliVideoPlayerController.position.inMilliseconds);
     }

@@ -54,6 +54,9 @@ class SettingsStorageKeys {
   ///保持弹幕开关状态
   static const String rememberDanmakuSwitch = "rememberDanmakuSwitch";
 
+  ///保持弹幕设置
+  static const String rememberDanmakuSettings = "rememberDanmakuSettings";
+
   ///默认弹幕速度
   static const String defaultDanmakuSpeed = "defaultDanmakuSpeed";
 

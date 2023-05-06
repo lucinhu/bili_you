@@ -52,7 +52,7 @@ class _SettingsSliderTileState extends State<SettingsSliderTile> {
             max: widget.max,
             divisions: widget.divisions,
             buildLabel: widget.buildLabel,
-            onYes: (selectingValue) async {
+            onOk: (selectingValue) async {
               await SettingsUtil.setValue(widget.settingsKey, selectingValue);
               setState(() {});
             },
