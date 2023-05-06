@@ -7,7 +7,7 @@ class SliderDialog extends StatefulWidget {
       required this.initValue,
       required this.min,
       required this.max,
-      required this.divisions,
+      this.divisions,
       this.onYes,
       this.onCancel,
       this.onChanged,
@@ -16,7 +16,7 @@ class SliderDialog extends StatefulWidget {
   final double initValue;
   final double min;
   final double max;
-  final int divisions;
+  final int? divisions;
 
   final void Function(double selectingValue)? onCancel;
   final void Function(double selectingValue)? onYes;

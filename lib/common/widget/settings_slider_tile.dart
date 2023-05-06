@@ -11,7 +11,7 @@ class SettingsSliderTile extends StatefulWidget {
       required this.defualtValue,
       required this.min,
       required this.max,
-      required this.divisions,
+      this.divisions,
       required this.buildLabel});
   final String title;
   final String subTitle;
@@ -20,7 +20,7 @@ class SettingsSliderTile extends StatefulWidget {
 
   final double min;
   final double max;
-  final int divisions;
+  final int? divisions;
 
   ///构建trailing和slider的label
   final String Function(double selectingValue)? buildLabel;

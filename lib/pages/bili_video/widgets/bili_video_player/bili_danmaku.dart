@@ -87,9 +87,12 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
       }
       // updateWidget();
       danmakuController?.updateOption(DanmakuOption(
+          fontSize: 16 * widget.controller.fontScale,
+          opacity: widget.controller.fontOpacity,
           area: 0.5,
           duration: widget.controller.initDuration /
-              widget.controller.biliVideoPlayerController.speed));
+              (widget.controller.biliVideoPlayerController.speed *
+                  widget.controller.speed)));
       isListenerLocked = false;
     }
   }
@@ -164,9 +167,12 @@ class _BiliDanmakuState extends State<BiliDanmaku> {
           this.danmakuController = danmakuController;
         },
         option: DanmakuOption(
+            fontSize: 16 * widget.controller.fontScale,
+            opacity: widget.controller.fontOpacity,
             area: 0.5,
             duration: widget.controller.initDuration /
-                widget.controller.biliVideoPlayerController.speed),
+                (widget.controller.biliVideoPlayerController.speed *
+                    widget.controller.speed)),
         statusChanged: (isPlaying) {
           this.isPlaying = isPlaying;
         },
@@ -185,6 +191,15 @@ class BiliDanmakuController {
   List<DmSegMobileReply> dmSegList = [];
   bool _isInitializedState = false;
   bool _isInitialized = false;
+
+  ///字体缩放
+  double fontScale = 1.0;
+
+  ///字体不透明度
+  double fontOpacity = 1.0;
+
+  ///弹幕速度
+  double speed = 1.0;
 
   void Function()? clearAllDanmaku;
   void Function()? reloadDanmaku;
@@ -240,6 +255,13 @@ class BiliDanmakuController {
     if (!_isInitialized && dmSegList.isEmpty && isDanmakuOpened) {
       //如果弹幕列表还是空的话，而且是可见的，就进行请求获取弹幕
       _requestDanmaku();
+      speed = SettingsUtil.getValue(SettingsStorageKeys.defaultDanmakuSpeed,
+          defaultValue: 1.0);
+      fontScale = SettingsUtil.getValue(SettingsStorageKeys.defaultDanmakuScale,
+          defaultValue: 1.0);
+      fontOpacity = SettingsUtil.getValue(
+          SettingsStorageKeys.defaultDanmakuOpacity,
+          defaultValue: 1.0);
     } else {
       _findPositionIndex(biliVideoPlayerController.position.inMilliseconds);
     }
