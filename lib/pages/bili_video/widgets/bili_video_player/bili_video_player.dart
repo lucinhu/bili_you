@@ -63,6 +63,9 @@ class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
 
   @override
   void dispose() async {
+    if (widget.controller.isFullScreen) {
+      await widget.controller.toggleFullScreen();
+    }
     super.dispose();
     heartBeat?.cancel();
   }
@@ -70,62 +73,53 @@ class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
   @override
   Widget build(BuildContext context) {
     widget.controller.updateWidget = updateWidget;
-    return WillPopScope(
-      onWillPop: () async {
-        if (widget.controller.isFullScreen) {
-          await widget.controller.toggleFullScreen();
-        }
-        return true;
-      },
-      child: Hero(
-        tag: widget.heroTagId,
-        child: Container(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          color: Colors.black,
-          child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: FutureBuilder(
-                future: widget.controller
-                    .initPlayer(widget.controller.bvid, widget.controller.cid),
-                builder: (context, snapshot) {
-                  late Widget centrolWidget;
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.data == true) {
-                      centrolWidget = VideoAudioPlayer(
-                        widget.controller._videoAudioController!,
-                        asepectRatio:
-                            (widget.controller.videoPlayItem!.width.toDouble() /
-                                    widget.controller.videoPlayItem!.height
-                                        .toDouble()) *
-                                widget.controller.videoPlayItem!.sar,
-                      );
-                    } else {
-                      //加载失败,重试按钮
-                      centrolWidget = IconButton(
-                          onPressed: () async {
-                            await widget.controller._videoAudioController
-                                ?.play();
-                            setState(() {});
-                          },
-                          icon: const Icon(Icons.refresh_rounded));
-                    }
-                    return Stack(fit: StackFit.expand, children: [
-                      Center(
-                        child: centrolWidget,
-                      ),
-                      Center(
-                        child: danmaku,
-                      ),
-                      Center(
-                        child: controllPanel,
-                      ),
-                    ]);
+    return Hero(
+      tag: widget.heroTagId,
+      child: Container(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        color: Colors.black,
+        child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: FutureBuilder(
+              future: widget.controller
+                  .initPlayer(widget.controller.bvid, widget.controller.cid),
+              builder: (context, snapshot) {
+                late Widget centrolWidget;
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.data == true) {
+                    centrolWidget = VideoAudioPlayer(
+                      widget.controller._videoAudioController!,
+                      asepectRatio:
+                          (widget.controller.videoPlayItem!.width.toDouble() /
+                                  widget.controller.videoPlayItem!.height
+                                      .toDouble()) *
+                              widget.controller.videoPlayItem!.sar,
+                    );
                   } else {
-                    return const Center(child: CircularProgressIndicator());
+                    //加载失败,重试按钮
+                    centrolWidget = IconButton(
+                        onPressed: () async {
+                          await widget.controller._videoAudioController?.play();
+                          setState(() {});
+                        },
+                        icon: const Icon(Icons.refresh_rounded));
                   }
-                },
-              )),
-        ),
+                  return Stack(fit: StackFit.expand, children: [
+                    Center(
+                      child: centrolWidget,
+                    ),
+                    Center(
+                      child: danmaku,
+                    ),
+                    Center(
+                      child: controllPanel,
+                    ),
+                  ]);
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            )),
       ),
     );
   }
@@ -310,7 +304,6 @@ class BiliVideoPlayerController {
     if (isFullScreen) {
       //退出全屏
       isFullScreen = false;
-      Navigator.pop(Get.context!);
       await exitFullScreen();
       await portraitUp();
     } else {

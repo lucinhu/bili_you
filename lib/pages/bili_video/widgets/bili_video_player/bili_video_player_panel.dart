@@ -52,6 +52,9 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
   }
 
   void toggleFullScreen() {
+    if (widget.controller._biliVideoPlayerController.isFullScreen) {
+      Navigator.of(context).pop();
+    }
     widget.controller._biliVideoPlayerController.toggleFullScreen();
   }
 
