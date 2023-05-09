@@ -1,0 +1,6 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project Runner.xcodeproj -scheme bili_you Release
+
+User defaults from command line:
+    IDEPackageSupportUseBuiltinSCM = YES
+
