@@ -1,0 +1,10 @@
+[Desktop Entry]
+Categories=AudioVideo;
+Comment[zh_CN]=第三方b站客户端
+Comment=Three party bilibili client.
+Exec=/opt/bili_you
+Icon=/opt/data/flutter_assets/assets/icon/bili
+Name[zh_CN]=BiliYou
+Name=BiliYou
+Terminal=false
+Type=Application
