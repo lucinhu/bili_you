@@ -18,6 +18,8 @@ class _BiliBrowserState extends State<BiliBrowser> {
   GlobalKey progressBarKey = GlobalKey();
   double progressBarValue = 0;
   final WebViewController webViewController = WebViewController()
+    ..setUserAgent(
+        'Mozilla/5.0 (iPhone13,3; U; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/15E148 Safari/602.1')
     ..setJavaScriptMode(JavaScriptMode.unrestricted);
 
   @override
