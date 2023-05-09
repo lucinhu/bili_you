@@ -120,7 +120,7 @@ SPEC CHECKSUMS:
   media_kit_native_event_loop: 9f9eb778d0d806ab9486eff7513f7f90f07d50f8
   media_kit_video: c6ae801433b484912087b519b45f1beac97b960b
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
+  path_provider_foundation: eaf5b3e458fc0e5fbb9940fb09980e853fe058b8
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   screen_brightness_ios: 715ca807df953bf676d339f11464e438143ee625
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
@@ -133,4 +133,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: a57f30d18f102dd3ce366b1d62a55ecbef2158e5
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.1

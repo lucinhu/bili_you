@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 
@@ -11,7 +13,9 @@ Future<void> enterFullScreen() async {
 //退出全屏显示
 Future<void> exitFullScreen() async {
   late SystemUiMode mode;
-  if ((await DeviceInfoPlugin().androidInfo).version.sdkInt >= 29) {
+  if ((Platform.isAndroid &&
+          (await DeviceInfoPlugin().androidInfo).version.sdkInt >= 29) ||
+      !Platform.isAndroid) {
     mode = SystemUiMode.edgeToEdge;
   } else {
     mode = SystemUiMode.manual;
