@@ -13,7 +13,7 @@ class HttpUtils {
   static final HttpUtils _instance = HttpUtils._internal();
   factory HttpUtils() => _instance;
   static late final Dio dio;
-  static late CookieManager cookieManager;
+  static late final CookieManager cookieManager;
   CancelToken _cancelToken = CancelToken();
 
   ///初始化构造

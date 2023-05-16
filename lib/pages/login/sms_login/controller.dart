@@ -25,7 +25,7 @@ class PhoneLoginController extends GetxController {
 
   void onTap() {}
 
-//点击登陆
+//点击登录
   void startLogin() async {
     await startCaptcha(
       onSuccess: (captchaResult) async {

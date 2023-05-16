@@ -126,8 +126,8 @@ class UiTestController extends GetxController {
           ],
         ),
       ),
-      '密码登陆': const PasswordLoginPage(),
-      '短信登陆': const PhoneLoginPage(),
+      '密码登录': const PasswordLoginPage(),
+      '短信登录': const PhoneLoginPage(),
       '视频播放测试': Builder(
         builder: (context) => const BiliVideoPlayer(),
       ),

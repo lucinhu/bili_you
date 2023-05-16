@@ -251,7 +251,7 @@ class UserMenuPage extends GetView<UserMenuController> {
               ),
               UserMenuListTile(
                 icon: const Icon(Icons.logout_rounded),
-                title: "退出登陆",
+                title: "退出登录",
                 onTap: () {
                   controller.onLogout();
                 },

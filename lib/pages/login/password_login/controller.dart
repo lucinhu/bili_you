@@ -45,28 +45,28 @@ class PasswordLoginController extends GetxController {
         }
         if (passwordLoginResult.code != 0) {
           Get.rawSnackbar(
-              title: "登陆", message: "错误，${passwordLoginResult.message}");
+              title: "登录", message: "错误，${passwordLoginResult.message}");
           return;
         } else {
           late bool hasLogin;
           try {
             hasLogin = (await LoginApi.getLoginUserInfo()).isLogin;
           } catch (e) {
-            Get.rawSnackbar(title: "登陆", message: "失败!");
+            Get.rawSnackbar(title: "登录", message: "失败!");
           }
           if (passwordLoginResult.data!.status == 0 || hasLogin) {
-            Get.rawSnackbar(title: "登陆", message: "成功!");
+            Get.rawSnackbar(title: "登录", message: "成功!");
             await onLoginSuccess(await LoginApi.getLoginUserInfo(),
                 await LoginApi.getLoginUserStat());
             Navigator.of(Get.context!).popUntil((route) => route.isFirst);
           } else if (passwordLoginResult.data!.status == 2) {
             //提示当前环境有安全问题，需要手机验证或绑定
             Get.rawSnackbar(
-                title: "登陆", message: "错误! 当前环境有安全风险，请使用手机登陆或绑定手机号!");
+                title: "登录", message: "错误! 当前环境有安全风险，请使用手机登录或绑定手机号!");
             Get.off(() => const PhoneLoginPage());
           } else {
             Get.rawSnackbar(
-                title: "登陆",
+                title: "登录",
                 message:
                     "错误!,message:${passwordLoginResult.message},code:${passwordLoginResult.data!.status}");
           }

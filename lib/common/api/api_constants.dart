@@ -41,7 +41,7 @@ class ApiConstants {
   ///test: http://passtport.bilibili.com/x/passport-login/web/sms/send
   static const String smsCode = "$passportBase/x/passport-login/web/sms/send";
 
-  ///短信验证码登陆
+  ///短信验证码登录
   ///post请求
   static const String smsLogin = "$passportBase/x/passport-login/web/login/sms";
 
@@ -50,11 +50,15 @@ class ApiConstants {
   static const String qrcodeGenerate =
       "$passportBase/x/passport-login/web/qrcode/generate";
 
-  ///密码登陆前，获取publicKey和hash
+  ///扫码登录
+  static const String qrcodeLogin =
+      "$passportBase/x/passport-login/web/qrcode/poll";
+
+  ///密码登录前，获取publicKey和hash
   static const String passwordPublicKeyHash =
       "$passportBase/x/passport-login/web/key";
 
-  ///密码登陆
+  ///密码登录
   static const String passwordLogin =
       "$passportBase/x/passport-login/web/login";
 

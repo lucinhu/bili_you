@@ -394,8 +394,8 @@ class VideoAudioController {
 }
 
 class VideoAudioState {
-  bool isPlaying = true;
-  bool isBuffering = true;
+  bool isPlaying = false;
+  bool isBuffering = false;
   bool isEnd = false;
   Duration position = Duration.zero;
   Duration duration = Duration.zero;

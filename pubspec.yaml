@@ -50,7 +50,7 @@ dependencies:
   gt3_flutter_plugin: ^0.0.8
   flutter_cache_manager: ^3.3.0
   protobuf: ^2.1.0
-  connectivity_plus: ^3.0.4
+  connectivity_plus: ^4.0.0
 
   # 加解密
   encrypt: ^5.0.1
@@ -87,8 +87,8 @@ dependencies:
   wakelock: ^0.6.2
 
   # 设备&包信息
-  device_info_plus: ^8.1.0
-  package_info_plus: ^3.0.3
+  device_info_plus: ^8.2.2
+  package_info_plus: ^3.1.2
 
   # url跳转
   url_launcher: ^6.1.10
@@ -98,7 +98,7 @@ dependencies:
   hive_flutter: ^1.1.0
 
   # 分享
-  share_plus: ^6.3.1
+  share_plus: ^6.3.4
 
   # scheme 
   appscheme: ^1.0.8

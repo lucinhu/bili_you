@@ -17,7 +17,7 @@ import '../models/network/login/post_sms_login.dart' as raw;
 import '../models/network/login/post_sms_require.dart' as raw;
 
 abstract class LoginApi {
-  ///获取登陆需要的key和hash
+  ///获取登录需要的key和hash
   static Future<raw.PasswordLoginKeyHashResponse>
       requestPasswordLoginKeyHash() async {
     var response = await HttpUtils().get(
@@ -73,7 +73,7 @@ abstract class LoginApi {
     return raw.PostSmsLoginResponse.fromJson(response.data);
   }
 
-  ///密码登陆
+  ///密码登录
   static Future<raw.PostPasswordLoginResponse> postPasswordLoginInfo(
       raw.CaptchaResultModel captchaResult,
       raw.PasswordLoginKeyHashResponse passwordLoginKeyHash,
