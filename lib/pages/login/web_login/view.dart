@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:bili_you/common/api/index.dart';
 import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:bili_you/pages/login/controller.dart';
+import 'package:bili_you/pages/login/qrcode_login/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
@@ -97,6 +98,13 @@ class _WebLoginPageState extends State<WebLoginPage> {
         appBar: AppBar(
           title: const Text("网页登录"),
           actions: [
+            TextButton(
+                onPressed: () async {
+                  Navigator.of(context).push(GetPageRoute(
+                    page: () => const QrcodeLogin(),
+                  ));
+                },
+                child: const Text("二维码登录")),
             TextButton(
                 onPressed: () async {
                   await getCookies();

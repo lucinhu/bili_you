@@ -1,4 +1,6 @@
 import 'package:bili_you/common/models/local/login/level_info.dart';
+import 'package:bili_you/common/models/local/login/login_qrcode_info.dart';
+import 'package:bili_you/common/models/local/login/login_qrcode_stat.dart';
 import 'package:bili_you/common/models/local/login/login_user_info.dart';
 import 'package:bili_you/common/models/local/login/login_user_stat.dart';
 import 'package:bili_you/common/models/local/reply/official_verify.dart';
@@ -166,5 +168,30 @@ abstract class LoginApi {
         followerCount: data.follower ?? 0,
         followingCount: data.following ?? 0,
         dynamicCount: data.dynamicCount ?? 0);
+  }
+
+  ///获取二维码
+  static Future<LoginQRcodeInfo> getQRcode() async {
+    var response = await HttpUtils().get(ApiConstants.qrcodeGenerate);
+    if (response.data['code'] != 0) {
+      throw "getQRcode: code:${response.data['code']}, message:${response.data['message']}";
+    }
+    LoginQRcodeInfo qrcode = LoginQRcodeInfo();
+    qrcode.qrcodeKey = response.data?['data']?['qrcode_key'] ?? '';
+    qrcode.url = response.data?['data']?['url'] ?? '';
+    return qrcode;
+  }
+
+  ///检查维码登录，若登录会自动设置cookie
+  ///qrcodeKey超时时长为180秒
+  static Future<LoginQrcodeStat> checkQRcodeLogin(
+      {required String qrcodeKey}) async {
+    var response = await HttpUtils().get(ApiConstants.qrcodeLogin,
+        queryParameters: {'qrcode_key': qrcodeKey});
+    if (response.data['code'] != 0) {
+      throw "checkQRcodeLogin: code:${response.data['code']}, message:${response.data['message']}";
+    }
+    return LoginQrcodeStatExtension.fromCode(
+        response.data?['data']?['code'] ?? -1);
   }
 }

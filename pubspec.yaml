@@ -108,6 +108,7 @@ dependencies:
 
   # 亮度控制
   screen_brightness: ^0.2.2
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   build_runner: ^2.3.3
