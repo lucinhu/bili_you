@@ -60,8 +60,8 @@ class BiliVideoController extends GetxController
   }
 
   @override
-  void onClose() async {
-    await biliVideoPlayerController.dispose();
+  void onClose() {
+    biliVideoPlayerController.dispose();
     super.onClose();
   }
 }

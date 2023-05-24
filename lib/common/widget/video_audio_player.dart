@@ -28,20 +28,29 @@ class VideoAudioPlayer extends StatefulWidget {
 class _VideoAudioPlayerState extends State<VideoAudioPlayer> {
   @override
   void initState() {
-    Future.microtask(() async {
-      await widget.controller.init();
-    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Video(
-      controller: PlayersSingleton().videoController,
-      width: widget.width,
-      height: widget.height,
-      fit: widget.fit,
-      aspectRatio: widget.asepectRatio,
+    return FutureBuilder(
+      future: widget.controller.init(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Video(
+            controller: VideoController(PlayersSingleton().player!,
+                enableHardwareAcceleration: SettingsUtil.getValue(
+                    SettingsStorageKeys.isHardwareDecode,
+                    defaultValue: true)),
+            width: widget.width,
+            height: widget.height,
+            fit: widget.fit,
+            aspectRatio: widget.asepectRatio,
+          );
+        } else {
+          return const CircularProgressIndicator();
+        }
+      },
     );
   }
 }
@@ -50,7 +59,6 @@ class PlayersSingleton {
   static final PlayersSingleton _instance = PlayersSingleton._internal();
   factory PlayersSingleton() => _instance;
   PlayersSingleton._internal();
-  VideoController? videoController;
   Player? player;
   int count = 0;
   bool _isPlayerReady = false;
@@ -118,17 +126,17 @@ class PlayersSingleton {
   }
 
   Future<void> init() async {
-    if (player == null && videoController == null) {
+    if (player == null) {
       player = Player(
           configuration: PlayerConfiguration(
         ready: () => _isPlayerReady = true,
       ));
       await cancelSubscriptions();
       initSubscriptions();
-      videoController = await VideoController.create(player!,
-          enableHardwareAcceleration: SettingsUtil.getValue(
-              SettingsStorageKeys.isHardwareDecode,
-              defaultValue: true));
+      if (player!.platform is libmpvPlayer) {
+        await (player!.platform as libmpvPlayer)
+            .setProperty('hwdec-codecs', 'all');
+      }
       await Future.doWhile(() async {
         await Future.delayed(const Duration(milliseconds: 100));
         if (_isPlayerReady) {
@@ -140,8 +148,6 @@ class PlayersSingleton {
   }
 
   Future<void> dispose() async {
-    await videoController?.dispose();
-    videoController = null;
     await player?.dispose();
     player = null;
     _isPlayerReady = false;
@@ -206,19 +212,6 @@ class VideoAudioController {
     PlayersSingleton().pauseSubscriptions();
     //播放器单例引用
     var player = PlayersSingleton().player!;
-    //设置header
-    {
-      var name = 'http-header-fields';
-      var kvArray = <String>[];
-      if (headers != null) {
-        kvArray = [];
-        headers!.forEach((key, value) => kvArray.add('$key: $value'));
-        if (player.platform is libmpvPlayer) {
-          await (player.platform as libmpvPlayer)
-              .setProperty(name, kvArray.join(','));
-        }
-      }
-    }
     //设置音频源
     if (audioUrl.isNotEmpty) {
       await (player.platform as libmpvPlayer).setProperty(
@@ -228,7 +221,7 @@ class VideoAudioController {
               : audioUrl.replaceAll(':', '\\:'));
     }
     //设置视频源
-    await player.open(Media(videoUrl), play: false);
+    await player.open(Media(videoUrl, httpHeaders: headers), play: false);
     //设置监听
     _setStreamListener();
     PlayersSingleton().resumeSubscriptions();
@@ -260,7 +253,7 @@ class VideoAudioController {
   void _setStreamListener() {
     // 进度监听
     PlayersSingleton().positionListen!.onData((event) async {
-      log('position:$event');
+      // log('position:$event');
       state.position = event >= Duration.zero ? event : Duration.zero;
       for (var element in _listeners) {
         element();
@@ -379,17 +372,6 @@ class VideoAudioController {
 
   void removeListener(VoidCallback listener) {
     _listeners.remove(listener);
-  }
-
-  void changeCanvasScale(double scale) {
-    state.canvasScale = scale.clamp(0.25, 4);
-    PlayersSingleton().videoController?.setSize(
-        width:
-            (PlayersSingleton().videoController?.width ?? 1 * state.canvasScale)
-                .toInt(),
-        height: (PlayersSingleton().videoController?.height ??
-                1 * state.canvasScale)
-            .toInt());
   }
 }
 

@@ -33,7 +33,7 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
         await videopPlayer.setVolume(100);
         await videopPlayer.open(Media(videoPlayerInfo.videos.first.urls.first));
       }
-      controller = await VideoController.create(
+      controller = VideoController(
         videopPlayer,
       );
       await videopPlayer.play();
@@ -46,13 +46,13 @@ class _BiliVideoPlayerState extends State<BiliVideoPlayer> {
   void dispose() {
     Future.microtask(() async {
       await videopPlayer.dispose();
-      controller?.dispose();
+      // controller?.dispose();
     });
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Video(controller: controller);
+    return Video(controller: controller!);
   }
 }

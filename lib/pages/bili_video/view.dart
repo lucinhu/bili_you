@@ -81,12 +81,10 @@ class _BiliVideoPageState extends State<BiliVideoPage>
 
   @override
   void dispose() async {
-    // biliVideoController.onClose();
-    // biliVideoController.onDelete();
     //取消路由监听
+    controller.dispose();
     BiliVideoPage.routeObserver.unsubscribe(this);
     WidgetsBinding.instance.removeObserver(this);
-    controller.dispose();
     super.dispose();
   }
 
