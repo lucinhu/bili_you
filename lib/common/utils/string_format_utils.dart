@@ -143,4 +143,40 @@ class StringFormatUtils {
     if (str == newStr) return str;
     return replaceAllHtmlEntitiesToCharacter(newStr);
   }
+
+  ///将map转换成url查询字符串
+  static String mapToQueryString(Map<String, dynamic> params) {
+    if (params.isEmpty) {
+      return '';
+    }
+    final query = StringBuffer();
+    params.forEach((key, value) {
+      if (query.isNotEmpty) {
+        query.write('&');
+      }
+      query.write(Uri.encodeQueryComponent(key));
+      query.write('=');
+      query.write(Uri.encodeQueryComponent(value ?? ""));
+    });
+    return query.toString();
+  }
+
+  ///将map按key排序然后转换成url查询字符串
+  static String mapToQueryStringSorted(Map<String, dynamic> params) {
+    if (params.isEmpty) {
+      return '';
+    }
+    final query = StringBuffer();
+    params.keys.toList()
+      ..sort()
+      ..forEach((key) {
+        if (query.isNotEmpty) {
+          query.write('&');
+        }
+        query.write(Uri.encodeQueryComponent(key));
+        query.write('=');
+        query.write(Uri.encodeQueryComponent(params[key]?.toString() ?? ''));
+      });
+    return query.toString();
+  }
 }

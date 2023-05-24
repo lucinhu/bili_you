@@ -1,3 +1,4 @@
+import 'package:bili_you/common/api/wbi.dart';
 import 'package:bili_you/common/models/local/home/recommend_item_info.dart';
 import 'package:bili_you/common/models/network/home/recommend_video.dart';
 import 'package:bili_you/common/utils/http_utils.dart';
@@ -8,12 +9,8 @@ class HomeApi {
       int num, int refreshIdx) async {
     var response = await HttpUtils().get(
       ApiConstants.recommendItems,
-      queryParameters: {
-        'user-agent': ApiConstants.userAgent,
-        'feed_version': "V3",
-        'ps': num,
-        'fresh_idx': refreshIdx
-      },
+      queryParameters: await WbiSign.encodeParams(
+          {'feed_version': "V3", 'ps': num, 'fresh_idx': refreshIdx}),
     );
     return RecommendVideoResponse.fromJson(response.data);
   }

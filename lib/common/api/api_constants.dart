@@ -29,7 +29,7 @@ class ApiConstants {
   ///
   ///test: https://api.bilibili.com/x/web-interface/index/top/feed/rcmd?feed_version=V3&ps=12&fresh_idx=1
   static const String recommendItems =
-      "$apiBase/x/web-interface/index/top/feed/rcmd";
+      "$apiBase/x/web-interface/wbi/index/top/feed/rcmd";
 
   ///申请人机验证验证码
   ///?source=main_web
@@ -99,9 +99,6 @@ class ApiConstants {
   ///test: http://api.bilibili.com/x/web-interface/wbi/search/default
   static const String defualtSearchWord =
       "$apiBase/x/web-interface/wbi/search/default";
-
-  ///热搜网页版
-  static const String hotWordsWeb = "$sSearchBase/main/hotword";
 
   ///热搜手机版(现在使用的是这个)
   ///test: http://app.bilibili.com/x/v2/search/trending/ranking

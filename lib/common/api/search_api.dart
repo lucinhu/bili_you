@@ -1,4 +1,5 @@
 import 'package:bili_you/common/api/api_constants.dart';
+import 'package:bili_you/common/api/wbi.dart';
 import 'package:bili_you/common/models/local/reply/official_verify.dart';
 import 'package:bili_you/common/models/local/reply/reply_member.dart';
 import 'package:bili_you/common/models/local/search/default_search_word.dart';
@@ -17,7 +18,8 @@ import 'package:bili_you/common/utils/string_format_utils.dart';
 
 class SearchApi {
   static Future<DefaultSearchWordResponse> _requestDefaultSearchWords() async {
-    var response = await HttpUtils().get(ApiConstants.defualtSearchWord);
+    var response = await HttpUtils().get(ApiConstants.defualtSearchWord,
+        queryParameters: await WbiSign.encodeParams({}));
     return DefaultSearchWordResponse.fromJson(response.data);
   }
 
