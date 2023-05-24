@@ -355,7 +355,7 @@ class BiliVideoPlayerController {
   }
 
   Future<void> dispose() async {
-    await _reportHistory();
+    _reportHistory();
     await _videoAudioController?.dispose();
   }
 
