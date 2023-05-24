@@ -57,32 +57,38 @@ class _BiliVideoPageState extends State<BiliVideoPage>
 
   @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
     //订阅路由监听
     BiliVideoPage.routeObserver
         .subscribe(this, ModalRoute.of(context) as PageRoute);
+    super.didChangeDependencies();
   }
 
   @override
   void didPushNext() async {
-    super.didPushNext();
     //当进入下一个页面时
     //暂停视频
     await controller.biliVideoPlayerController.pause();
+    super.didPushNext();
   }
 
   @override
   void didPopNext() async {
-    super.didPopNext();
     //回到当前页面时
     //刷新页面
     await controller.biliVideoPlayerController.refreshPlayer();
+    super.didPopNext();
+  }
+
+  @override
+  void didPop() async {
+    await controller.biliVideoPlayerController.pause();
+    super.didPop();
   }
 
   @override
   void dispose() async {
-    //取消路由监听
     controller.dispose();
+    //取消路由监听
     BiliVideoPage.routeObserver.unsubscribe(this);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();

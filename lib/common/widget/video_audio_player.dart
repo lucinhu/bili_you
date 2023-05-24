@@ -304,6 +304,9 @@ class VideoAudioController {
   }
 
   void autoWakelockCallback(VideoAudioState value) {
+    if (Platform.isLinux) {
+      return;
+    }
     if (autoWakelock) {
       if (value.isPlaying) {
         Wakelock.enable();
