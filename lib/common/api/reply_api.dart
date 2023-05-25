@@ -52,14 +52,14 @@ class ReplyApi {
   }
 
   ///原始评论数据转评论数据
-  static ReplyItem _replyItemRawToReplyItem(reply_raw.ReplyItemRaw raw) {
+  static ReplyItem replyItemRawToReplyItem(reply_raw.ReplyItemRaw raw) {
     //将message中html字符实体改为对应的文字符号
     raw.content?.message = StringFormatUtils.replaceAllHtmlEntitiesToCharacter(
         raw.content?.message ?? "");
     //外显示评论
     List<ReplyItem> preReplies = [];
     for (var i in raw.replies ?? <reply_raw.ReplyItemRaw>[]) {
-      preReplies.add(_replyItemRawToReplyItem(i));
+      preReplies.add(replyItemRawToReplyItem(i));
     }
     //at到的人
     List<ReplyMember> atMembers = [];
@@ -141,12 +141,12 @@ class ReplyApi {
     return await compute((response) {
       List<ReplyItem> replies = [];
       for (var i in response.data!.replies!) {
-        replies.add(_replyItemRawToReplyItem(i));
+        replies.add(replyItemRawToReplyItem(i));
       }
       List<ReplyItem> topReplies = [];
       if (response.data!.topReplies != null) {
         for (var i in response.data!.topReplies!) {
-          topReplies.add(_replyItemRawToReplyItem(i));
+          topReplies.add(replyItemRawToReplyItem(i));
         }
       }
       return ReplyInfo(
@@ -199,11 +199,11 @@ class ReplyApi {
     }
     List<ReplyItem> replies = [];
     for (var i in response.data!.replies!) {
-      replies.add(_replyItemRawToReplyItem(i));
+      replies.add(replyItemRawToReplyItem(i));
     }
     return ReplyReplyInfo(
         replies: replies,
-        rootReply: _replyItemRawToReplyItem(response.data!.root!),
+        rootReply: replyItemRawToReplyItem(response.data!.root!),
         upperMid: response.data!.upper?.mid ?? 0,
         replyCount: response.data!.page?.count ?? 0);
   }

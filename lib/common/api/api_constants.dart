@@ -119,6 +119,9 @@ class ApiConstants {
   ///评论的回复
   static const String replyReply = "$apiBase/x/v2/reply/reply";
 
+  ///发表评论
+  static const String addReply = "$apiBase/x/v2/reply/add";
+
   ///弹幕
   static const String danmaku = "$apiBase/x/v2/dm/web/seg.so";
 

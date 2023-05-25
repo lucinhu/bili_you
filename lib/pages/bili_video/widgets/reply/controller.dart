@@ -3,6 +3,7 @@ import 'package:bili_you/common/api/reply_api.dart';
 import 'package:bili_you/common/models/local/reply/reply_info.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/pages/bili_video/widgets/reply/add_reply_util.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class ReplyController extends GetxController {
   ScrollController scrollController = ScrollController();
   List<ReplyItem> replyItems = [];
   List<ReplyItem> topReplyItems = [];
+  List<ReplyItem> newReplyItems = []; //新增的评论
   int upperMid = 0;
   int replyCount = 0;
   int pageNum = 1;
@@ -27,6 +29,7 @@ class ReplyController extends GetxController {
   RxString sortTypeText = "按热度".obs;
   RxString sortInfoText = "热门评论".obs;
   ReplySort _replySort = ReplySort.like;
+  Function()? updateWidget;
 
   //切换排列方式
   void toggleSort() {
@@ -90,6 +93,7 @@ class ReplyController extends GetxController {
   onReplyRefresh() async {
     pageNum = 1;
     replyItems.clear();
+    newReplyItems.clear();
     await _addReplyItems().then((value) {
       if (value) {
         refreshController.finishRefresh();
@@ -101,6 +105,7 @@ class ReplyController extends GetxController {
 
   //评论加载中
   onReplyLoad() async {
+    newReplyItems.clear();
     await _addReplyItems().then((value) {
       if (value) {
         refreshController.finishLoad();
@@ -109,6 +114,15 @@ class ReplyController extends GetxController {
         refreshController.finishLoad(IndicatorResult.fail);
       }
     });
+  }
+
+  showAddReplySheet() async {
+    await AddReplyUtil.showAddReplySheet(
+        replyType: replyType,
+        oid: bvid,
+        newReplyItems: newReplyItems,
+        updateWidget: updateWidget,
+        scrollController: scrollController);
   }
 
   @override

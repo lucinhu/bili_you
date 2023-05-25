@@ -9,7 +9,9 @@ import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
+import 'package:bili_you/common/widget/icon_text_button.dart';
 import 'package:bili_you/common/widget/view_image.dart';
+import 'package:bili_you/pages/bili_video/widgets/reply/add_reply_util.dart';
 import 'package:bili_you/pages/search_result/view.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:bili_you/pages/webview/browser.dart';
@@ -19,7 +21,7 @@ import 'package:get/get.dart';
 
 import 'reply_reply_page.dart';
 
-class ReplyItemWidget extends StatelessWidget {
+class ReplyItemWidget extends StatefulWidget {
   const ReplyItemWidget(
       {super.key,
       required this.reply,
@@ -38,6 +40,11 @@ class ReplyItemWidget extends StatelessWidget {
   static final CacheManager emoteCacheManager =
       CacheManager(Config(CacheKeys.emoteKey));
 
+  @override
+  State<ReplyItemWidget> createState() => _ReplyItemWidgetState();
+}
+
+class _ReplyItemWidgetState extends State<ReplyItemWidget> {
   TextSpan buildReplyItemContent(ReplyContent content, BuildContext context) {
     if (content.emotes.isEmpty &&
         content.jumpUrls.isEmpty &&
@@ -67,7 +74,7 @@ class ReplyItemWidget extends StatelessWidget {
                 child: CachedNetworkImage(
                   cacheWidth: 200,
                   cacheHeight: 200,
-                  cacheManager: emoteCacheManager,
+                  cacheManager: ReplyItemWidget.emoteCacheManager,
                   imageUrl: emote.url,
                 ),
               )),
@@ -156,7 +163,7 @@ class ReplyItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (hasFrontDivider)
+        if (widget.hasFrontDivider)
           Divider(
             color: Theme.of(Get.context!).colorScheme.secondaryContainer,
             thickness: 1,
@@ -171,8 +178,8 @@ class ReplyItemWidget extends StatelessWidget {
                 Column(
                   children: [
                     AvatarWidget(
-                      avatarUrl: reply.member.avatarUrl,
-                      officialVerifyType: officialVerifyType,
+                      avatarUrl: widget.reply.member.avatarUrl,
+                      officialVerifyType: widget.officialVerifyType,
                       radius: 45 / 2,
                       onPressed: () {
                         // Get.to(() => UserSpacePage(
@@ -181,15 +188,15 @@ class ReplyItemWidget extends StatelessWidget {
                         Navigator.of(context).push(GetPageRoute(
                             page: () => UserSpacePage(
                                 key: ValueKey(
-                                    "UserSpacePage:${reply.member.mid}"),
-                                mid: reply.member.mid)));
+                                    "UserSpacePage:${widget.reply.member.mid}"),
+                                mid: widget.reply.member.mid)));
                       },
                       cacheWidthHeight: 200,
                     ),
                     const SizedBox(
                       height: 10,
                     ),
-                    isTop
+                    widget.isTop
                         ? Text(
                             "置顶",
                             style: TextStyle(
@@ -216,8 +223,8 @@ class ReplyItemWidget extends StatelessWidget {
                               Navigator.of(context).push(GetPageRoute(
                                   page: () => UserSpacePage(
                                       key: ValueKey(
-                                          "UserSpacePage:${reply.member.mid}"),
-                                      mid: reply.member.mid)));
+                                          "UserSpacePage:${widget.reply.member.mid}"),
+                                      mid: widget.reply.member.mid)));
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +232,7 @@ class ReplyItemWidget extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      reply.member.name,
+                                      widget.reply.member.name,
                                       style: TextStyle(
                                           color: Theme.of(context)
                                               .colorScheme
@@ -233,13 +240,13 @@ class ReplyItemWidget extends StatelessWidget {
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    if (isUp)
+                                    if (widget.isUp)
                                       const Padding(
                                           padding: EdgeInsets.only(left: 4),
                                           child: UpperTag())
                                   ],
                                 ),
-                                Text(reply.location,
+                                Text(widget.reply.location,
                                     style: TextStyle(
                                         color: Theme.of(context).hintColor,
                                         fontSize: 12))
@@ -252,11 +259,12 @@ class ReplyItemWidget extends StatelessWidget {
                           child:
                               //评论内容
                               //TODO: 有表情的评论暂时无法折叠
-                              (reply.content.emotes.isNotEmpty ||
-                                      reply.content.pictures.isNotEmpty ||
-                                      reply.content.jumpUrls.isNotEmpty)
+                              (widget.reply.content.emotes.isNotEmpty ||
+                                      widget
+                                          .reply.content.pictures.isNotEmpty ||
+                                      widget.reply.content.jumpUrls.isNotEmpty)
                                   ? SelectableText.rich(buildReplyItemContent(
-                                      reply.content, context))
+                                      widget.reply.content, context))
                                   : SelectableRegion(
                                       magnifierConfiguration:
                                           const TextMagnifierConfiguration(),
@@ -265,7 +273,7 @@ class ReplyItemWidget extends StatelessWidget {
                                           MaterialTextSelectionControls(),
                                       child: FoldableText.rich(
                                         buildReplyItemContent(
-                                            reply.content, context),
+                                            widget.reply.content, context),
                                         maxLines: 6,
                                         folderTextStyle: TextStyle(
                                             color: Theme.of(context)
@@ -277,22 +285,24 @@ class ReplyItemWidget extends StatelessWidget {
                           children: [
                             StatefulBuilder(builder: (context, setState) {
                               return ThumUpButton(
-                                likeNum: reply.likeCount,
-                                selected: reply.hasLike,
+                                likeNum: widget.reply.likeCount,
+                                selected: widget.reply.hasLike,
                                 onPressed: () async {
                                   try {
                                     var result =
                                         await ReplyOperationApi.addLike(
-                                            type: reply.type,
-                                            oid: reply.oid,
-                                            rpid: reply.rpid,
-                                            likeOrUnlike: !reply.hasLike);
+                                            type: widget.reply.type,
+                                            oid: widget.reply.oid,
+                                            rpid: widget.reply.rpid,
+                                            likeOrUnlike:
+                                                !widget.reply.hasLike);
                                     if (result.isSuccess) {
-                                      reply.hasLike = !reply.hasLike;
-                                      if (reply.hasLike) {
-                                        reply.likeCount++;
+                                      widget.reply.hasLike =
+                                          !widget.reply.hasLike;
+                                      if (widget.reply.hasLike) {
+                                        widget.reply.likeCount++;
                                       } else {
-                                        reply.likeCount--;
+                                        widget.reply.likeCount--;
                                       }
                                       setState(() {});
                                     } else {
@@ -306,12 +316,19 @@ class ReplyItemWidget extends StatelessWidget {
                                 },
                               );
                             }),
+                            AddReplyButton(
+                              replyItem: widget.reply,
+                              updateWidget: () {
+                                widget.reply.replyCount++;
+                                setState(() => ());
+                              },
+                            ),
                             Expanded(
                               child: Builder(
                                 builder: (context) {
                                   List<Widget> list = [];
-                                  if (reply.tags.isNotEmpty) {
-                                    for (var i in reply.tags) {
+                                  if (widget.reply.tags.isNotEmpty) {
+                                    for (var i in widget.reply.tags) {
                                       list.add(
                                         Text(
                                           "$i ", //标签,如热评,up觉得很赞
@@ -337,7 +354,7 @@ class ReplyItemWidget extends StatelessWidget {
                             ),
                             Text(
                               StringFormatUtils.timeStampToAgoDate(
-                                  reply.replyTime),
+                                  widget.reply.replyTime),
                               style: TextStyle(
                                   fontSize: 12,
                                   color: Theme.of(context).hintColor),
@@ -347,9 +364,10 @@ class ReplyItemWidget extends StatelessWidget {
                         Builder(
                           builder: (context) {
                             Widget? subReplies;
-                            if (reply.replyCount != 0 && showPreReply == true) {
+                            if (widget.reply.replyCount != 0 &&
+                                widget.showPreReply == true) {
                               List<Widget> preSubReplies = []; //预显示在外的楼中楼
-                              for (var j in reply.preReplies) {
+                              for (var j in widget.reply.preReplies) {
                                 //添加预显示在外楼中楼评论条目
                                 preSubReplies.add(Padding(
                                     padding: const EdgeInsets.only(top: 8),
@@ -371,7 +389,7 @@ class ReplyItemWidget extends StatelessWidget {
                               preSubReplies.add(Padding(
                                 padding: const EdgeInsets.only(top: 8),
                                 child: Text(
-                                  '共 ${StringFormatUtils.numFormat(reply.replyCount)} 条回复 >',
+                                  '共 ${StringFormatUtils.numFormat(widget.reply.replyCount)} 条回复 >',
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -398,9 +416,10 @@ class ReplyItemWidget extends StatelessWidget {
                                       //楼中楼点击后弹出详细楼中楼
                                       Get.bottomSheet(
                                           ReplyReplyPage(
-                                            replyId: reply.oid.toString(),
-                                            replyType: reply.type,
-                                            rootId: reply.rpid,
+                                            replyId:
+                                                widget.reply.oid.toString(),
+                                            replyType: widget.reply.type,
+                                            rootId: widget.reply.rpid,
                                           ),
                                           backgroundColor:
                                               Theme.of(context).cardColor,
@@ -476,5 +495,37 @@ class ThumUpButton extends StatelessWidget {
             Text(StringFormatUtils.numFormat(likeNum))
           ],
         ));
+  }
+}
+
+///回复评论按钮
+class AddReplyButton extends StatelessWidget {
+  const AddReplyButton(
+      {super.key, required this.replyItem, required this.updateWidget});
+  final ReplyItem replyItem;
+  final Function() updateWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconTextButton(
+      onPressed: () {
+        AddReplyUtil.showAddReplySheet(
+            replyType: replyItem.type,
+            oid: replyItem.oid.toString(),
+            root: replyItem.rootRpid,
+            parent: replyItem.rpid,
+            newReplyItems: replyItem.preReplies,
+            updateWidget: updateWidget,
+            scrollController: null);
+      },
+      icon: const Padding(
+        padding: EdgeInsets.all(2.0),
+        child: Icon(
+          Icons.comment_rounded,
+          size: 15,
+        ),
+      ),
+      text: null,
+    );
   }
 }

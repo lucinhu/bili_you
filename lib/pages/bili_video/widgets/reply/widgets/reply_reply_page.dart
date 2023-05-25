@@ -4,6 +4,7 @@ import 'package:bili_you/common/api/reply_api.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/models/local/reply/reply_reply_info.dart';
 import 'package:bili_you/common/widget/simple_easy_refresher.dart';
+import 'package:bili_you/pages/bili_video/widgets/reply/add_reply_util.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/widgets/reply_item.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
@@ -33,6 +34,9 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
   ReplyItem? _rootReply;
   int _upperMid = 0;
   final List<ReplyItem> _replyReplyItems = [];
+  final List<ReplyItem> _newReplyReplyItems = [];
+  final ScrollController _scrollController = ScrollController();
+  Function()? _updateWidget;
 
   Future<bool> _addReplyReply() async {
     late ReplyReplyInfo replyReplyInfo;
@@ -77,6 +81,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
   }
 
   _onLoad() async {
+    _newReplyReplyItems.clear();
     if (await _addReplyReply()) {
       _refreshController.finishLoad();
       _refreshController.resetFooter();
@@ -88,7 +93,7 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
   _onRefresh() async {
     _replyReplyItems.clear();
     _pageNum = 1;
-
+    _newReplyReplyItems.clear();
     if (await _addReplyReply()) {
       _refreshController.finishRefresh();
     } else {
@@ -96,48 +101,88 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
     }
   }
 
+  _showReplySheet() {
+    AddReplyUtil.showAddReplySheet(
+        replyType: widget.replyType,
+        oid: widget.replyId,
+        root: widget.rootId,
+        parent: widget.rootId,
+        newReplyItems: _newReplyReplyItems,
+        updateWidget: _updateWidget,
+        scrollController: _scrollController);
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SimpleEasyRefresher(
-      easyRefreshController: _refreshController,
-      onLoad: _onLoad,
-      onRefresh: _onRefresh,
-      childBuilder: (context, physics) => ListView.builder(
-        physics: physics,
-        itemCount: _replyReplyItems.length + 1,
-        itemBuilder: (context, index) {
-          if (_rootReply == null) return const SizedBox();
-          if (index == 0) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Column(
-                children: [
-                  ReplyItemWidget(
-                    hasFrontDivider: false,
-                    reply: _rootReply!,
-                    isUp: _rootReply!.member.mid == _upperMid,
-                    showPreReply: false,
-                    officialVerifyType: _rootReply!.member.officialVerify.type,
-                  ),
-                  Divider(
-                    color: Theme.of(Get.context!).colorScheme.primaryContainer,
-                    thickness: 2,
-                  )
-                ],
-              ),
-            );
-          }
-          return ReplyItemWidget(
-            hasFrontDivider: index - 1 > 0,
-            reply: _replyReplyItems[index - 1],
-            isUp: _replyReplyItems[index - 1].member.mid == _upperMid,
-            showPreReply: false,
-            officialVerifyType:
-                _replyReplyItems[index - 1].member.officialVerify.type,
-          );
-        },
-        clipBehavior: Clip.antiAlias,
+    _updateWidget = () => setState(() {});
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: _showReplySheet,
+        tooltip: '发表评论',
+        child: const Icon(Icons.add_comment_rounded),
+      ),
+      body: SimpleEasyRefresher(
+        easyRefreshController: _refreshController,
+        onLoad: _onLoad,
+        onRefresh: _onRefresh,
+        childBuilder: (context, physics) => ListView.builder(
+          controller: _scrollController,
+          physics: physics,
+          itemCount: _replyReplyItems.length + 1 + _newReplyReplyItems.length,
+          itemBuilder: (context, index) {
+            if (_rootReply == null) return const SizedBox();
+            if (index == 0) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  children: [
+                    ReplyItemWidget(
+                      hasFrontDivider: false,
+                      reply: _rootReply!,
+                      isUp: _rootReply!.member.mid == _upperMid,
+                      showPreReply: false,
+                      officialVerifyType:
+                          _rootReply!.member.officialVerify.type,
+                    ),
+                    Divider(
+                      color:
+                          Theme.of(Get.context!).colorScheme.primaryContainer,
+                      thickness: 2,
+                    )
+                  ],
+                ),
+              );
+            } else if (_newReplyReplyItems.isNotEmpty &&
+                index - 1 < _newReplyReplyItems.length) {
+              return ReplyItemWidget(
+                hasFrontDivider: index - 1 > 0,
+                reply: _newReplyReplyItems[index - 1],
+                isUp: _newReplyReplyItems[index - 1].member.mid == _upperMid,
+                showPreReply: false,
+                officialVerifyType:
+                    _newReplyReplyItems[index - 1].member.officialVerify.type,
+              );
+            } else {
+              return ReplyItemWidget(
+                hasFrontDivider: index - 1 > 0,
+                reply:
+                    _replyReplyItems[index - (1 + _newReplyReplyItems.length)],
+                isUp: _replyReplyItems[index - (1 + _newReplyReplyItems.length)]
+                        .member
+                        .mid ==
+                    _upperMid,
+                showPreReply: false,
+                officialVerifyType:
+                    _replyReplyItems[index - (1 + _newReplyReplyItems.length)]
+                        .member
+                        .officialVerify
+                        .type,
+              );
+            }
+          },
+          clipBehavior: Clip.antiAlias,
+        ),
       ),
     );
   }

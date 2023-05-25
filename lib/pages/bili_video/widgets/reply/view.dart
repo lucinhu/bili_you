@@ -23,7 +23,7 @@ class ReplyPage extends StatefulWidget {
 }
 
 class _ReplyPageState extends State<ReplyPage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   _ReplyPageState();
   @override
   bool get wantKeepAlive => true;
@@ -48,6 +48,7 @@ class _ReplyPageState extends State<ReplyPage>
 
   // 主视图
   Widget _buildView(ReplyController controller) {
+    controller.updateWidget = () => setState(() => ());
     return SimpleEasyRefresher(
       childBuilder: (context, physics) => ListView.builder(
         addAutomaticKeepAlives: false,
@@ -55,17 +56,28 @@ class _ReplyPageState extends State<ReplyPage>
         controller: controller.scrollController,
         physics: physics,
         padding: const EdgeInsets.all(0),
-        itemCount:
-            controller.replyItems.length + controller.topReplyItems.length,
+        itemCount: controller.replyItems.length +
+            controller.newReplyItems.length +
+            controller.topReplyItems.length,
         itemBuilder: (context, index) {
           late ReplyItem item;
           if (index < controller.topReplyItems.length) {
             //置顶评论
             item = controller.topReplyItems[index];
-          } else if (index >= controller.topReplyItems.length) {
+          } else if (index >= controller.topReplyItems.length &&
+              index <
+                  controller.topReplyItems.length +
+                      controller.newReplyItems.length) {
+            //新增的评论
+            item = controller
+                .newReplyItems[index - controller.topReplyItems.length];
+          } else if (index >=
+              controller.topReplyItems.length +
+                  controller.newReplyItems.length) {
             //普通评论
-            item =
-                controller.replyItems[index - controller.topReplyItems.length];
+            item = controller.replyItems[index -
+                (controller.topReplyItems.length +
+                    controller.newReplyItems.length)];
           }
           if (index == 0) {
             //在首个元素前放置排列方式切换控件
@@ -101,7 +113,14 @@ class _ReplyPageState extends State<ReplyPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return _buildView(controller);
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: controller.showAddReplySheet,
+        tooltip: '发表评论',
+        child: const Icon(Icons.add_comment_rounded),
+      ),
+      body: _buildView(controller),
+    );
   }
 }
 
