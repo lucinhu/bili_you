@@ -38,10 +38,13 @@ class _VideoAudioPlayerState extends State<VideoAudioPlayer> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Video(
-            controller: VideoController(PlayersSingleton().player!,
-                enableHardwareAcceleration: SettingsUtil.getValue(
-                    SettingsStorageKeys.isHardwareDecode,
-                    defaultValue: true)),
+            controller: VideoController(
+              PlayersSingleton().player!,
+              configuration: VideoControllerConfiguration(
+                  enableHardwareAcceleration: SettingsUtil.getValue(
+                      SettingsStorageKeys.isHardwareDecode,
+                      defaultValue: true)),
+            ),
             width: widget.width,
             height: widget.height,
             fit: widget.fit,

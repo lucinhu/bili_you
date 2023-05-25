@@ -565,7 +565,7 @@ packages:
     description:
       path: media_kit
       ref: HEAD
-      resolved-ref: a118115c818b9ab18feb64e36b286b8b2163c16c
+      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "0.0.8"
@@ -574,7 +574,7 @@ packages:
     description:
       path: media_kit_libs_android_video
       ref: HEAD
-      resolved-ref: a118115c818b9ab18feb64e36b286b8b2163c16c
+      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.4"
@@ -583,7 +583,7 @@ packages:
     description:
       path: media_kit_libs_ios_video
       ref: HEAD
-      resolved-ref: a118115c818b9ab18feb64e36b286b8b2163c16c
+      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.4"
@@ -592,7 +592,7 @@ packages:
     description:
       path: media_kit_libs_linux
       ref: HEAD
-      resolved-ref: a118115c818b9ab18feb64e36b286b8b2163c16c
+      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.2"
@@ -601,7 +601,7 @@ packages:
     description:
       path: media_kit_libs_macos_video
       ref: HEAD
-      resolved-ref: a118115c818b9ab18feb64e36b286b8b2163c16c
+      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.5"
@@ -610,7 +610,7 @@ packages:
     description:
       path: media_kit_libs_windows_video
       ref: HEAD
-      resolved-ref: a118115c818b9ab18feb64e36b286b8b2163c16c
+      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.2"
@@ -619,7 +619,7 @@ packages:
     description:
       path: media_kit_native_event_loop
       ref: HEAD
-      resolved-ref: a118115c818b9ab18feb64e36b286b8b2163c16c
+      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.4"
@@ -628,7 +628,7 @@ packages:
     description:
       path: media_kit_video
       ref: HEAD
-      resolved-ref: a118115c818b9ab18feb64e36b286b8b2163c16c
+      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "0.0.10"

@@ -4,13 +4,13 @@ import 'package:bili_you/common/api/reply_operation_api.dart';
 import 'package:bili_you/common/models/local/reply/official_verify.dart';
 import 'package:bili_you/common/models/local/reply/reply_content.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
+import 'package:bili_you/common/utils/show_dialog.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
 import 'package:bili_you/common/widget/icon_text_button.dart';
-import 'package:bili_you/common/widget/view_image.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/add_reply_util.dart';
 import 'package:bili_you/pages/search_result/view.dart';
 import 'package:bili_you/pages/user_space/view.dart';
@@ -124,22 +124,15 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
       spans.add(WidgetSpan(
           child: GestureDetector(
         onTap: () {
-          showDialog(
-            context: context,
-            builder: (context) => Dialog.fullscreen(
-              child: ViewImagePage(
-                key: ValueKey("ViewImage:${i.url}"),
-                urls: content.pictures.map<String>((e) => e.url).toList(),
-                initIndex: content.pictures.indexOf(i),
-              ),
-            ),
-          );
+          ShowDialog.showImageViewer(
+              context: context,
+              urls: content.pictures.map<String>((e) => e.url).toList(),
+              initIndex: content.pictures.indexOf(i));
         },
         child: Padding(
           padding: const EdgeInsets.all(2),
           child: Hero(
             tag: i.url,
-            transitionOnUserGestures: true,
             child: CachedNetworkImage(
               placeholder: () => Container(
                 color: Get.theme.colorScheme.primary,
