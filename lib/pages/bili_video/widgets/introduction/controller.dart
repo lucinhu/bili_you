@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/index.dart';
 import 'package:bili_you/common/api/video_operation_api.dart';
-import 'package:bili_you/common/models/local/related_video/related_video_info.dart';
+import 'package:bili_you/common/models/local/video_tile/video_tile_info.dart';
 import 'package:bili_you/common/models/local/video/click_add_coin_result.dart';
 import 'package:bili_you/common/models/local/video/click_add_share_result.dart';
 import 'package:bili_you/common/models/local/video/click_like_result.dart';
@@ -39,7 +39,7 @@ class IntroductionController extends GetxController {
   final ScrollController scrollController = ScrollController();
 
   final List<Widget> partButtons = []; //分p按钮列表
-  final List<RelatedVideoInfo> relatedVideoInfos = []; //相关视频列表
+  final List<VideoTileInfo> relatedVideoInfos = []; //相关视频列表
 
 //加载视频信息
   Future<bool> loadVideoInfo() async {
@@ -117,7 +117,7 @@ class IntroductionController extends GetxController {
 
 //构造相关视频
   Future<void> _loadRelatedVideos() async {
-    late List<RelatedVideoInfo> list;
+    late List<VideoTileInfo> list;
     try {
       list = await RelatedVideoApi.getRelatedVideo(bvid: bvid);
     } catch (e) {

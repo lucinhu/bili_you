@@ -166,4 +166,8 @@ class ApiConstants {
   ///浏览/播放历史记录
   ///test: https://api.bilibili.com/x/web-interface/history/cursor
   static const String viewHistory = "$apiBase/x/web-interface/history/cursor";
+
+  ///热门视频
+  ///test: https://api.bilibili.com/x/web-interface/popular?ps=20&pn=1
+  static const String popularVideos = "$apiBase/x/web-interface/popular";
 }

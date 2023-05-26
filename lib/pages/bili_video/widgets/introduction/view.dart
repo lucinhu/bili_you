@@ -82,27 +82,18 @@ class _IntroductionPageState extends State<IntroductionPage>
           itemBuilder: (context, index) {
             var i = controller.relatedVideoInfos[index];
             var heroTagId = HeroTagId.id++;
-            return VideoTileItem(
-              picUrl: i.coverUrl,
-              bvid: i.bvid,
-              title: i.title,
-              upName: i.upName,
-              duration: StringFormatUtils.timeLengthFormat(i.timeLength),
-              playNum: i.playNum,
-              pubDate: i.pubDate,
-              cacheManager: controller.cacheManager,
-              heroTagId: heroTagId,
-              onTap: (context) {
-                HeroTagId.lastId = heroTagId;
-                Navigator.of(context).push(GetPageRoute(
-                  page: () => BiliVideoPage(
-                    key: ValueKey("BiliVideoPage:${i.bvid}"),
-                    bvid: i.bvid,
-                    cid: i.cid,
-                  ),
-                ));
-              },
-            );
+            return VideoTileItem.fromVideoTileInfo(i,
+                cacheManager: controller.cacheManager,
+                heroTagId: heroTagId, onTap: (context) {
+              HeroTagId.lastId = heroTagId;
+              Navigator.of(context).push(GetPageRoute(
+                page: () => BiliVideoPage(
+                  key: ValueKey("BiliVideoPage:${i.bvid}"),
+                  bvid: i.bvid,
+                  cid: i.cid,
+                ),
+              ));
+            });
           },
         )
       ],

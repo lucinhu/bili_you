@@ -4,6 +4,7 @@ import 'package:bili_you/common/utils/settings.dart';
 import 'package:bili_you/common/widget/bili_url_scheme.dart';
 import 'package:bili_you/pages/dynamic/view.dart';
 import 'package:bili_you/pages/home/index.dart';
+import 'package:bili_you/pages/popular_video/controller.dart';
 import 'package:bili_you/pages/recommend/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,15 +42,18 @@ class _MainPageState extends State<MainPage> {
       // 首页
       if (currentPage is HomePage) {
         var homeController = Get.find<HomeController>();
-        var controller = homeController
+        var controllerName = homeController
             .tabsList[homeController.tabController!.index]['controller'];
-        if (controller == 'RecommendController') {
-          var recommendController = Get.find<RecommendController>();
-          if (recommendController.scrollController.offset == 0) {
-            recommendController.refreshController.callRefresh();
-          } else {
-            recommendController.animateToTop();
-          }
+        late dynamic controller;
+        if (controllerName == 'RecommendController') {
+          controller = Get.find<RecommendController>();
+        } else if (controllerName == "PopularVideoController") {
+          controller = Get.find<PopularVideoController>();
+        }
+        if (controller.scrollController.offset == 0) {
+          controller.refreshController.callRefresh();
+        } else {
+          controller.animateToTop();
         }
       }
       // 动态

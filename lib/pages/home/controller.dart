@@ -20,7 +20,7 @@ class HomeController extends GetxController {
   final List<Map<String, String>> tabsList = [
     {'text': '直播', 'id': '', 'controller': ''},
     {'text': '推荐', 'id': '', 'controller': 'RecommendController'},
-    {'text': '热门', 'id': '', 'controller': ''},
+    {'text': '热门', 'id': '', 'controller': 'PopularVideoController'},
     {'text': '番剧', 'id': '', 'controller': ''}
   ];
   late TabController? tabController;

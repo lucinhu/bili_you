@@ -1,5 +1,6 @@
 import 'package:bili_you/common/api/wbi.dart';
 import 'package:bili_you/common/models/local/home/recommend_item_info.dart';
+import 'package:bili_you/common/models/local/video_tile/video_tile_info.dart';
 import 'package:bili_you/common/models/network/home/recommend_video.dart';
 import 'package:bili_you/common/utils/http_utils.dart';
 import 'package:bili_you/common/api/api_constants.dart';
@@ -39,6 +40,31 @@ class HomeApi {
           bvid: i.bvid ?? "",
           cid: i.cid ?? 0,
           playNum: i.stat?.view ?? 0));
+    }
+    return list;
+  }
+
+  ///### 获取热门视频
+  ///[pageSize]每页多少条视频
+  ///[pageNum]页码
+  static Future<List<VideoTileInfo>> getPopularVideos(
+      {int pageSize = 20, required int pageNum}) async {
+    var response = await HttpUtils().get(ApiConstants.popularVideos,
+        queryParameters: {'ps': pageSize, 'pn': pageNum});
+    if (response.data['code'] != 0) {
+      throw "getPopularVideos: code:${response.data['code']}, message:${response.data['message']}";
+    }
+    List<VideoTileInfo> list = [];
+    for (Map<String, dynamic> i in response.data['data']['list']) {
+      list.add(VideoTileInfo(
+          coverUrl: i['pic'] ?? '',
+          bvid: i['bvid'] ?? '',
+          cid: i['cid'] ?? 0,
+          title: i['title'] ?? '',
+          upName: i['owner']?['name'] ?? '',
+          timeLength: i['duration'] ?? 0,
+          playNum: i['stat']?['view'] ?? 0,
+          pubDate: i['pubdate'] ?? 0));
     }
     return list;
   }

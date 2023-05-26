@@ -1,3 +1,4 @@
+import 'package:bili_you/common/models/local/video_tile/video_tile_info.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 
@@ -18,6 +19,18 @@ class VideoTileItem extends StatelessWidget {
     required this.onTap,
     required this.heroTagId,
   });
+  VideoTileItem.fromVideoTileInfo(VideoTileInfo info,
+      {super.key,
+      required this.cacheManager,
+      required this.onTap,
+      required this.heroTagId})
+      : picUrl = info.coverUrl,
+        bvid = info.bvid,
+        title = info.title,
+        upName = info.upName,
+        duration = StringFormatUtils.timeLengthFormat(info.timeLength),
+        playNum = info.playNum,
+        pubDate = info.pubDate;
   final String picUrl;
   final String bvid;
   final String title;

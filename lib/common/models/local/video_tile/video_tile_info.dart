@@ -1,5 +1,5 @@
-class RelatedVideoInfo {
-  RelatedVideoInfo(
+class VideoTileInfo {
+  VideoTileInfo(
       {required this.coverUrl,
       required this.bvid,
       required this.cid,
@@ -8,7 +8,7 @@ class RelatedVideoInfo {
       required this.timeLength,
       required this.playNum,
       required this.pubDate});
-  static RelatedVideoInfo get zero => RelatedVideoInfo(
+  static VideoTileInfo get zero => VideoTileInfo(
       coverUrl: "",
       bvid: "",
       cid: 0,

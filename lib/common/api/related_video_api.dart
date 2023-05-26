@@ -1,5 +1,5 @@
 import 'package:bili_you/common/api/api_constants.dart';
-import 'package:bili_you/common/models/local/related_video/related_video_info.dart';
+import 'package:bili_you/common/models/local/video_tile/video_tile_info.dart';
 import 'package:bili_you/common/models/network/related_video/related_video.dart';
 import 'package:bili_you/common/utils/http_utils.dart';
 
@@ -14,9 +14,9 @@ class RelatedVideoApi {
   }
 
   ///获取相关视频
-  static Future<List<RelatedVideoInfo>> getRelatedVideo(
+  static Future<List<VideoTileInfo>> getRelatedVideo(
       {required String bvid}) async {
-    List<RelatedVideoInfo> list = [];
+    List<VideoTileInfo> list = [];
     var response = await _requestRelatedVideo(bvid: bvid);
     if (response.code != 0) {
       throw "getRelatedVideo: code:${response.code}, message:${response.message}";
@@ -25,7 +25,7 @@ class RelatedVideoApi {
       return list;
     }
     for (var i in response.data!) {
-      list.add(RelatedVideoInfo(
+      list.add(VideoTileInfo(
           coverUrl: i.pic ?? "",
           bvid: i.bvid ?? "",
           cid: i.cid ?? 0,
