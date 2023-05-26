@@ -44,12 +44,22 @@ class _MainPageState extends State<MainPage> {
         var controller = homeController
             .tabsList[homeController.tabController!.index]['controller'];
         if (controller == 'RecommendController') {
-          Get.find<RecommendController>().animateToTop();
+          var recommendController = Get.find<RecommendController>();
+          if (recommendController.scrollController.offset == 0) {
+            recommendController.refreshController.callRefresh();
+          } else {
+            recommendController.animateToTop();
+          }
         }
       }
       // 动态
       if (currentPage is DynamicPage) {
-        Get.find<DynamicController>().animateToTop();
+        var controller = Get.find<DynamicController>();
+        if (controller.scrollController.offset == 0) {
+          controller.refreshController.callRefresh();
+        } else {
+          Get.find<DynamicController>().animateToTop();
+        }
       }
     }
     controller.selectedIndex.value = value;
