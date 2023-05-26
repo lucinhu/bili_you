@@ -342,7 +342,6 @@ class VideoAudioController {
 
   Future<void> dispose() async {
     await pause();
-    await PlayersSingleton().player?.open(Media(''));
     PlayersSingleton().count--;
   }
 
