@@ -5,14 +5,14 @@ import 'package:bili_you/common/models/local/login/login_user_info.dart';
 import 'package:bili_you/common/models/local/login/login_user_stat.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/utils/http_utils.dart';
-import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:get/get.dart';
 
 class UserMenuController extends GetxController {
   UserMenuController();
-  CacheManager cacheManager = CacheManager(Config(CacheKeys.userFaceKey));
+  CacheManager cacheManager = CacheUtils.userFaceCacheManager;
   RxString faceUrl = ApiConstants.noface.obs;
   RxString name = '游客'.obs;
   RxInt level = 0.obs;

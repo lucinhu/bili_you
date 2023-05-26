@@ -6,7 +6,7 @@ import 'package:bili_you/common/models/local/reply/reply_content.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/utils/show_dialog.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
-import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
@@ -37,8 +37,7 @@ class ReplyItemWidget extends StatefulWidget {
   final bool hasFrontDivider; //是否前面有分界线
   final OfficialVerifyType? officialVerifyType;
 
-  static final CacheManager emoteCacheManager =
-      CacheManager(Config(CacheKeys.emoteKey));
+  static final CacheManager emoteCacheManager = CacheUtils.emoteCacheManager;
 
   @override
   State<ReplyItemWidget> createState() => _ReplyItemWidgetState();
@@ -142,7 +141,7 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
               width: Get.size.width / 3,
               height: Get.size.width / 3,
               cacheWidth: ((Get.size.width / 3) * Get.pixelRatio).toInt(),
-              cacheManager: CacheManager(Config(CacheKeys.bigImageKey)),
+              cacheManager: CacheUtils.bigImageCacheManager,
             ),
           ),
         ),
@@ -399,6 +398,8 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                                       left: 8, right: 8, bottom: 8),
                                   child: GestureDetector(
                                     child: ListView(
+                                      addAutomaticKeepAlives: false,
+                                      addRepaintBoundaries: false,
                                       padding: EdgeInsets.zero,
                                       shrinkWrap: true,
                                       physics:

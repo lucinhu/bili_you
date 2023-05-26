@@ -1,6 +1,6 @@
 import 'package:bili_you/common/models/local/dynamic/dynamic_content.dart';
 import 'package:bili_you/common/utils/show_dialog.dart';
-import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 class DynamicDrawWidget extends StatelessWidget {
   DynamicDrawWidget({super.key, required this.content});
   final DrawDynamicContent content;
-  final CacheManager cacheManager = CacheManager(Config(CacheKeys.bigImageKey));
+  final CacheManager cacheManager = CacheUtils.bigImageCacheManager;
 
   @override
   Widget build(BuildContext context) {
@@ -71,25 +71,26 @@ class DynamicDrawWidget extends StatelessWidget {
                         initIndex: index,
                       ),
                   child: RepaintBoundary(
-                    child: Hero(
-                      tag: content.draws[index].picUrl,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: LayoutBuilder(builder: (context, box) {
-                          return CachedNetworkImage(
-                            imageUrl: content.draws[index].picUrl,
-                            cacheManager: cacheManager,
-                            cacheWidth: (box.maxWidth *
-                                    MediaQuery.of(context).devicePixelRatio)
-                                .toInt(),
-                            cacheHeight: (box.maxWidth *
-                                    content.draws[index].height /
-                                    content.draws[index].width *
-                                    MediaQuery.of(context).devicePixelRatio)
-                                .toInt(),
-                            fit: BoxFit.cover,
-                          );
-                        }),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: LayoutBuilder(
+                        builder: (context, box) {
+                          return Hero(
+                              tag: content.draws[index].picUrl,
+                              child: CachedNetworkImage(
+                                imageUrl: content.draws[index].picUrl,
+                                cacheManager: cacheManager,
+                                cacheWidth: (box.maxWidth *
+                                        MediaQuery.of(context).devicePixelRatio)
+                                    .toInt(),
+                                cacheHeight: (box.maxWidth *
+                                        content.draws[index].height /
+                                        content.draws[index].width *
+                                        MediaQuery.of(context).devicePixelRatio)
+                                    .toInt(),
+                                fit: BoxFit.cover,
+                              ));
+                        },
                       ),
                     ),
                   ));

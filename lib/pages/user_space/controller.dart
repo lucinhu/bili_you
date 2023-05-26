@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/api/user_space_api.dart';
 import 'package:bili_you/common/models/local/user_space/user_video_search.dart';
-import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
@@ -11,8 +11,7 @@ class UserSpacePageController extends GetxController {
   UserSpacePageController({required this.mid});
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
-  CacheManager cacheManager =
-      CacheManager(Config(CacheKeys.searchResultItemCoverKey));
+  CacheManager cacheManager = CacheUtils.searchResultItemCoverCacheManager;
   final int mid;
   int currentPage = 1;
   List<UserVideoItem> searchItems = [];

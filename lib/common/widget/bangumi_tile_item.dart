@@ -1,7 +1,6 @@
-import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class BangumiTileItem extends StatelessWidget {
   const BangumiTileItem(
@@ -35,8 +34,7 @@ class BangumiTileItem extends StatelessWidget {
                   imageUrl: coverUrl,
                   height: _height,
                   width: _height * (3 / 4),
-                  cacheManager:
-                      CacheManager(Config(CacheKeys.searchResultItemCoverKey)),
+                  cacheManager: CacheUtils.searchResultItemCoverCacheManager,
                   placeholder: () => Container(
                     color: Theme.of(context).colorScheme.surfaceVariant,
                   ),

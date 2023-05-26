@@ -29,7 +29,7 @@ class DynamicItemCard extends StatefulWidget {
 
 class _DynamicItemCardState extends State<DynamicItemCard> {
   final CacheManager videoCoverCacheManager =
-      CacheManager(Config(CacheKeys.dynamicVideoItemCoverKey));
+      CacheUtils.dynamicVideoItemCoverCacheManager;
 
   @override
   void dispose() {
@@ -64,7 +64,7 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
                 child: CachedNetworkImage(
                   cacheWidth: 200,
                   cacheHeight: 200,
-                  cacheManager: CacheManager(Config(CacheKeys.emoteKey)),
+                  cacheManager: CacheUtils.emoteCacheManager,
                   imageUrl: emote.url,
                 ),
               )),

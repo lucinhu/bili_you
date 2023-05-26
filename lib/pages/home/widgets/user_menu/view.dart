@@ -21,6 +21,8 @@ class UserMenuPage extends GetView<UserMenuController> {
       child: Stack(
         children: [
           ListView(
+            addAutomaticKeepAlives: false,
+            addRepaintBoundaries: false,
             shrinkWrap: true,
             children: [
               Row(children: [

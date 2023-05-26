@@ -1,12 +1,11 @@
 import 'package:bili_you/common/models/local/login/login_user_info.dart';
 import 'package:bili_you/common/models/local/login/login_user_stat.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
-import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:bili_you/pages/dynamic/controller.dart';
 import 'package:bili_you/pages/home/index.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:gt3_flutter_plugin/gt3_flutter_plugin.dart';
 
@@ -63,7 +62,7 @@ Future<void> startCaptcha(
 Future<void> onLoginSuccess(
     LoginUserInfo userInfo, LoginUserStat userStat) async {
   var box = BiliYouStorage.user;
-  await CacheManager(Config(CacheKeys.userFaceKey)).emptyCache();
+  await CacheUtils.userFaceCacheManager.emptyCache();
   await box.put(UserStorageKeys.hasLogin, true);
   await box.put(UserStorageKeys.userFace, userInfo.avatarUrl);
   await box.put(UserStorageKeys.userName, userInfo.name);

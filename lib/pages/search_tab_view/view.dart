@@ -58,6 +58,8 @@ class _SearchTabViewPageState extends State<SearchTabViewPage>
       onLoad: controller.onLoad,
       onRefresh: controller.onRefresh,
       childBuilder: (context, physics) => ListView.builder(
+        addAutomaticKeepAlives: false,
+        addRepaintBoundaries: false,
         controller: controller.scrollController,
         padding: const EdgeInsets.all(8),
         physics: physics,

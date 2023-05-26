@@ -1,4 +1,5 @@
 import 'package:bili_you/common/utils/bili_you_storage.dart';
+import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:bili_you/common/utils/settings.dart';
 import 'package:bili_you/common/widget/bili_url_scheme.dart';
 import 'package:bili_you/pages/dynamic/view.dart';
@@ -21,6 +22,8 @@ class _MainPageState extends State<MainPage> {
   late MainController controller;
   @override
   void initState() {
+    //清理上一次启动留下的图片缓存
+    CacheUtils.deleteAllCacheImage();
     BiliUrlScheme.init(context);
     //自动检查更新
     if (SettingsUtil.getValue(SettingsStorageKeys.autoCheckUpdate,
@@ -54,8 +57,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void dispose() {
-    // controller.onClose();
-    // controller.onDelete();
     controller.dispose();
     super.dispose();
   }

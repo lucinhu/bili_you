@@ -45,6 +45,8 @@ class _UserSpacePageState extends State<UserSpacePage>
           onLoad: controller.onLoad,
           onRefresh: controller.onRefresh,
           childBuilder: (context, physics) => ListView.builder(
+            addAutomaticKeepAlives: false,
+            addRepaintBoundaries: false,
             physics: physics,
             itemCount: controller.searchItems.length,
             itemBuilder: (context, index) {

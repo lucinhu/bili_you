@@ -205,10 +205,10 @@ packages:
     dependency: transitive
     description:
       name: collection
-      sha256: f092b211a4319e98e5ff58223576de6c2803db36221657b46c82574721240687
+      sha256: "4a07be6cb69c84d677a6c3096fcf960cc3285a8330b4603e0d463d15d9bd934c"
       url: "https://pub.dev"
     source: hosted
-    version: "1.17.2"
+    version: "1.17.1"
   connectivity_plus:
     dependency: "direct main"
     description:
@@ -556,16 +556,16 @@ packages:
     dependency: transitive
     description:
       name: material_color_utilities
-      sha256: "9528f2f296073ff54cb9fee677df673ace1218163c3bc7628093e7eed5203d41"
+      sha256: "586678f20e112219ed0f73215f01bcdf1d769824ba2ebae45ad918a9bfde9bdb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "0.3.0"
   media_kit:
     dependency: "direct main"
     description:
       path: media_kit
       ref: HEAD
-      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
+      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "0.0.8"
@@ -574,7 +574,7 @@ packages:
     description:
       path: media_kit_libs_android_video
       ref: HEAD
-      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
+      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.4"
@@ -583,7 +583,7 @@ packages:
     description:
       path: media_kit_libs_ios_video
       ref: HEAD
-      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
+      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.4"
@@ -592,7 +592,7 @@ packages:
     description:
       path: media_kit_libs_linux
       ref: HEAD
-      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
+      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.2"
@@ -601,7 +601,7 @@ packages:
     description:
       path: media_kit_libs_macos_video
       ref: HEAD
-      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
+      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.5"
@@ -610,7 +610,7 @@ packages:
     description:
       path: media_kit_libs_windows_video
       ref: HEAD
-      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
+      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.2"
@@ -619,7 +619,7 @@ packages:
     description:
       path: media_kit_native_event_loop
       ref: HEAD
-      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
+      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.4"
@@ -628,7 +628,7 @@ packages:
     description:
       path: media_kit_video
       ref: HEAD
-      resolved-ref: "137eb0a946a267446bbcfc9a0ba4832ee399f849"
+      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "0.0.10"
@@ -1146,10 +1146,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "1a5848f598acc5b7d8f7c18b8cb834ab667e59a13edc3c93e9d09cf38cc6bc87"
+      sha256: eed4e6a1164aa9794409325c3b707ff424d4d1c2a785e7db67f8bbda00e36e51
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.34"
+    version: "6.0.35"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -1226,10 +1226,10 @@ packages:
     dependency: "direct main"
     description:
       name: volume_controller
-      sha256: "3bcaadd0e3298286c4ef3b758a3ea44fc98a9abe24d0e7ef087bfab72a4b6924"
+      sha256: "189bdc7a554f476b412e4c8b2f474562b09d74bc458c23667356bce3ca1d48c9"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.6"
+    version: "2.0.7"
   wakelock:
     dependency: "direct main"
     description:

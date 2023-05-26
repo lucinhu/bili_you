@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:bili_you/common/models/local/home/recommend_item_info.dart';
 import 'package:bili_you/common/utils/index.dart';
-import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -17,8 +17,7 @@ class RecommendController extends GetxController {
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
   int refreshIdx = 0;
-  CacheManager cacheManager =
-      CacheManager(Config(CacheKeys.recommendItemCoverKey));
+  CacheManager cacheManager = CacheUtils.recommendItemCoverCacheManager;
   int recommendColumnCount = 1;
 
   @override

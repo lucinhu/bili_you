@@ -16,120 +16,123 @@ class PhoneLoginPage extends GetView<PhoneLoginController> {
         borderRadius: const BorderRadius.all(Radius.circular(10)),
         borderSide: BorderSide(color: Theme.of(context).colorScheme.outline));
     return Center(
-        child: ListView(children: [
-      Card(
-          margin: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height / 10,
-              left: 10,
-              right: 10,
-              bottom: 10),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-          child: Column(
+        child: ListView(
+            addAutomaticKeepAlives: false,
+            addRepaintBoundaries: false,
             children: [
-              const SizedBox(
-                height: 25,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+          Card(
+              margin: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height / 10,
+                  left: 10,
+                  right: 10,
+                  bottom: 10),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40)),
+              child: Column(
                 children: [
                   const SizedBox(
-                    width: 20,
+                    height: 25,
                   ),
-                  IntrinsicWidth(
-                    child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                          labelText: "地区/国家代码",
-                          enabledBorder: outlineInputBorder,
-                          focusedBorder: outlineInputBorder),
-                      hint: const Text("+86 中国大陆"),
-                      items: controller.countryItems,
-                      onChanged: (value) {
-                        controller.countryId = int.tryParse(
-                                (value as Map<String, dynamic>)['country_id']
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      IntrinsicWidth(
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                              labelText: "地区/国家代码",
+                              enabledBorder: outlineInputBorder,
+                              focusedBorder: outlineInputBorder),
+                          hint: const Text("+86 中国大陆"),
+                          items: controller.countryItems,
+                          onChanged: (value) {
+                            controller.countryId = int.tryParse((value
+                                        as Map<String, dynamic>)['country_id']
                                     as String) ??
-                            0;
-                      },
-                    ),
+                                0;
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: TextField(
+                            onChanged: (String value) {
+                              controller.tel = int.tryParse(value) ?? 0;
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                labelText: "手机号",
+                                enabledBorder: outlineInputBorder,
+                                focusedBorder: outlineInputBorder),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ]),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      )
+                    ],
+                  ),
+                  Divider(
+                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    thickness: 2,
+                    indent: 20,
+                    endIndent: 20,
+                    height: 30,
+                  ),
+                  Row(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: TextField(
+                            onChanged: (value) {
+                              controller.messageCode = int.tryParse(value) ?? 0;
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                labelText: "验证码",
+                                enabledBorder: outlineInputBorder,
+                                focusedBorder: outlineInputBorder),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ]),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            controller.startLogin();
+                          },
+                          child: const Text("获取验证码")),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                    ],
                   ),
                   const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: TextField(
-                        onChanged: (String value) {
-                          controller.tel = int.tryParse(value) ?? 0;
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            labelText: "手机号",
-                            enabledBorder: outlineInputBorder,
-                            focusedBorder: outlineInputBorder),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ]),
-                  ),
-                  const SizedBox(
-                    width: 20,
+                    height: 25,
                   )
                 ],
-              ),
-              Divider(
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                thickness: 2,
-                indent: 20,
-                endIndent: 20,
-                height: 30,
-              ),
-              Row(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: TextField(
-                        onChanged: (value) {
-                          controller.messageCode = int.tryParse(value) ?? 0;
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            labelText: "验证码",
-                            enabledBorder: outlineInputBorder,
-                            focusedBorder: outlineInputBorder),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ]),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  TextButton(
-                      onPressed: () {
-                        controller.startLogin();
-                      },
-                      child: const Text("获取验证码")),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 25,
-              )
-            ],
-          )),
-      Center(
-        child: ElevatedButton(
-            onPressed: () {
-              controller.startSmsLogin();
-            },
-            child: const Text(
-              "   登录   ",
-              style: TextStyle(fontSize: 16),
-            )),
-      ),
-    ]));
+              )),
+          Center(
+            child: ElevatedButton(
+                onPressed: () {
+                  controller.startSmsLogin();
+                },
+                child: const Text(
+                  "   登录   ",
+                  style: TextStyle(fontSize: 16),
+                )),
+          ),
+        ]));
   }
 
   @override

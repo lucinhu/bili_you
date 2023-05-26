@@ -36,8 +36,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   void dispose() {
-    // controller.onClose();
-    // controller.onDelete();
     controller.dispose();
     super.dispose();
   }

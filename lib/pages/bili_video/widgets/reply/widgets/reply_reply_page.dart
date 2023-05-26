@@ -127,6 +127,8 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
         onLoad: _onLoad,
         onRefresh: _onRefresh,
         childBuilder: (context, physics) => ListView.builder(
+          addAutomaticKeepAlives: false,
+          addRepaintBoundaries: false,
           controller: _scrollController,
           physics: physics,
           itemCount: _replyReplyItems.length + 1 + _newReplyReplyItems.length,

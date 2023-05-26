@@ -136,10 +136,6 @@ class PlayersSingleton {
       ));
       await cancelSubscriptions();
       initSubscriptions();
-      if (player!.platform is libmpvPlayer) {
-        await (player!.platform as libmpvPlayer)
-            .setProperty('hwdec-codecs', 'all');
-      }
       await Future.doWhile(() async {
         await Future.delayed(const Duration(milliseconds: 100));
         if (_isPlayerReady) {
@@ -346,6 +342,7 @@ class VideoAudioController {
 
   Future<void> dispose() async {
     await pause();
+    await PlayersSingleton().player?.open(Media(''));
     PlayersSingleton().count--;
   }
 

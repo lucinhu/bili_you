@@ -16,7 +16,7 @@ import 'dart:developer';
 import 'package:bili_you/common/api/search_api.dart';
 import 'package:bili_you/common/api/video_info_api.dart';
 import 'package:bili_you/common/utils/string_format_utils.dart';
-import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:bili_you/common/widget/video_tile_item.dart';
 import 'package:bili_you/pages/bili_video/view.dart';
 import 'package:easy_refresh/easy_refresh.dart';
@@ -30,8 +30,7 @@ class SearchTabViewController extends GetxController {
 
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
-  CacheManager cacheManager =
-      CacheManager(Config(CacheKeys.searchResultItemCoverKey));
+  CacheManager cacheManager = CacheUtils.searchResultItemCoverCacheManager;
   List<dynamic> searchItems = [];
   int currentPage = 1;
   ScrollController scrollController = ScrollController();

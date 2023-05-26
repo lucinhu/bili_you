@@ -2,12 +2,10 @@ import 'dart:developer';
 import 'package:bili_you/common/api/reply_api.dart';
 import 'package:bili_you/common/models/local/reply/reply_info.dart';
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
-import 'package:bili_you/common/values/cache_keys.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/add_reply_util.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 
 class ReplyController extends GetxController {
@@ -123,14 +121,5 @@ class ReplyController extends GetxController {
         newReplyItems: newReplyItems,
         updateWidget: updateWidget,
         scrollController: scrollController);
-  }
-
-  @override
-  void onClose() {
-    //清理其他用户头像的缓存
-    CacheManager(Config(CacheKeys.othersFaceKey)).emptyCache();
-    //清理评论图缓存
-    CacheManager(Config(CacheKeys.bigImageKey)).emptyCache();
-    super.onClose();
   }
 }

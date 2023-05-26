@@ -1,6 +1,7 @@
 import 'package:bili_you/common/models/local/reply/reply_item.dart';
 import 'package:bili_you/common/utils/index.dart';
 import 'package:bili_you/common/values/hero_tag_id.dart';
+import 'package:bili_you/common/values/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/introduction/index.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/view.dart';
@@ -66,6 +67,8 @@ class _BiliVideoPageState extends State<BiliVideoPage>
   @override
   void didPushNext() async {
     //当进入下一个页面时
+    //释放所有图片缓存
+    CacheUtils.clearAllCacheImageMem();
     //暂停视频
     await controller.biliVideoPlayerController.pause();
     super.didPushNext();
@@ -81,7 +84,11 @@ class _BiliVideoPageState extends State<BiliVideoPage>
 
   @override
   void didPop() async {
+    //当退出页面时
+    //暂停视频
     await controller.biliVideoPlayerController.pause();
+    //释放所有图片缓存
+    CacheUtils.clearAllCacheImageMem();
     super.didPop();
   }
 

@@ -16,8 +16,7 @@ class HistoryController extends GetxController {
   int viewAt = 0;
   ScrollController scrollController = ScrollController();
   List<VideoViewHistoryItem> videoViewHistoryItems = [];
-  CacheManager cacheManager =
-      CacheManager(Config(CacheKeys.searchResultItemCoverKey));
+  CacheManager cacheManager = CacheUtils.searchResultItemCoverCacheManager;
 
   Future<bool> _loadVideoViewHistoryItemList() async {
     late List<VideoViewHistoryItem> list;

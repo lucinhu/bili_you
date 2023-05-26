@@ -35,6 +35,8 @@ class _HistoryPageState extends State<HistoryPage> {
         onRefresh: controller.onRefresh,
         easyRefreshController: controller.easyRefreshController,
         childBuilder: (context, physics) => ListView.builder(
+          addAutomaticKeepAlives: false,
+          addRepaintBoundaries: false,
           physics: physics,
           itemCount: controller.videoViewHistoryItems.length,
           controller: controller.scrollController,

@@ -1,7 +1,6 @@
-import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:share_plus/share_plus.dart';
@@ -40,8 +39,8 @@ class ShowDialog {
                                     PhotoViewHeroAttributes(tag: urls[index]),
                                 imageProvider: CachedNetworkImageProvider(
                                     urls[index],
-                                    cacheManager: CacheManager(
-                                        Config(CacheKeys.bigImageKey))),
+                                    cacheManager:
+                                        CacheUtils.bigImageCacheManager),
                               )),
                       Container(
                           decoration: const BoxDecoration(boxShadow: [
@@ -100,8 +99,8 @@ class ShowDialog {
                                       child: const Text('分享'),
                                       onTap: () async {
                                         Share.shareXFiles([
-                                          XFile((await CacheManager(Config(
-                                                      CacheKeys.bigImageKey))
+                                          XFile((await CacheUtils
+                                                  .bigImageCacheManager
                                                   .getFileFromCache(
                                                       urls[currentIndex]))!
                                               .file

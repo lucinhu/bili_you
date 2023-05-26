@@ -4,7 +4,7 @@ import 'package:bili_you/common/api/index.dart';
 import 'package:bili_you/common/models/local/login/login_user_info.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/utils/settings.dart';
-import 'package:bili_you/common/values/cache_keys.dart';
+import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   HomeController();
-  CacheManager cacheManager = CacheManager(Config(CacheKeys.userFaceKey));
+  CacheManager cacheManager = CacheUtils.userFaceCacheManager;
   RxString faceUrl = ApiConstants.noface.obs;
   late LoginUserInfo userInfo;
 
