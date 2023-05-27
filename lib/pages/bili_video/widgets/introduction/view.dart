@@ -56,7 +56,7 @@ class _IntroductionPageState extends State<IntroductionPage>
       addAutomaticKeepAlives: false,
       addRepaintBoundaries: false,
       controller: controller.scrollController,
-      padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
+      padding: const EdgeInsets.all(12),
       children: [
         //up主条项
         UpperTile(controller: controller),
@@ -66,7 +66,11 @@ class _IntroductionPageState extends State<IntroductionPage>
         //操作按钮
         IntroductionOperationButtons(controller: controller),
         //分P按钮
-        PartButtons(controller: controller),
+        if (controller.partButtons.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: PartButtons(controller: controller),
+          ),
         Divider(
           color: Theme.of(Get.context!).colorScheme.secondaryContainer,
           thickness: 1,
@@ -75,25 +79,28 @@ class _IntroductionPageState extends State<IntroductionPage>
         ListView.builder(
           addAutomaticKeepAlives: false,
           addRepaintBoundaries: false,
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.all(0),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: controller.relatedVideoInfos.length,
           itemBuilder: (context, index) {
             var i = controller.relatedVideoInfos[index];
             var heroTagId = HeroTagId.id++;
-            return VideoTileItem.fromVideoTileInfo(i,
-                cacheManager: controller.cacheManager,
-                heroTagId: heroTagId, onTap: (context) {
-              HeroTagId.lastId = heroTagId;
-              Navigator.of(context).push(GetPageRoute(
-                page: () => BiliVideoPage(
-                  key: ValueKey("BiliVideoPage:${i.bvid}"),
-                  bvid: i.bvid,
-                  cid: i.cid,
-                ),
-              ));
-            });
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: VideoTileItem.fromVideoTileInfo(i,
+                  cacheManager: controller.cacheManager,
+                  heroTagId: heroTagId, onTap: (context) {
+                HeroTagId.lastId = heroTagId;
+                Navigator.of(context).push(GetPageRoute(
+                  page: () => BiliVideoPage(
+                    key: ValueKey("BiliVideoPage:${i.bvid}"),
+                    bvid: i.bvid,
+                    cid: i.cid,
+                  ),
+                ));
+              }),
+            );
           },
         )
       ],
@@ -167,7 +174,7 @@ class UpperTile extends StatelessWidget {
       child: Row(
         children: [
           Padding(
-              padding: const EdgeInsets.only(top: 8, left: 2, right: 8),
+              padding: const EdgeInsets.only(right: 2),
               child: AvatarWidget(
                 avatarUrl: controller.videoInfo.ownerFace,
                 radius: 25,
@@ -377,60 +384,52 @@ class PartButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        if (controller.partButtons.isNotEmpty) {
-          return SizedBox(
-              height: 50,
-              child: Row(
-                children: [
-                  Flexible(
-                      child: ListView.builder(
-                    addAutomaticKeepAlives: false,
-                    addRepaintBoundaries: false,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: controller.partButtons.length,
-                    itemBuilder: (context, index) {
-                      return controller.partButtons[index];
-                    },
-                  )),
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: InkWell(
-                        borderRadius: BorderRadius.circular(25),
-                        onTap: () {
-                          showModalBottomSheet(
-                              context: context,
-                              clipBehavior: Clip.antiAlias,
-                              builder: (context) => SizedBox(
-                                    height: context.height / 2,
-                                    child: ListView(
-                                      padding: EdgeInsets.only(
-                                          top: 10,
-                                          left: 10,
-                                          right: 10,
-                                          bottom:
-                                              context.mediaQueryPadding.bottom),
-                                      children: [
-                                        Wrap(
-                                          alignment: WrapAlignment.spaceBetween,
-                                          children: controller.partButtons,
-                                        )
-                                      ],
-                                    ),
-                                  ));
-                        },
-                        child: const Icon(Icons.more_vert_rounded)),
-                  ),
-                ],
-              ));
-        } else {
-          return const SizedBox(
-            height: 0,
-          );
-        }
-      },
-    );
+    return (controller.partButtons.isNotEmpty)
+        ? SizedBox(
+            height: 50,
+            child: Row(
+              children: [
+                Flexible(
+                    child: ListView.builder(
+                  addAutomaticKeepAlives: false,
+                  addRepaintBoundaries: false,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: controller.partButtons.length,
+                  itemBuilder: (context, index) {
+                    return controller.partButtons[index];
+                  },
+                )),
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: InkWell(
+                      borderRadius: BorderRadius.circular(25),
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            clipBehavior: Clip.antiAlias,
+                            builder: (context) => SizedBox(
+                                  height: context.height / 2,
+                                  child: ListView(
+                                    padding: EdgeInsets.only(
+                                        top: 10,
+                                        left: 10,
+                                        right: 10,
+                                        bottom:
+                                            context.mediaQueryPadding.bottom),
+                                    children: [
+                                      Wrap(
+                                        alignment: WrapAlignment.spaceBetween,
+                                        children: controller.partButtons,
+                                      )
+                                    ],
+                                  ),
+                                ));
+                      },
+                      child: const Icon(Icons.more_vert_rounded)),
+                ),
+              ],
+            ))
+        : const SizedBox();
   }
 }

@@ -61,7 +61,7 @@ class _SearchTabViewPageState extends State<SearchTabViewPage>
         addAutomaticKeepAlives: false,
         addRepaintBoundaries: false,
         controller: controller.scrollController,
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(12),
         physics: physics,
         itemCount: controller.searchItems.length,
         itemBuilder: (context, index) {

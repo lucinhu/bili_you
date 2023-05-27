@@ -41,10 +41,10 @@ class _RecommendPageState extends State<RecommendPage>
         addRepaintBoundaries: false,
         controller: controller.scrollController,
         physics: physics,
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(12),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
             crossAxisCount: controller.recommendColumnCount,
             mainAxisExtent: (MediaQuery.of(context).size.width /
                         controller.recommendColumnCount) *

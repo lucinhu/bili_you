@@ -49,101 +49,95 @@ class VideoTileItem extends StatelessWidget {
       onTap: () {
         onTap(context);
       },
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: SizedBox(
-          height: 90,
-          child: Row(children: [
-            SizedBox(
-              width: 160,
-              height: 100,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: Stack(
-                  children: [
-                    LayoutBuilder(builder: (context, box) {
-                      return Hero(
-                          tag: heroTagId,
-                          transitionOnUserGestures: true,
-                          child: CachedNetworkImage(
-                            cacheWidth: (box.maxWidth *
-                                    MediaQuery.of(context).devicePixelRatio)
-                                .toInt(),
-                            cacheHeight: (box.maxHeight *
-                                    MediaQuery.of(context).devicePixelRatio)
-                                .toInt(),
-                            filterQuality: FilterQuality.none,
-                            width: 160,
-                            height: 100,
-                            fit: BoxFit.cover,
-                            imageUrl: picUrl,
-                            cacheManager: cacheManager,
-                            placeholder: () => Container(
-                              color:
-                                  Theme.of(context).colorScheme.surfaceVariant,
-                            ),
-                          ));
-                    }),
-                    Container(
-                      alignment: Alignment.bottomRight,
-                      child: Text(
-                        duration,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            shadows: [
-                              BoxShadow(
-                                  color: Colors.black87,
-                                  blurRadius: 10,
-                                  spreadRadius: 10)
-                            ]),
-                      ),
-                    )
-                  ],
-                ),
+      child: SizedBox(
+        height: 90,
+        child: Row(children: [
+          SizedBox(
+            width: 160,
+            height: 100,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: Stack(
+                children: [
+                  LayoutBuilder(builder: (context, box) {
+                    return Hero(
+                        tag: heroTagId,
+                        transitionOnUserGestures: true,
+                        child: CachedNetworkImage(
+                          cacheWidth: (box.maxWidth *
+                                  MediaQuery.of(context).devicePixelRatio)
+                              .toInt(),
+                          cacheHeight: (box.maxHeight *
+                                  MediaQuery.of(context).devicePixelRatio)
+                              .toInt(),
+                          filterQuality: FilterQuality.none,
+                          width: 160,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          imageUrl: picUrl,
+                          cacheManager: cacheManager,
+                          placeholder: () => Container(
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                          ),
+                        ));
+                  }),
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      duration,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          shadows: [
+                            BoxShadow(
+                                color: Colors.black87,
+                                blurRadius: 10,
+                                spreadRadius: 10)
+                          ]),
+                    ),
+                  )
+                ],
               ),
             ),
-            Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const Spacer(),
-                      Text(
-                        upName,
-                        style: TextStyle(
-                            fontSize: 12, color: Theme.of(context).hintColor),
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.slideshow_rounded,
-                              size: 14, color: Theme.of(context).hintColor),
-                          Text(
-                            StringFormatUtils.numFormat(playNum),
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Theme.of(context).hintColor),
-                          ),
-                          const Text("  "),
-                          Text(
-                            StringFormatUtils.timeStampToAgoDate(pubDate),
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Theme.of(context).hintColor),
-                          )
-                        ],
-                      )
-                    ],
-                  )),
-            )
-          ]),
-        ),
+          ),
+          Expanded(
+            child: Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Spacer(),
+                    Text(
+                      upName,
+                      style: TextStyle(
+                          fontSize: 12, color: Theme.of(context).hintColor),
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.slideshow_rounded,
+                            size: 14, color: Theme.of(context).hintColor),
+                        Text(
+                          StringFormatUtils.numFormat(playNum),
+                          style: TextStyle(
+                              fontSize: 12, color: Theme.of(context).hintColor),
+                        ),
+                        const Text("  "),
+                        Text(
+                          StringFormatUtils.timeStampToAgoDate(pubDate),
+                          style: TextStyle(
+                              fontSize: 12, color: Theme.of(context).hintColor),
+                        )
+                      ],
+                    )
+                  ],
+                )),
+          )
+        ]),
       ),
     );
   }

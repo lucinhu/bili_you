@@ -28,13 +28,11 @@ class ReplyItemWidget extends StatefulWidget {
       this.isTop = false,
       this.isUp = false,
       this.showPreReply = true,
-      this.hasFrontDivider = false,
       this.officialVerifyType});
   final ReplyItem reply;
   final bool isTop; //是否是置顶
   final bool isUp; //是否是up主
   final bool showPreReply; //是否显示评论的外显示评论
-  final bool hasFrontDivider; //是否前面有分界线
   final OfficialVerifyType? officialVerifyType;
 
   static final CacheManager emoteCacheManager = CacheUtils.emoteCacheManager;
@@ -155,13 +153,6 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget.hasFrontDivider)
-          Divider(
-            color: Theme.of(Get.context!).colorScheme.secondaryContainer,
-            thickness: 1,
-            indent: 10,
-            endIndent: 10,
-          ),
         Padding(
             padding: const EdgeInsets.all(10),
             child: Row(
@@ -205,7 +196,8 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(
-                              left: 10, top: 5, bottom: 5),
+                            left: 10,
+                          ),
                           child: GestureDetector(
                             onTap: () {
                               // Get.to(() => UserSpacePage(
@@ -247,7 +239,8 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.only(
+                              top: 5, right: 10, left: 10),
                           child:
                               //评论内容
                               //TODO: 有表情的评论暂时无法折叠
@@ -316,33 +309,20 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                               },
                             ),
                             Expanded(
-                              child: Builder(
-                                builder: (context) {
-                                  List<Widget> list = [];
-                                  if (widget.reply.tags.isNotEmpty) {
-                                    for (var i in widget.reply.tags) {
-                                      list.add(
-                                        Text(
-                                          "$i ", //标签,如热评,up觉得很赞
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                    return Row(
-                                      children: list,
-                                    );
-                                  } else {
-                                    return Container();
-                                  }
-                                },
-                              ),
+                              child: widget.reply.tags.isNotEmpty
+                                  ? Row(children: [
+                                      for (var i in widget.reply.tags)
+                                        Text("$i ", //标签,如热评,up觉得很赞
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              fontSize: 14,
+                                            ))
+                                    ])
+                                  : const SizedBox(),
                             ),
                             Text(
                               StringFormatUtils.timeStampToAgoDate(
@@ -353,77 +333,65 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                             )
                           ],
                         ),
-                        Builder(
-                          builder: (context) {
-                            Widget? subReplies;
-                            if (widget.reply.replyCount != 0 &&
-                                widget.showPreReply == true) {
-                              List<Widget> preSubReplies = []; //预显示在外的楼中楼
-                              for (var j in widget.reply.preReplies) {
-                                //添加预显示在外楼中楼评论条目
-                                preSubReplies.add(Padding(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: Text.rich(
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: "${j.member.name}: ",
-                                          ),
-                                          buildReplyItemContent(
-                                              j.content, context)
-                                        ],
+                        if (widget.reply.replyCount != 0 &&
+                            widget.showPreReply == true)
+                          Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceVariant),
+                              padding: const EdgeInsets.only(
+                                  left: 8, right: 8, bottom: 8),
+                              child: GestureDetector(
+                                child: ListView(
+                                  addAutomaticKeepAlives: false,
+                                  addRepaintBoundaries: false,
+                                  padding: EdgeInsets.zero,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  children: [
+                                    for (var j in widget.reply.preReplies)
+                                      //添加预显示在外楼中楼评论条目
+                                      Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 8),
+                                          child: Text.rich(
+                                            TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: "${j.member.name}: ",
+                                                ),
+                                                buildReplyItemContent(
+                                                    j.content, context)
+                                              ],
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          )),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8),
+                                      child: Text(
+                                        '共 ${StringFormatUtils.numFormat(widget.reply.replyCount)} 条回复 >',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    )));
-                              }
-
-                              preSubReplies.add(Padding(
-                                padding: const EdgeInsets.only(top: 8),
-                                child: Text(
-                                  '共 ${StringFormatUtils.numFormat(widget.reply.replyCount)} 条回复 >',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                                    )
+                                  ],
                                 ),
-                              ));
-
-                              //预显示在外楼中楼控件
-                              subReplies = Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .surfaceVariant),
-                                  padding: const EdgeInsets.only(
-                                      left: 8, right: 8, bottom: 8),
-                                  child: GestureDetector(
-                                    child: ListView(
-                                      addAutomaticKeepAlives: false,
-                                      addRepaintBoundaries: false,
-                                      padding: EdgeInsets.zero,
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      children: preSubReplies,
-                                    ),
-                                    onTap: () {
-                                      //楼中楼点击后弹出详细楼中楼
-                                      Get.bottomSheet(
-                                          ReplyReplyPage(
-                                            replyId:
-                                                widget.reply.oid.toString(),
-                                            replyType: widget.reply.type,
-                                            rootId: widget.reply.rpid,
-                                          ),
-                                          backgroundColor:
-                                              Theme.of(context).cardColor,
-                                          clipBehavior: Clip.antiAlias);
-                                    },
-                                  ));
-                            }
-                            return subReplies ?? const SizedBox();
-                          },
-                        )
+                                onTap: () {
+                                  //楼中楼点击后弹出详细楼中楼
+                                  Get.bottomSheet(
+                                      ReplyReplyPage(
+                                        replyId: widget.reply.oid.toString(),
+                                        replyType: widget.reply.type,
+                                        rootId: widget.reply.rpid,
+                                      ),
+                                      backgroundColor:
+                                          Theme.of(context).cardColor,
+                                      clipBehavior: Clip.antiAlias);
+                                },
+                              )),
                       ]),
                 )
               ],
@@ -465,8 +433,9 @@ class ThumUpButton extends StatelessWidget {
     return ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
+          visualDensity: VisualDensity.comfortable,
           padding: const MaterialStatePropertyAll(
-              EdgeInsets.only(left: 10, right: 10)),
+              EdgeInsets.only(left: 10, right: 10, bottom: 0, top: 0)),
           foregroundColor: selected == true
               ? MaterialStatePropertyAll(
                   Theme.of(context).colorScheme.onPrimary)
@@ -475,7 +444,7 @@ class ThumUpButton extends StatelessWidget {
               ? MaterialStatePropertyAll(Theme.of(context).colorScheme.primary)
               : null,
           elevation: const MaterialStatePropertyAll(0),
-          minimumSize: const MaterialStatePropertyAll(Size(10, 10)),
+          minimumSize: const MaterialStatePropertyAll(Size(10, 5)),
         ),
         child: Row(
           children: [

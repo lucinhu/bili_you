@@ -45,6 +45,7 @@ class _UserSpacePageState extends State<UserSpacePage>
           onLoad: controller.onLoad,
           onRefresh: controller.onRefresh,
           childBuilder: (context, physics) => ListView.builder(
+            padding: const EdgeInsets.all(12),
             addAutomaticKeepAlives: false,
             addRepaintBoundaries: false,
             physics: physics,
@@ -52,44 +53,47 @@ class _UserSpacePageState extends State<UserSpacePage>
             itemBuilder: (context, index) {
               var item = controller.searchItems[index];
               int heroTagId = HeroTagId.id++;
-              return VideoTileItem(
-                  picUrl: item.coverUrl,
-                  bvid: item.bvid,
-                  title: item.title,
-                  upName: item.author,
-                  duration: item.duration,
-                  playNum: item.playCount,
-                  pubDate: item.pubDate,
-                  cacheManager: controller.cacheManager,
-                  heroTagId: heroTagId,
-                  onTap: (context) {
-                    HeroTagId.lastId = heroTagId;
-                    late List<PartInfo> videoParts;
-                    Navigator.of(context).push(GetPageRoute(
-                        page: () => FutureBuilder(future: Future(() async {
-                              try {
-                                videoParts = await VideoInfoApi.getVideoParts(
-                                    bvid: item.bvid);
-                              } catch (e) {
-                                log("加载cid失败,${e.toString()}");
-                              }
-                            }), builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                return BiliVideoPage(
-                                  key: ValueKey('BiliVideoPage:${item.bvid}'),
-                                  bvid: item.bvid,
-                                  cid: videoParts.first.cid,
-                                );
-                              } else {
-                                return const Scaffold(
-                                  body: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-                            })));
-                  });
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: VideoTileItem(
+                    picUrl: item.coverUrl,
+                    bvid: item.bvid,
+                    title: item.title,
+                    upName: item.author,
+                    duration: item.duration,
+                    playNum: item.playCount,
+                    pubDate: item.pubDate,
+                    cacheManager: controller.cacheManager,
+                    heroTagId: heroTagId,
+                    onTap: (context) {
+                      HeroTagId.lastId = heroTagId;
+                      late List<PartInfo> videoParts;
+                      Navigator.of(context).push(GetPageRoute(
+                          page: () => FutureBuilder(future: Future(() async {
+                                try {
+                                  videoParts = await VideoInfoApi.getVideoParts(
+                                      bvid: item.bvid);
+                                } catch (e) {
+                                  log("加载cid失败,${e.toString()}");
+                                }
+                              }), builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  return BiliVideoPage(
+                                    key: ValueKey('BiliVideoPage:${item.bvid}'),
+                                    bvid: item.bvid,
+                                    cid: videoParts.first.cid,
+                                  );
+                                } else {
+                                  return const Scaffold(
+                                    body: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                }
+                              })));
+                    }),
+              );
             },
           ),
         ));

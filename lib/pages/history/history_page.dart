@@ -35,15 +35,19 @@ class _HistoryPageState extends State<HistoryPage> {
         onRefresh: controller.onRefresh,
         easyRefreshController: controller.easyRefreshController,
         childBuilder: (context, physics) => ListView.builder(
+          padding: const EdgeInsets.all(12),
           addAutomaticKeepAlives: false,
           addRepaintBoundaries: false,
           physics: physics,
           itemCount: controller.videoViewHistoryItems.length,
           controller: controller.scrollController,
-          itemBuilder: (context, index) => VideoViewHistoryTile(
-              videoViewHistoryItem: controller.videoViewHistoryItems[index],
-              cacheManager: controller.cacheManager,
-              heroTagId: HeroTagId.id++),
+          itemBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: VideoViewHistoryTile(
+                videoViewHistoryItem: controller.videoViewHistoryItems[index],
+                cacheManager: controller.cacheManager,
+                heroTagId: HeroTagId.id++),
+          ),
         ),
       ),
     );

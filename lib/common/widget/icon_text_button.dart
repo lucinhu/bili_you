@@ -18,6 +18,7 @@ class IconTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
+        visualDensity: VisualDensity.comfortable,
         foregroundColor: selected
             ? MaterialStatePropertyAll(Theme.of(context).colorScheme.onPrimary)
             : null,
@@ -25,10 +26,8 @@ class IconTextButton extends StatelessWidget {
             ? MaterialStatePropertyAll(Theme.of(context).colorScheme.primary)
             : null,
         elevation: const MaterialStatePropertyAll(0),
-        padding: const MaterialStatePropertyAll(EdgeInsets.only(
-          left: 10,
-          right: 10,
-        )),
+        padding: const MaterialStatePropertyAll(
+            EdgeInsets.only(left: 10, right: 10, bottom: 0, top: 0)),
         minimumSize: const MaterialStatePropertyAll(Size(10, 10)),
       ),
       onPressed: onPressed ?? () {},

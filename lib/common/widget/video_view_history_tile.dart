@@ -31,99 +31,95 @@ class VideoViewHistoryTile extends StatelessWidget {
           ),
         ));
       },
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: SizedBox(
-          height: 90,
-          child: Row(children: [
-            SizedBox(
-              width: 160,
-              height: 100,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    LayoutBuilder(builder: (context, box) {
-                      return Hero(
-                          tag: heroTagId,
-                          transitionOnUserGestures: true,
-                          child: CachedNetworkImage(
-                            cacheWidth: (box.maxWidth *
-                                    MediaQuery.of(context).devicePixelRatio)
-                                .toInt(),
-                            cacheHeight: (box.maxHeight *
-                                    MediaQuery.of(context).devicePixelRatio)
-                                .toInt(),
-                            filterQuality: FilterQuality.none,
-                            width: 160,
-                            height: 100,
-                            fit: BoxFit.cover,
-                            imageUrl: videoViewHistoryItem.cover,
-                            cacheManager: cacheManager,
-                            placeholder: () => Container(
-                              color:
-                                  Theme.of(context).colorScheme.surfaceVariant,
-                            ),
-                          ));
-                    }),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '${StringFormatUtils.timeLengthFormat(videoViewHistoryItem.progress)}/${StringFormatUtils.timeLengthFormat(videoViewHistoryItem.duration)}',
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              shadows: [
-                                BoxShadow(
-                                    color: Colors.black87,
-                                    blurRadius: 10,
-                                    spreadRadius: 10)
-                              ]),
-                        ),
-                        SizedBox(
-                          height: 4,
-                          child: LinearProgressIndicator(
-                            value: videoViewHistoryItem.progress /
-                                videoViewHistoryItem.duration,
+      child: SizedBox(
+        height: 90,
+        child: Row(children: [
+          SizedBox(
+            width: 160,
+            height: 100,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  LayoutBuilder(builder: (context, box) {
+                    return Hero(
+                        tag: heroTagId,
+                        transitionOnUserGestures: true,
+                        child: CachedNetworkImage(
+                          cacheWidth: (box.maxWidth *
+                                  MediaQuery.of(context).devicePixelRatio)
+                              .toInt(),
+                          cacheHeight: (box.maxHeight *
+                                  MediaQuery.of(context).devicePixelRatio)
+                              .toInt(),
+                          filterQuality: FilterQuality.none,
+                          width: 160,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          imageUrl: videoViewHistoryItem.cover,
+                          cacheManager: cacheManager,
+                          placeholder: () => Container(
+                            color: Theme.of(context).colorScheme.surfaceVariant,
                           ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                        ));
+                  }),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        videoViewHistoryItem.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        '${StringFormatUtils.timeLengthFormat(videoViewHistoryItem.progress)}/${StringFormatUtils.timeLengthFormat(videoViewHistoryItem.duration)}',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            shadows: [
+                              BoxShadow(
+                                  color: Colors.black87,
+                                  blurRadius: 10,
+                                  spreadRadius: 10)
+                            ]),
                       ),
-                      const Spacer(),
-                      Text(
-                        videoViewHistoryItem.authorName,
-                        style: TextStyle(
-                            fontSize: 12, color: Theme.of(context).hintColor),
-                      ),
-                      Text(
-                        StringFormatUtils.timeStampToAgoDate(
-                            videoViewHistoryItem.viewAt),
-                        style: TextStyle(
-                            fontSize: 12, color: Theme.of(context).hintColor),
+                      SizedBox(
+                        height: 4,
+                        child: LinearProgressIndicator(
+                          value: videoViewHistoryItem.progress /
+                              videoViewHistoryItem.duration,
+                        ),
                       )
                     ],
-                  )),
-            )
-          ]),
-        ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      videoViewHistoryItem.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Spacer(),
+                    Text(
+                      videoViewHistoryItem.authorName,
+                      style: TextStyle(
+                          fontSize: 12, color: Theme.of(context).hintColor),
+                    ),
+                    Text(
+                      StringFormatUtils.timeStampToAgoDate(
+                          videoViewHistoryItem.viewAt),
+                      style: TextStyle(
+                          fontSize: 12, color: Theme.of(context).hintColor),
+                    )
+                  ],
+                )),
+          )
+        ]),
       ),
     );
   }

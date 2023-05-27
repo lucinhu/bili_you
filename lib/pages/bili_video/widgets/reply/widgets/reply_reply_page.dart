@@ -140,7 +140,6 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
                 child: Column(
                   children: [
                     ReplyItemWidget(
-                      hasFrontDivider: false,
                       reply: _rootReply!,
                       isUp: _rootReply!.member.mid == _upperMid,
                       showPreReply: false,
@@ -158,7 +157,6 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
             } else if (_newReplyReplyItems.isNotEmpty &&
                 index - 1 < _newReplyReplyItems.length) {
               return ReplyItemWidget(
-                hasFrontDivider: index - 1 > 0,
                 reply: _newReplyReplyItems[index - 1],
                 isUp: _newReplyReplyItems[index - 1].member.mid == _upperMid,
                 showPreReply: false,
@@ -167,7 +165,6 @@ class _ReplyReplyPageState extends State<ReplyReplyPage>
               );
             } else {
               return ReplyItemWidget(
-                hasFrontDivider: index - 1 > 0,
                 reply:
                     _replyReplyItems[index - (1 + _newReplyReplyItems.length)],
                 isUp: _replyReplyItems[index - (1 + _newReplyReplyItems.length)]

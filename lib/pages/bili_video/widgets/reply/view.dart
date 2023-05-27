@@ -88,7 +88,6 @@ class _ReplyPageState extends State<ReplyPage>
                   reply: item,
                   isTop: controller.topReplyItems.contains(item),
                   isUp: item.member.mid == controller.upperMid,
-                  hasFrontDivider: false,
                   officialVerifyType: item.member.officialVerify.type,
                 ),
               ],
@@ -98,7 +97,6 @@ class _ReplyPageState extends State<ReplyPage>
               reply: item,
               isTop: controller.topReplyItems.contains(item),
               isUp: item.member.mid == controller.upperMid,
-              hasFrontDivider: true,
               officialVerifyType: item.member.officialVerify.type,
             );
           }

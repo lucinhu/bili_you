@@ -101,10 +101,9 @@ class _DynamicItemCardState extends State<DynamicItemCard> {
           : Theme.of(context).colorScheme.surfaceVariant,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20))),
-      margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+      margin: const EdgeInsets.only(bottom: 12, left: 12, right: 12),
       child: Padding(
-        padding:
-            const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+        padding: const EdgeInsets.only(top: 12, left: 12, right: 12, bottom: 6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
