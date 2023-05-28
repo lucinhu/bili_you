@@ -9,6 +9,8 @@ class ApiConstants {
 
   static const String apiBase = "https://api.bilibili.com";
 
+  static const String apiLiveBase = "https://api.live.bilibili.com";
+
   static const String passportBase = "https://passport.bilibili.com";
 
   static const String sSearchBase = "https://s.search.bilibili.com";
@@ -170,4 +172,21 @@ class ApiConstants {
   ///热门视频
   ///test: https://api.bilibili.com/x/web-interface/popular?ps=20&pn=1
   static const String popularVideos = "$apiBase/x/web-interface/popular";
+
+  ///用户推荐直播
+  ///test: https://api.live.bilibili.com/xlive/web-interface/v1/second/getUserRecommend?page=1&page_size=30&platform=web
+  static const String userRecommendLive =
+      "$apiLiveBase/xlive/web-interface/v1/second/getUserRecommend";
+
+  ///直播播放链接
+  ///
+  ///[cid] 其实是room_id
+  ///
+  ///[qn] 80:流畅，150:高清，400:蓝光，10000:原画，20000:4K, 30000:杜比
+  ///
+  ///test: https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=6154037&protocol=0,1&format=0,1,2&codec=0,1&qn=150&platform=web&ptype=8&dolby=5&panorama=1
+  ///https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=545068&protocol=0,1&format=0,1,2&codec=0,1&qn=250&platform=web&ptype=8&dolby=5&panorama=1
+  ///
+  static const String livePlayUrl =
+      "$apiLiveBase/xlive/web-room/v2/index/getRoomPlayInfo";
 }

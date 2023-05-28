@@ -5,6 +5,7 @@ import 'package:bili_you/common/widget/settings_label.dart';
 import 'package:bili_you/common/widget/settings_radios_tile.dart';
 import 'package:bili_you/common/widget/settings_slider_tile.dart';
 import 'package:bili_you/common/widget/settings_switch_tile.dart';
+import 'package:bili_you/pages/live_tab_page/controller.dart';
 import 'package:bili_you/pages/recommend/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,6 +40,10 @@ class CommonSettingsPage extends StatelessWidget {
                   SettingsStorageKeys.recommendColumnCount, value);
               Get.find<RecommendController>().recommendColumnCount = value;
               await Get.find<RecommendController>()
+                  .refreshController
+                  .callRefresh();
+              Get.find<LiveTabPageController>().columnCount = value;
+              await Get.find<LiveTabPageController>()
                   .refreshController
                   .callRefresh();
             },

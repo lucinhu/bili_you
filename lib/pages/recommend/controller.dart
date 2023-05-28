@@ -18,7 +18,7 @@ class RecommendController extends GetxController {
       controlFinishLoad: true, controlFinishRefresh: true);
   int refreshIdx = 0;
   CacheManager cacheManager = CacheUtils.recommendItemCoverCacheManager;
-  int recommendColumnCount = 1;
+  int recommendColumnCount = 2;
 
   @override
   void onInit() {
@@ -37,7 +37,7 @@ class RecommendController extends GetxController {
   Future<bool> _addRecommendItems() async {
     try {
       recommendItems.addAll(await HomeApi.getRecommendVideoItems(
-          num: 16, refreshIdx: refreshIdx));
+          num: 30, refreshIdx: refreshIdx));
     } catch (e) {
       log("加载推荐视频失败:${e.toString()}");
       return false;

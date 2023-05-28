@@ -1,4 +1,6 @@
 import 'package:bili_you/common/widget/cached_network_image.dart';
+import 'package:bili_you/pages/live_tab_page/controller.dart';
+import 'package:bili_you/pages/live_tab_page/view.dart';
 import 'package:bili_you/pages/popular_video/controller.dart';
 import 'package:bili_you/pages/popular_video/view.dart';
 import 'package:bili_you/pages/recommend/controller.dart';
@@ -24,6 +26,7 @@ class _HomePageState extends State<HomePage>
   late HomeController controller;
   final RecommendPage recommendPage = const RecommendPage();
   final PopularVideoPage popularVideoPage = const PopularVideoPage();
+  final LiveTabPage liveTabPage = const LiveTabPage();
   List<Map<String, dynamic>> tabsList = [];
 
   @override
@@ -146,6 +149,10 @@ class _HomePageState extends State<HomePage>
           onTap: (index) {
             if (controller.tabController!.indexIsChanging) return;
             switch (index) {
+              case 0:
+                //点击“直播”回到顶
+                Get.find<LiveTabPageController>().animateToTop();
+                break;
               case 1:
                 //点击“推荐”回到顶
                 Get.find<RecommendController>().animateToTop();
@@ -162,6 +169,8 @@ class _HomePageState extends State<HomePage>
         controller: controller.tabController,
         children: tabsList.map((e) {
           switch (e['text']) {
+            case '直播':
+              return liveTabPage;
             case '推荐':
               return recommendPage;
             case '热门':

@@ -4,6 +4,7 @@ import 'package:bili_you/common/utils/settings.dart';
 import 'package:bili_you/common/widget/bili_url_scheme.dart';
 import 'package:bili_you/pages/dynamic/view.dart';
 import 'package:bili_you/pages/home/index.dart';
+import 'package:bili_you/pages/live_tab_page/controller.dart';
 import 'package:bili_you/pages/popular_video/controller.dart';
 import 'package:bili_you/pages/recommend/controller.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,8 @@ class _MainPageState extends State<MainPage> {
           controller = Get.find<RecommendController>();
         } else if (controllerName == "PopularVideoController") {
           controller = Get.find<PopularVideoController>();
+        } else if (controllerName == "LiveTabPageController") {
+          controller = Get.find<LiveTabPageController>();
         }
         if (controller.scrollController.offset == 0) {
           controller.refreshController.callRefresh();

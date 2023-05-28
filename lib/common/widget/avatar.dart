@@ -35,7 +35,9 @@ class AvatarWidget extends StatelessWidget {
                   cacheWidth: cacheWidthHeight ??
                       (MediaQuery.of(context).devicePixelRatio * radius * 2)
                           .toInt(),
-                  cacheHeight: cacheWidthHeight,
+                  cacheHeight: cacheWidthHeight ??
+                      (MediaQuery.of(context).devicePixelRatio * radius * 2)
+                          .toInt(),
                   placeholder: () => Container(
                         color: Theme.of(context).colorScheme.primaryContainer,
                       ),
