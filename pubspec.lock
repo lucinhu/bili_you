@@ -236,11 +236,12 @@ packages:
   cookie_jar:
     dependency: "direct main"
     description:
-      name: cookie_jar
-      sha256: d1cc6516a190ba667941f722b6365d202caff3dacb38de24268b8d6ff1ec8a1d
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.1"
+      path: "."
+      ref: "fix/cast_exception"
+      resolved-ref: "48233c1b2be75266c4d2702dd66463b1d4949eef"
+      url: "https://github.com/dkaera/cookie_jar.git"
+    source: git
+    version: "4.0.2"
   coverage:
     dependency: transitive
     description:
@@ -309,10 +310,10 @@ packages:
     dependency: "direct main"
     description:
       name: dio_cookie_manager
-      sha256: b45f11c2fcbccf39c5952ab68910b3a155486c4fa730ceb4ce867c4943169ea1
+      sha256: ff1755fd56d02485146d95a589fb4ace1f0ae0c0f3ca702a817de2dc1fbb835e
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.4"
+    version: "3.0.0"
   dynamic_color:
     dependency: "direct main"
     description:
@@ -563,75 +564,67 @@ packages:
   media_kit:
     dependency: "direct main"
     description:
-      path: media_kit
-      ref: HEAD
-      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
-      url: "https://github.com/alexmercerind/media_kit.git"
-    source: git
-    version: "0.0.8"
+      name: media_kit
+      sha256: "67cb78a254a2559f2d4d4a71748817967e3d8a5512071f4e6f63a1a8b8a50ca7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.9+1"
   media_kit_libs_android_video:
     dependency: "direct main"
     description:
-      path: media_kit_libs_android_video
-      ref: HEAD
-      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
-      url: "https://github.com/alexmercerind/media_kit.git"
-    source: git
-    version: "1.0.4"
+      name: media_kit_libs_android_video
+      sha256: df98da77eb6ec3473cf627abc68702f9be5a47fd788de7fb4c70863ee82789c5
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
   media_kit_libs_ios_video:
     dependency: "direct main"
     description:
-      path: media_kit_libs_ios_video
-      ref: HEAD
-      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
-      url: "https://github.com/alexmercerind/media_kit.git"
-    source: git
+      name: media_kit_libs_ios_video
+      sha256: "28c6ddd5ed43263641293832c8d1fb3f24af81b4eba0b61d6da9bedadbf2e1b1"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.4"
   media_kit_libs_linux:
     dependency: "direct main"
     description:
-      path: media_kit_libs_linux
-      ref: HEAD
-      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
-      url: "https://github.com/alexmercerind/media_kit.git"
-    source: git
+      name: media_kit_libs_linux
+      sha256: "21acc71cbae3518b3aeef9023a6a3a3decb579a40153764333814987ccd61040"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.2"
   media_kit_libs_macos_video:
     dependency: "direct main"
     description:
-      path: media_kit_libs_macos_video
-      ref: HEAD
-      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
-      url: "https://github.com/alexmercerind/media_kit.git"
-    source: git
+      name: media_kit_libs_macos_video
+      sha256: c4d3706af5a67bf194d8208eef5cf29ea79e64931ea9bcd50f665b9a438f8416
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.5"
   media_kit_libs_windows_video:
     dependency: "direct main"
     description:
-      path: media_kit_libs_windows_video
-      ref: HEAD
-      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
-      url: "https://github.com/alexmercerind/media_kit.git"
-    source: git
+      name: media_kit_libs_windows_video
+      sha256: "99a3a85b185ae012a8e3bd596cf0ca425834477d0bec86207548d6ff7c926254"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.2"
   media_kit_native_event_loop:
     dependency: "direct main"
     description:
-      path: media_kit_native_event_loop
-      ref: HEAD
-      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
-      url: "https://github.com/alexmercerind/media_kit.git"
-    source: git
+      name: media_kit_native_event_loop
+      sha256: "521125e534603c3f603b93283db3938f557f33ecc383fbd62edd4beb3bf73747"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.4"
   media_kit_video:
     dependency: "direct main"
     description:
-      path: media_kit_video
-      ref: HEAD
-      resolved-ref: "8ba9f71f4dcc988bb315478f46a34e50e2aa1274"
-      url: "https://github.com/alexmercerind/media_kit.git"
-    source: git
-    version: "0.0.10"
+      name: media_kit_video
+      sha256: "89d3c2cdb0f74d1bb597a9c9a7678f656fe538d20620ad1317b7354fd5d1af15"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.12"
   meta:
     dependency: transitive
     description:
@@ -1126,6 +1119,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  universal_io:
+    dependency: transitive
+    description:
+      name: universal_io
+      sha256: "06866290206d196064fd61df4c7aea1ffe9a4e7c4ccaa8fcded42dd41948005d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   uri_parser:
     dependency: transitive
     description:
