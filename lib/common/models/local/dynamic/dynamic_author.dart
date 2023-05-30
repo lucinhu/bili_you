@@ -9,7 +9,8 @@ class DynamicAuthor {
       required this.officialVerify,
       required this.vip,
       required this.pubTime,
-      required this.pubAction});
+      required this.pubAction,
+      this.hasUpdate = false});
   static DynamicAuthor get zero => DynamicAuthor(
       mid: 0,
       name: "",
@@ -25,4 +26,5 @@ class DynamicAuthor {
   Vip vip;
   String pubTime;
   String pubAction;
+  bool hasUpdate;
 }

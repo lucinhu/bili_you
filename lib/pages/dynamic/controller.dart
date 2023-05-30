@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bili_you/common/api/dynamic_api.dart';
+import 'package:bili_you/common/models/local/dynamic/dynamic_author.dart';
 import 'package:bili_you/common/models/local/dynamic/dynamic_item.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,9 @@ class DynamicController extends GetxController {
   EasyRefreshController refreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
   int currentPage = 1;
+  int authorFilterMid = -1;
   List<DynamicItem> dynamicItems = [];
+  List<DynamicAuthor> dynamicAuthorList = [];
   ScrollController scrollController = ScrollController();
   void animateToTop() {
     scrollController.animateTo(0,
@@ -21,7 +24,7 @@ class DynamicController extends GetxController {
   Future<bool> _loadDynamicItemCards() async {
     late List<DynamicItem> items;
     try {
-      items = await DynamicApi.getDynamicItems(page: currentPage);
+      items = await DynamicApi.getDynamicItems(page: currentPage, mid: authorFilterMid);
     } catch (e) {
       log("_loadDynamicItemCards:$e");
       return false;
@@ -29,6 +32,16 @@ class DynamicController extends GetxController {
     dynamicItems.addAll(items);
     if (items.isNotEmpty) {
       currentPage++;
+    }
+    return true;
+  }
+
+  Future<bool> _loadAuthorList() async {
+    try {
+      dynamicAuthorList = await DynamicApi.getDynamicAuthorList();
+    } catch (e) {
+      log("_loadDynamicAuthorList:$e");
+      return false;
     }
     return true;
   }
@@ -44,10 +57,19 @@ class DynamicController extends GetxController {
   void onRefresh() async {
     dynamicItems.clear();
     currentPage = 1;
+    if (authorFilterMid == -1) {
+      await _loadAuthorList();
+      authorFilterMid = 0;
+    }
     if (await _loadDynamicItemCards()) {
       refreshController.finishRefresh(IndicatorResult.success);
     } else {
       refreshController.finishRefresh(IndicatorResult.fail);
     }
+  }
+
+  void applyAuthorFilter(mid) {
+    authorFilterMid = mid;
+    refreshController.callRefresh();
   }
 }

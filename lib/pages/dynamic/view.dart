@@ -1,5 +1,7 @@
 import 'package:bili_you/common/widget/simple_easy_refresher.dart';
+import 'package:bili_you/pages/dynamic/widget/dynamic_author_filter.dart';
 import 'package:bili_you/pages/dynamic/widget/dynamic_item_card.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -32,13 +34,24 @@ class _DynamicPageState extends State<DynamicPage> {
         appBar: AppBar(title: const Text("动态")),
         body: SimpleEasyRefresher(
           easyRefreshController: controller.refreshController,
-          childBuilder: (context, physics) => ListView.builder(
+          indicatorPosition: IndicatorPosition.locator,
+          childBuilder: (context, physics) => CustomScrollView(
             cacheExtent: MediaQuery.of(context).size.height,
             controller: controller.scrollController,
             physics: physics,
-            itemCount: controller.dynamicItems.length,
-            itemBuilder: (context, index) =>
-                DynamicItemCard(dynamicItem: controller.dynamicItems[index]),
+            slivers: [
+              DynamicAuthorFilter(
+                authors: controller.dynamicAuthorList,
+                onAuthorFilterApplied: controller.applyAuthorFilter,
+              ),
+              const HeaderLocator.sliver(),
+              SliverList.builder(
+                itemCount: controller.dynamicItems.length,
+                itemBuilder: (context, index) =>
+                    DynamicItemCard(dynamicItem: controller.dynamicItems[index]),
+              ),
+              const FooterLocator.sliver(),
+            ],
           ),
           onLoad: controller.onLoad,
           onRefresh: controller.onRefresh,

@@ -138,6 +138,9 @@ class ApiConstants {
   static const String dynamicFeed =
       "$apiBase/x/polymer/web-dynamic/v1/feed/all";
 
+  ///动态页Up主面板
+  static const String dynamicAuthorList = "$apiBase/x/polymer/web-dynamic/v1/portal";
+
   ///点赞
   static const String like = "$apiBase/x/web-interface/archive/like";
 
