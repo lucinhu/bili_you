@@ -86,6 +86,9 @@ dependencies:
   # 亮度控制
   screen_brightness: ^0.2.2
 
+  # 自动旋转屏幕
+  auto_orientation: ^2.3.1
+
   # 二维码
   qr_flutter: ^4.1.0
 
