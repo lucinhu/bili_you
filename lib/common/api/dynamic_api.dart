@@ -13,28 +13,30 @@ import '../models/local/reply/vip.dart';
 class DynamicApi {
   static String _offset = "";
   static Future<raw.DynamicResponse> _requestDynamic(
-      {required String type, required int page}) async {
+      {required String type, required int page, int mid = 0}) async {
     if (page == 1) {
       _offset = "";
     }
+    String hostMid = mid > 0 ? mid.toString() : "";
     //必须有features=itemOpusStyle才会有文章动态
     var response = await HttpUtils().get(
       ApiConstants.dynamicFeed,
       queryParameters: _offset.isEmpty
-          ? {'type': type, 'page': page, 'features': 'itemOpusStyle'}
+          ? {'type': type, 'page': page, 'features': 'itemOpusStyle', 'host_mid': hostMid}
           : {
               'type': type,
               'page': page,
               'offset': _offset,
+              'host_mid': hostMid,
               'features': 'itemOpusStyle'
             },
     );
     return raw.DynamicResponse.fromJson(response.data);
   }
 
-  static Future<List<DynamicItem>> getDynamicItems({required int page}) async {
+  static Future<List<DynamicItem>> getDynamicItems({required int page, int mid = 0}) async {
     raw.DynamicResponse response =
-        await _requestDynamic(type: "all", page: page);
+        await _requestDynamic(type: "all", page: page, mid: mid);
     _offset = response.data?.offset ?? "";
     List<DynamicItem> list = [];
     if (response.code != 0) {
@@ -45,6 +47,29 @@ class DynamicApi {
     }
     for (var i in response.data!.items!) {
       list.add(_buildDynamicItem(i));
+    }
+    return list;
+  }
+
+  static Future<List<DynamicAuthor>> getDynamicAuthorList() async {
+    var response = await HttpUtils().get(
+      ApiConstants.dynamicAuthorList,
+    );
+    var json = response.data;
+    List<DynamicAuthor> list = [];
+    if (json["code"] != 0) {
+      throw "getDynamicAuthorList: code:${json["code"]}, message:${json["message"]}";
+    }
+    if (json["data"] == null || json["data"]!["up_list"] == null) {
+      return list;
+    }
+    for (var i in json["data"]!["up_list"]!) {
+      var author = DynamicAuthor.zero;
+      author.mid = i["mid"];
+      author.name = i["uname"];
+      author.avatarUrl = i["face"];
+      author.hasUpdate = i["has_update"];
+      list.add(author);
     }
     return list;
   }
