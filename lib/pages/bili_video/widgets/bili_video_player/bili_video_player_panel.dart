@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:bili_you/common/models/local/video/audio_play_item.dart';
 import 'package:bili_you/common/models/local/video/video_play_item.dart';
@@ -24,6 +25,10 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
   GlobalKey sliderKey = GlobalKey();
   GlobalKey durationTextKey = GlobalKey();
   late double tempSpeed;
+  bool isHorizontalGestureInProgress = false;
+  bool isVerticalGestureInProgress = false;
+  static const gestureEdgeDeadZone = 0.1;
+  var isInDeadZone = (x, bound) => math.min<double>(x, bound - x) < gestureEdgeDeadZone * bound;
 
   final panelDecoration = const BoxDecoration(boxShadow: [
     BoxShadow(color: Colors.black45, blurRadius: 15, spreadRadius: 5)
@@ -185,6 +190,10 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                 .setPlayBackSpeed(tempSpeed);
           },
           onHorizontalDragStart: (details) {
+            if (isInDeadZone(details.globalPosition.dx, MediaQuery.of(context).size.width)) {
+              return;
+            }
+            isHorizontalGestureInProgress = true;
             widget.controller._isPreviousShow = widget.controller._show;
             widget.controller._isPreviousPlaying =
                 widget.controller._isPlayerPlaying;
@@ -194,6 +203,9 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
             setState(() {});
           },
           onHorizontalDragUpdate: (details) {
+            if (!isHorizontalGestureInProgress) {
+              return;
+            }
             double scale = 0.5 / 1000;
             Duration pos = widget.controller._position +
                 widget.controller._duration * details.delta.dx * scale;
@@ -203,6 +215,10 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
             setState(() {});
           },
           onHorizontalDragEnd: (details) {
+            if (!isHorizontalGestureInProgress) {
+              return;
+            }
+            isHorizontalGestureInProgress = false;
             widget.controller.biliVideoPlayerController
                 .seekTo(widget.controller._position);
             if (widget.controller._isPreviousPlaying) {
@@ -214,7 +230,13 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
             widget.controller._isSliderDraging = false;
             setState(() {});
           },
+          onVerticalDragStart: (details) {
+            isVerticalGestureInProgress = !isInDeadZone(details.globalPosition.dy, MediaQuery.of(context).size.height);
+          },
           onVerticalDragUpdate: (details) {
+            if (!isVerticalGestureInProgress) {
+              return;
+            }
             var add = details.delta.dy / 500;
             if (details.localPosition.dx > context.size!.width / 2) {
               widget.controller._volume -= add;
@@ -227,6 +249,9 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
               ScreenBrightness()
                   .setScreenBrightness(widget.controller._brightness);
             }
+          },
+          onVerticalDragEnd: (details) {
+            isVerticalGestureInProgress = false;
           },
           // onScaleUpdate: (details) {
           //   widget.controller._biliVideoPlayerController
