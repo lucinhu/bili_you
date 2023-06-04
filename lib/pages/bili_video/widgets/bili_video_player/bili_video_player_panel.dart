@@ -206,9 +206,8 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
             if (!isHorizontalGestureInProgress) {
               return;
             }
-            double scale = 0.5 / 1000;
-            Duration pos = widget.controller._position +
-                widget.controller._duration * details.delta.dx * scale;
+            double scale = 60000 / MediaQuery.of(context).size.width;
+            Duration pos = widget.controller._position + Duration(milliseconds: (details.delta.dx * scale).round());
             widget.controller._position = Duration(
                 milliseconds: pos.inMilliseconds
                     .clamp(0, widget.controller._duration.inMilliseconds));
