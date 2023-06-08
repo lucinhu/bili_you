@@ -32,7 +32,8 @@ class HistoryApi {
           authorName: i['author_name'],
           viewAt: i['view_at'],
           progress: i['progress'],
-          duration: i['duration']));
+          duration: i['duration'],
+          isFinished: i['is_finish'] != 0 || i['progress'] < 0));
     }
     return list;
   }

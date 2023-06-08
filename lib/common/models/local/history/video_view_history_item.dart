@@ -10,7 +10,8 @@ class VideoViewHistoryItem {
       required this.authorName,
       required this.viewAt,
       required this.progress,
-      required this.duration});
+      required this.duration,
+      required this.isFinished});
   static VideoViewHistoryItem get zero => VideoViewHistoryItem(
       oid: 0,
       title: '',
@@ -22,7 +23,8 @@ class VideoViewHistoryItem {
       authorName: '',
       viewAt: 0,
       progress: 0,
-      duration: 0);
+      duration: 0,
+      isFinished: false);
   int oid;
   String title;
   String cover;
@@ -34,4 +36,5 @@ class VideoViewHistoryItem {
   int viewAt;
   int progress;
   int duration;
+  bool isFinished;
 }

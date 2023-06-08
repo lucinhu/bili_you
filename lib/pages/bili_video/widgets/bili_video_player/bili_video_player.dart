@@ -29,8 +29,6 @@ class BiliVideoPlayerWidget extends StatefulWidget {
 class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
   BiliDanmaku? danmaku;
   Widget? controllPanel;
-  //每15秒执行一次的timer，用来更新播放记录
-  Timer? heartBeat;
 
   updateWidget() {
     if (mounted) {
@@ -47,17 +45,11 @@ class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
       widget.controller._playWhenInitialize = SettingsUtil.getValue(
           SettingsStorageKeys.autoPlayOnInit,
           defaultValue: true);
-      //定时汇报历史记录
-      widget.controller._reportHistory();
-      heartBeat = Timer.periodic(const Duration(seconds: 15), (timer) async {
-        await widget.controller._reportHistory();
-      });
       widget.controller.buildDanmaku = widget.buildDanmaku;
       widget.controller.biliDanmakuController = danmaku!.controller;
       widget.controller.buildControllPanel = widget.buildControllPanel;
     }
     widget.controller._isInitializedState = true;
-
     super.initState();
   }
 
@@ -67,7 +59,6 @@ class _BiliVideoPlayerWidgetState extends State<BiliVideoPlayerWidget> {
       await widget.controller.toggleFullScreen();
     }
     super.dispose();
-    heartBeat?.cancel();
   }
 
   @override
@@ -255,7 +246,8 @@ class BiliVideoPlayerController {
         initStart: _playWhenInitialize,
         initSpeed: SettingsUtil.getValue(
             SettingsStorageKeys.defaultVideoPlaybackSpeed,
-            defaultValue: 1.0));
+            defaultValue: 1.0),
+        initDuration: initVideoPosition);
 
     await _videoAudioController!.init();
 
@@ -267,6 +259,19 @@ class BiliVideoPlayerController {
       isFullScreen = false;
       toggleFullScreen();
     }
+    var lastTime = DateTime.now().millisecondsSinceEpoch;
+    addListener(() async {
+      //每帧更新历史播放进度
+      //限制一秒更新进度一次，防止频繁更新
+      if (DateTime.now().millisecondsSinceEpoch - lastTime >= 1000) {
+        await _reportHistory();
+        lastTime = DateTime.now().millisecondsSinceEpoch;
+      }
+    });
+    //当播放状态改变时更新历史播放进度
+    addStateChangedListener((state) async {
+      await _reportHistory();
+    });
     return true;
   }
 
@@ -289,8 +294,14 @@ class BiliVideoPlayerController {
   //汇报一次历史记录
   Future<void> _reportHistory() async {
     try {
-      await VideoPlayApi.reportHistory(
-          bvid: bvid, cid: cid, playedTime: position.inSeconds);
+      if (_videoAudioController!.state.isEnd) {
+        //看完时
+        await VideoPlayApi.reportHistory(bvid: bvid, cid: cid, playedTime: -1);
+      } else {
+        //未看完时
+        await VideoPlayApi.reportHistory(
+            bvid: bvid, cid: cid, playedTime: position.inSeconds);
+      }
     } catch (e) {
       log(e.toString());
     }
@@ -355,7 +366,6 @@ class BiliVideoPlayerController {
   }
 
   Future<void> dispose() async {
-    _reportHistory();
     await _videoAudioController?.dispose();
   }
 
@@ -403,7 +413,6 @@ class BiliVideoPlayerController {
 
   Future<void> seekTo(Duration position) async {
     await _videoAudioController?.seekTo(position);
-    await _reportHistory();
   }
 
   Future<void> setPlayBackSpeed(double speed) async {

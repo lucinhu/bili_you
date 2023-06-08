@@ -109,18 +109,18 @@ packages:
     dependency: "direct dev"
     description:
       name: build_runner
-      sha256: "220ae4553e50d7c21a17c051afc7b183d28a24a420502e842f303f8e4e6edced"
+      sha256: "5e1929ad37d48bd382b124266cb8e521de5548d406a45a5ae6656c13dab73e37"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "2.4.5"
   build_runner_core:
     dependency: transitive
     description:
       name: build_runner_core
-      sha256: "88a57f2ac99849362e73878334caa9f06ee25f31d2adced882b8337838c84e1e"
+      sha256: "6d6ee4276b1c5f34f21fdf39425202712d2be82019983d52f351c94aafbc2c41"
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.9"
+    version: "7.2.10"
   built_collection:
     dependency: transitive
     description:
@@ -310,18 +310,18 @@ packages:
     dependency: "direct main"
     description:
       name: dio
-      sha256: "347d56c26d63519552ef9a569f2a593dda99a81fdbdff13c584b7197cfe05059"
+      sha256: b99b1d56dc0d5dece70957023af002dbd49614b4a1bf86d3a254af3fe781bdf2
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.2"
+    version: "5.2.0+1"
   dio_cookie_manager:
     dependency: "direct main"
     description:
       name: dio_cookie_manager
-      sha256: ff1755fd56d02485146d95a589fb4ace1f0ae0c0f3ca702a817de2dc1fbb835e
+      sha256: c4b7a693aa09efd694a5c5e12065daa5e026647b106245281ed1042b3ebefb8f
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.1.0"
   dynamic_color:
     dependency: "direct main"
     description:
@@ -565,16 +565,16 @@ packages:
     dependency: transitive
     description:
       name: material_color_utilities
-      sha256: "586678f20e112219ed0f73215f01bcdf1d769824ba2ebae45ad918a9bfde9bdb"
+      sha256: d92141dc6fe1dad30722f9aa826c7fbc896d021d792f80678280601aff8cf724
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.2.0"
   media_kit:
     dependency: "direct main"
     description:
       path: media_kit
       ref: HEAD
-      resolved-ref: f0f91155900d27e43421fcefcb24793cfd310480
+      resolved-ref: "318f3e157e127af84b70d9907d4b30efd50371e6"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "0.0.11"
@@ -583,7 +583,7 @@ packages:
     description:
       path: media_kit_libs_android_video
       ref: HEAD
-      resolved-ref: f0f91155900d27e43421fcefcb24793cfd310480
+      resolved-ref: "318f3e157e127af84b70d9907d4b30efd50371e6"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.6"
@@ -592,7 +592,7 @@ packages:
     description:
       path: media_kit_libs_ios_video
       ref: HEAD
-      resolved-ref: f0f91155900d27e43421fcefcb24793cfd310480
+      resolved-ref: "318f3e157e127af84b70d9907d4b30efd50371e6"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.4"
@@ -601,7 +601,7 @@ packages:
     description:
       path: media_kit_libs_linux
       ref: HEAD
-      resolved-ref: f0f91155900d27e43421fcefcb24793cfd310480
+      resolved-ref: "318f3e157e127af84b70d9907d4b30efd50371e6"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.2"
@@ -610,7 +610,7 @@ packages:
     description:
       path: media_kit_libs_macos_video
       ref: HEAD
-      resolved-ref: f0f91155900d27e43421fcefcb24793cfd310480
+      resolved-ref: "318f3e157e127af84b70d9907d4b30efd50371e6"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.5"
@@ -619,7 +619,7 @@ packages:
     description:
       path: media_kit_libs_windows_video
       ref: HEAD
-      resolved-ref: f0f91155900d27e43421fcefcb24793cfd310480
+      resolved-ref: "318f3e157e127af84b70d9907d4b30efd50371e6"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.2"
@@ -628,7 +628,7 @@ packages:
     description:
       path: media_kit_native_event_loop
       ref: HEAD
-      resolved-ref: f0f91155900d27e43421fcefcb24793cfd310480
+      resolved-ref: "318f3e157e127af84b70d9907d4b30efd50371e6"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "1.0.4"
@@ -637,7 +637,7 @@ packages:
     description:
       path: media_kit_video
       ref: HEAD
-      resolved-ref: f0f91155900d27e43421fcefcb24793cfd310480
+      resolved-ref: "318f3e157e127af84b70d9907d4b30efd50371e6"
       url: "https://github.com/alexmercerind/media_kit.git"
     source: git
     version: "0.0.12"
@@ -782,10 +782,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_windows
-      sha256: d3f80b32e83ec208ac95253e0cd4d298e104fbc63cb29c5c69edaed43b0c69d6
+      sha256: "1cb68ba4cd3a795033de62ba1b7b4564dace301f952de6bfb3cd91b202b6ee96"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.6"
+    version: "2.1.7"
   pedantic:
     dependency: transitive
     description:
@@ -1027,10 +1027,10 @@ packages:
     dependency: transitive
     description:
       name: source_span
-      sha256: "53e943d4206a5e30df338fd4c6e7a077e02254531b138a15aec3bd143c1a8b3c"
+      sha256: dd904f795d4b4f3b870833847c461801f6750a9fa8e61ea5ac53f9422b31f250
       url: "https://pub.dev"
     source: hosted
-    version: "1.10.0"
+    version: "1.9.1"
   sqflite:
     dependency: transitive
     description:
@@ -1099,26 +1099,26 @@ packages:
     dependency: "direct dev"
     description:
       name: test
-      sha256: "4f92f103ef63b1bbac6f4bd1930624fca81b2574464482512c4f0896319be575"
+      sha256: "3dac9aecf2c3991d09b9cdde4f98ded7b30804a88a0d7e4e7e1678e78d6b97f4"
       url: "https://pub.dev"
     source: hosted
-    version: "1.24.2"
+    version: "1.24.1"
   test_api:
     dependency: transitive
     description:
       name: test_api
-      sha256: daadc9baabec998b062c9091525aa95786508b1c48e9c30f1f891b8bf6ff2e64
+      sha256: eb6ac1540b26de412b3403a163d919ba86f6a973fe6cc50ae3541b80092fdcfb
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.2"
+    version: "0.5.1"
   test_core:
     dependency: transitive
     description:
       name: test_core
-      sha256: "3642b184882f79e76ca57a9230fb971e494c3c1fd09c21ae3083ce891bcc0aa1"
+      sha256: "5138dbffb77b2289ecb12b81c11ba46036590b72a64a7a90d6ffb880f1a29e93"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.2"
+    version: "0.5.1"
   timing:
     dependency: transitive
     description:
@@ -1324,10 +1324,10 @@ packages:
     dependency: "direct main"
     description:
       name: webview_flutter
-      sha256: "5604dac1178680a34fbe4a08c7b69ec42cca6601dc300009ec9ff69bef284cc2"
+      sha256: "789d52bd789373cc1e100fb634af2127e86c99cf9abde09499743270c5de8d00"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.1"
+    version: "4.2.2"
   webview_flutter_android:
     dependency: transitive
     description:
@@ -1356,18 +1356,18 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "5a751eddf9db89b3e5f9d50c20ab8612296e4e8db69009788d6c8b060a84191c"
+      sha256: "7dacfda1edcca378031db9905ad7d7bd56b29fd1a90b0908b71a52a12c41e36b"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.4"
+    version: "5.0.3"
   win32_registry:
     dependency: transitive
     description:
       name: win32_registry
-      sha256: "1c52f994bdccb77103a6231ad4ea331a244dbcef5d1f37d8462f713143b0bfae"
+      sha256: e4506d60b7244251bc59df15656a3093501c37fb5af02105a944d73eb95be4c9
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   xdg_directories:
     dependency: transitive
     description:

@@ -206,7 +206,10 @@ class VideoAudioController {
     state.buffered = Duration.zero;
     state.hasError = false;
     var lastPosition =
-        state.position >= Duration.zero ? state.position : Duration.zero;
+        (state.position >= Duration.zero) ? state.position : Duration.zero;
+    if (!_initialized) {
+      lastPosition = initDuration;
+    }
     var lastIsPlaying = state.isPlaying;
     PlayersSingleton().pauseSubscriptions();
     //播放器单例引用
@@ -224,7 +227,7 @@ class VideoAudioController {
     //设置监听
     _setStreamListener();
     PlayersSingleton().resumeSubscriptions();
-    await player.pause();
+    await pause();
     //如果已经初始化了,就恢复播放状态
     if (_initialized) {
       await Future.doWhile(() async {

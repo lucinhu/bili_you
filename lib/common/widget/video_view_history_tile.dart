@@ -64,13 +64,9 @@ class VideoViewHistoryTile extends StatelessWidget {
                           ),
                         ));
                   }),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        '${StringFormatUtils.timeLengthFormat(videoViewHistoryItem.progress)}/${StringFormatUtils.timeLengthFormat(videoViewHistoryItem.duration)}',
-                        style: const TextStyle(
+                  if (videoViewHistoryItem.isFinished)
+                    const Text('已看完',
+                        style: TextStyle(
                             color: Colors.white,
                             fontSize: 10,
                             shadows: [
@@ -78,17 +74,33 @@ class VideoViewHistoryTile extends StatelessWidget {
                                   color: Colors.black87,
                                   blurRadius: 10,
                                   spreadRadius: 10)
-                            ]),
-                      ),
-                      SizedBox(
-                        height: 4,
-                        child: LinearProgressIndicator(
-                          value: videoViewHistoryItem.progress /
-                              videoViewHistoryItem.duration,
+                            ]))
+                  else
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${StringFormatUtils.timeLengthFormat(videoViewHistoryItem.progress)}/${StringFormatUtils.timeLengthFormat(videoViewHistoryItem.duration)}',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              shadows: [
+                                BoxShadow(
+                                    color: Colors.black87,
+                                    blurRadius: 10,
+                                    spreadRadius: 10)
+                              ]),
                         ),
-                      )
-                    ],
-                  ),
+                        SizedBox(
+                          height: 4,
+                          child: LinearProgressIndicator(
+                            value: videoViewHistoryItem.progress /
+                                videoViewHistoryItem.duration,
+                          ),
+                        )
+                      ],
+                    ),
                 ],
               ),
             ),

@@ -7,6 +7,7 @@ import 'package:bili_you/common/utils/index.dart';
 import 'package:bili_you/common/widget/slider_dialog.dart';
 import 'package:bili_you/common/widget/video_audio_player.dart';
 import 'package:bili_you/pages/bili_video/widgets/bili_video_player/bili_video_player.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -28,7 +29,8 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
   bool isHorizontalGestureInProgress = false;
   bool isVerticalGestureInProgress = false;
   static const gestureEdgeDeadZone = 0.1;
-  var isInDeadZone = (x, bound) => math.min<double>(x, bound - x) < gestureEdgeDeadZone * bound;
+  var isInDeadZone = (x, bound) =>
+      math.min<double>(x, bound - x) < gestureEdgeDeadZone * bound;
 
   final panelDecoration = const BoxDecoration(boxShadow: [
     BoxShadow(color: Colors.black45, blurRadius: 15, spreadRadius: 5)
@@ -47,8 +49,6 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
     if (!widget.controller._isSliderDraging) {
       widget.controller._position =
           widget.controller._biliVideoPlayerController.position;
-      widget.controller._duration =
-          widget.controller._biliVideoPlayerController.duration;
     }
     widget.controller._fartherestBuffed =
         widget.controller._biliVideoPlayerController.fartherestBuffered;
@@ -87,8 +87,6 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
       widget.controller._show = !widget.controller._isPlayerPlaying;
       widget.controller.asepectRatio =
           widget.controller._biliVideoPlayerController.videoAspectRatio;
-      widget.controller._duration =
-          widget.controller._biliVideoPlayerController.duration;
     }
     widget.controller._isInitializedState = true;
     widget.controller._biliVideoPlayerController
@@ -190,7 +188,8 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                 .setPlayBackSpeed(tempSpeed);
           },
           onHorizontalDragStart: (details) {
-            if (isInDeadZone(details.globalPosition.dx, MediaQuery.of(context).size.width)) {
+            if (isInDeadZone(
+                details.globalPosition.dx, MediaQuery.of(context).size.width)) {
               return;
             }
             isHorizontalGestureInProgress = true;
@@ -207,10 +206,13 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
               return;
             }
             double scale = 60000 / MediaQuery.of(context).size.width;
-            Duration pos = widget.controller._position + Duration(milliseconds: (details.delta.dx * scale).round());
+            Duration pos = widget.controller._position +
+                Duration(milliseconds: (details.delta.dx * scale).round());
             widget.controller._position = Duration(
-                milliseconds: pos.inMilliseconds
-                    .clamp(0, widget.controller._duration.inMilliseconds));
+                milliseconds: pos.inMilliseconds.clamp(
+                    0,
+                    widget.controller._biliVideoPlayerController.duration
+                        .inMilliseconds));
             setState(() {});
           },
           onHorizontalDragEnd: (details) {
@@ -230,7 +232,8 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
             setState(() {});
           },
           onVerticalDragStart: (details) {
-            isVerticalGestureInProgress = !isInDeadZone(details.globalPosition.dy, MediaQuery.of(context).size.height);
+            isVerticalGestureInProgress = !isInDeadZone(
+                details.globalPosition.dy, MediaQuery.of(context).size.height);
           },
           onVerticalDragUpdate: (details) {
             if (!isVerticalGestureInProgress) {
@@ -605,18 +608,27 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                             builder: (context, setState) {
                               return Slider(
                                 min: 0,
-                                max: widget.controller._duration.inMilliseconds
-                                            .toDouble() ==
-                                        0
-                                    ? 1
-                                    : widget.controller._duration.inMilliseconds
+                                max: widget
+                                    .controller
+                                    ._biliVideoPlayerController
+                                    .duration
+                                    .inMilliseconds
+                                    .toDouble(),
+                                value: clampDouble(
+                                    widget.controller._position.inMilliseconds
                                         .toDouble(),
-                                value: widget
-                                    .controller._position.inMilliseconds
-                                    .toDouble(),
-                                secondaryTrackValue: widget
-                                    .controller._fartherestBuffed.inMilliseconds
-                                    .toDouble(),
+                                    0,
+                                    widget.controller._biliVideoPlayerController
+                                        .duration.inMilliseconds
+                                        .toDouble()),
+                                secondaryTrackValue: clampDouble(
+                                    widget.controller._fartherestBuffed
+                                        .inMilliseconds
+                                        .toDouble(),
+                                    0,
+                                    widget.controller._biliVideoPlayerController
+                                        .duration.inMilliseconds
+                                        .toDouble()),
                                 onChanged: (value) {
                                   if (widget.controller._isSliderDraging) {
                                     widget.controller._position =
@@ -642,7 +654,7 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                         key: durationTextKey,
                         builder: (context, setState) {
                           return Text(
-                            "${StringFormatUtils.timeLengthFormat(widget.controller._position.inSeconds)}/${StringFormatUtils.timeLengthFormat(widget.controller._duration.inSeconds)}",
+                            "${StringFormatUtils.timeLengthFormat(widget.controller._position.inSeconds)}/${StringFormatUtils.timeLengthFormat(widget.controller._biliVideoPlayerController.duration.inSeconds)}",
                             style: const TextStyle(color: textColor),
                           );
                         },
@@ -682,7 +694,6 @@ class BiliVideoPlayerPanelController {
   Duration _position = Duration.zero;
   double _volume = 0;
   double _brightness = 0;
-  Duration _duration = Duration.zero;
   Duration _fartherestBuffed = Duration.zero;
   final BiliVideoPlayerController _biliVideoPlayerController;
   BiliVideoPlayerController get biliVideoPlayerController =>
