@@ -1,6 +1,9 @@
 import 'package:bili_you/common/api/index.dart';
 import 'package:bili_you/common/models/local/history/video_view_history_item.dart';
+import 'package:bili_you/common/models/network/history/report_history.dart';
 import 'package:bili_you/common/utils/http_utils.dart';
+
+import '../utils/cookie_util.dart';
 
 class HistoryApi {
   ///max是上一个历史记录的id，或者是oid
@@ -36,5 +39,23 @@ class HistoryApi {
           isFinished: i['is_finish'] != 0 || i['progress'] < 0));
     }
     return list;
+  }
+
+  /// 汇报历史记录
+  static Future<bool> reportVideoViewHistory(
+      {required int aid, required int cid, int? progress}) async {
+    var response =
+        await HttpUtils().post(ApiConstants.reportHistory, queryParameters: {
+      "aid": aid,
+      "cid": cid,
+      "progress": progress ?? 0,
+      "platform": "android",
+      "csrf": await CookieUtils.getCsrf()
+    });
+    var json = report_history.fromJson(response.data);
+    if (json.code != 0) {
+      throw 'report_history:code:${json.code},raw:"${response.data}"';
+    }
+    return true;
   }
 }
