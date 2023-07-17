@@ -61,7 +61,7 @@ dependencies:
   webview_flutter: ^4.0.7
 
   # 保持常亮
-  wakelock: ^0.6.2
+  wakelock_plus: ^1.1.1
 
   # 设备&包信息
   device_info_plus: ^9.0.1
@@ -98,11 +98,11 @@ dependency_overrides:
       url: https://github.com/dkaera/cookie_jar.git
       ref: fix/cast_exception
 
-  wakelock_windows:
-    git:
-      url: https://github.com/timsneath/wakelock
-      ref: win32-v5
-      path: wakelock_windows
+#  wakelock_windows:
+#    git:
+#      url: https://github.com/timsneath/wakelock
+#      ref: win32-v5
+#      path: wakelock_windows
 
   media_kit:
     git: 
