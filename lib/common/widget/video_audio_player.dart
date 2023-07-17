@@ -6,7 +6,7 @@ import 'package:bili_you/common/utils/index.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class VideoAudioPlayer extends StatefulWidget {
   const VideoAudioPlayer(this.controller,
@@ -311,12 +311,12 @@ class VideoAudioController {
     }
     if (autoWakelock) {
       if (value.isPlaying) {
-        Wakelock.enable();
+        WakelockPlus.enable();
       } else {
-        Wakelock.disable();
+        WakelockPlus.disable();
       }
     } else {
-      Wakelock.disable();
+      WakelockPlus.disable();
     }
   }
 
