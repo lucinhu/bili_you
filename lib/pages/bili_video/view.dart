@@ -8,6 +8,8 @@ import 'package:bili_you/pages/bili_video/widgets/reply/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import '../../common/api/history_api.dart';
+import '../../common/utils/bvid_avid_util.dart';
 import 'index.dart';
 import 'widgets/bili_video_player/bili_danmaku.dart';
 import 'widgets/bili_video_player/bili_video_player_panel.dart';
@@ -86,7 +88,9 @@ class _BiliVideoPageState extends State<BiliVideoPage>
   void didPop() async {
     //当退出页面时
     //暂停视频
+    var second = controller.biliVideoPlayerController.position.inSeconds;
     await controller.biliVideoPlayerController.pause();
+    await HistoryApi.reportVideoViewHistory(aid: BvidAvidUtil.bvid2Av(controller.bvid),cid: controller.cid,progress: second);
     //释放所有图片缓存
     CacheUtils.clearAllCacheImageMem();
     super.didPop();
