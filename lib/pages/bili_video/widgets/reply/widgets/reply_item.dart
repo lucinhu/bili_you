@@ -180,15 +180,7 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                     const SizedBox(
                       height: 10,
                     ),
-                    widget.isTop
-                        ? Text(
-                            "置顶",
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
-                          )
-                        : const SizedBox()
+                    const SizedBox()
                   ],
                 ),
                 Expanded(
@@ -228,7 +220,11 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                                     if (widget.isUp)
                                       const Padding(
                                           padding: EdgeInsets.only(left: 4),
-                                          child: TextTag(text: "UP",))
+                                          child: TextTag(text: "UP",)),
+                                    if (widget.isTop)
+                                      const Padding(
+                                          padding: EdgeInsets.only(left: 4),
+                                          child: TextTag(text: "置顶",)),
                                   ],
                                 ),
                                 Text(widget.reply.location,
