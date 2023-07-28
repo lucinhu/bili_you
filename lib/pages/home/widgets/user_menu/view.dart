@@ -41,21 +41,21 @@ class UserMenuPage extends GetView<UserMenuController> {
                                 .listenable(keys: [UserStorageKeys.userFace]),
                             builder: (context, value, child) {
                               return CachedNetworkImage(
-                                cacheWidth: (80 *
+                                cacheWidth: (45 *
                                         MediaQuery.of(context).devicePixelRatio)
                                     .toInt(),
-                                cacheHeight: (80 *
+                                cacheHeight: (45 *
                                         MediaQuery.of(context).devicePixelRatio)
                                     .toInt(),
                                 //头像
                                 cacheManager: controller.cacheManager,
-                                width: 80,
-                                height: 80,
+                                width: 45,
+                                height: 45,
                                 imageUrl: value.get(UserStorageKeys.userFace,
                                     defaultValue: controller.faceUrl.value),
                                 placeholder: () => const SizedBox(
-                                  width: 80,
-                                  height: 80,
+                                  width: 45,
+                                  height: 45,
                                 ),
                               );
                             },
@@ -70,16 +70,16 @@ class UserMenuPage extends GetView<UserMenuController> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 25),
+                  padding: const EdgeInsets.only(top: 45),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Obx(() => Text(
                             controller.name.value,
-                            style: const TextStyle(fontSize: 17),
+                            style: const TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
                           )),
                       const SizedBox(
-                        height: 5,
+                        height: 2,
                       ),
                       Row(
                         children: [
@@ -268,12 +268,14 @@ class UserMenuPage extends GetView<UserMenuController> {
           ),
           Row(
             children: [
-              IconButton(
-                  padding: const EdgeInsets.all(8),
-                  onPressed: () {
-                    Get.close(1);
-                  },
-                  icon: const Icon(Icons.close_rounded)),
+              Padding(
+                  padding: EdgeInsets.only(left: 8, top: 8),
+                  child: IconButton(
+                      padding: const EdgeInsets.all(8),
+                      onPressed: () {
+                        Get.close(1);
+                      },
+                      icon: const Icon(Icons.close_rounded))),
               const Spacer(
                 flex: 1,
               ),
