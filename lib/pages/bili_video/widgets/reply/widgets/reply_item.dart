@@ -220,32 +220,35 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                                     if (widget.isUp)
                                       const Padding(
                                           padding: EdgeInsets.only(left: 4),
-                                          child: TextTag(text: "UP主",)),
+                                          child: TextTag(
+                                            text: "UP主",
+                                          )),
                                     if (widget.isTop)
                                       const Padding(
                                           padding: EdgeInsets.only(left: 4),
-                                          child: TextTag(text: "置顶",)),
+                                          child: TextTag(
+                                            text: "置顶",
+                                          )),
                                   ],
                                 ),
                                 Row(
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.only(right: 10),
-                                      child: 
-                                        Text(
-                                          StringFormatUtils.timeStampToAgoDate(widget.reply.replyTime),
+                                      child: Text(
+                                          StringFormatUtils.timeStampToAgoDate(
+                                              widget.reply.replyTime),
                                           style: TextStyle(
-                                          color: Theme.of(context).hintColor,
-                                          fontSize: 12)),
+                                              color:
+                                                  Theme.of(context).hintColor,
+                                              fontSize: 12)),
                                     ),
-                                    Text(
-                                      widget.reply.location,
-                                      style: TextStyle(
-                                      color: Theme.of(context).hintColor,
-                                      fontSize: 12))
+                                    Text(widget.reply.location,
+                                        style: TextStyle(
+                                            color: Theme.of(context).hintColor,
+                                            fontSize: 12))
                                   ],
                                 )
-                                
                               ],
                             ),
                           ),
@@ -278,65 +281,72 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                                                 .primary),
                                       )),
                         ),
-                        Row(
-                          children: [
-                            StatefulBuilder(builder: (context, setState) {
-                              return ThumUpButton(
-                                likeNum: widget.reply.likeCount,
-                                selected: widget.reply.hasLike,
-                                onPressed: () async {
-                                  try {
-                                    var result =
-                                        await ReplyOperationApi.addLike(
-                                            type: widget.reply.type,
-                                            oid: widget.reply.oid,
-                                            rpid: widget.reply.rpid,
-                                            likeOrUnlike:
-                                                !widget.reply.hasLike);
-                                    if (result.isSuccess) {
-                                      widget.reply.hasLike =
-                                          !widget.reply.hasLike;
-                                      if (widget.reply.hasLike) {
-                                        widget.reply.likeCount++;
+                        Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 5),
+                          child: Row(
+                            children: [
+                              StatefulBuilder(builder: (context, setState) {
+                                return ThumUpButton(
+                                  likeNum: widget.reply.likeCount,
+                                  selected: widget.reply.hasLike,
+                                  onPressed: () async {
+                                    try {
+                                      var result =
+                                          await ReplyOperationApi.addLike(
+                                              type: widget.reply.type,
+                                              oid: widget.reply.oid,
+                                              rpid: widget.reply.rpid,
+                                              likeOrUnlike:
+                                                  !widget.reply.hasLike);
+                                      if (result.isSuccess) {
+                                        widget.reply.hasLike =
+                                            !widget.reply.hasLike;
+                                        if (widget.reply.hasLike) {
+                                          widget.reply.likeCount++;
+                                        } else {
+                                          widget.reply.likeCount--;
+                                        }
+                                        setState(() {});
                                       } else {
-                                        widget.reply.likeCount--;
+                                        Get.rawSnackbar(
+                                            message: '点赞失败:${result.error}');
                                       }
-                                      setState(() {});
-                                    } else {
-                                      Get.rawSnackbar(
-                                          message: '点赞失败:${result.error}');
+                                    } catch (e) {
+                                      log(e.toString());
+                                      Get.rawSnackbar(message: '$e');
                                     }
-                                  } catch (e) {
-                                    log(e.toString());
-                                    Get.rawSnackbar(message: '$e');
-                                  }
+                                  },
+                                );
+                              }),
+                              AddReplyButton(
+                                replyItem: widget.reply,
+                                updateWidget: () {
+                                  widget.reply.replyCount++;
+                                  setState(() => ());
                                 },
-                              );
-                            }),
-                            AddReplyButton(
-                              replyItem: widget.reply,
-                              updateWidget: () {
-                                widget.reply.replyCount++;
-                                setState(() => ());
-                              },
-                            ),
-                            Expanded(
-                              child: widget.reply.tags.isNotEmpty
-                                  ? Row(children: [
-                                      for (var i in widget.reply.tags)
-                                        Text("$i ", //标签,如热评,up觉得很赞
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              overflow: TextOverflow.ellipsis,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                              fontSize: 14,
-                                            ))
-                                    ])
-                                  : const SizedBox(),
-                            )
-                          ],
+                              ),
+                              Expanded(
+                                child: widget.reply.tags.isNotEmpty
+                                    ? Padding(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: Row(children: [
+                                          for (var i in widget.reply.tags)
+                                            Text("$i ", //标签,如热评,up觉得很赞
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
+                                                  fontSize: 14,
+                                                ))
+                                        ]),
+                                      )
+                                    : const SizedBox(),
+                              )
+                            ],
+                          ),
                         ),
                         if (widget.reply.replyCount != 0 &&
                             widget.showPreReply == true)
@@ -472,7 +482,7 @@ class AddReplyButton extends StatelessWidget {
       icon: const Padding(
         padding: EdgeInsets.all(2.0),
         child: Icon(
-          Icons.comment_rounded,
+          Icons.reply,
           size: 15,
         ),
       ),
