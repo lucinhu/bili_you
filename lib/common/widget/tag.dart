@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TextTag extends StatelessWidget {
-  final String text; // 新增文本内容参数
+  final String text;
 
   const TextTag({Key? key, required this.text}) : super(key: key);
 
@@ -10,7 +10,7 @@ class TextTag extends StatelessWidget {
     return Card(
       color: Theme.of(context).colorScheme.secondary,
       child: Text(
-        '  $text  ', // 使用传入的文本内容
+        '  $text  ',
         style: TextStyle(
           color: Theme.of(context).colorScheme.onSecondary,
           fontSize: 10,
