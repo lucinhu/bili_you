@@ -220,7 +220,7 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                                     if (widget.isUp)
                                       const Padding(
                                           padding: EdgeInsets.only(left: 4),
-                                          child: TextTag(text: "UP",)),
+                                          child: TextTag(text: "UP主",)),
                                     if (widget.isTop)
                                       const Padding(
                                           padding: EdgeInsets.only(left: 4),
