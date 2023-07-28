@@ -227,10 +227,25 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                                           child: TextTag(text: "置顶",)),
                                   ],
                                 ),
-                                Text(widget.reply.location,
-                                    style: TextStyle(
-                                        color: Theme.of(context).hintColor,
-                                        fontSize: 12))
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: 
+                                        Text(
+                                          StringFormatUtils.timeStampToAgoDate(widget.reply.replyTime),
+                                          style: TextStyle(
+                                          color: Theme.of(context).hintColor,
+                                          fontSize: 12)),
+                                    ),
+                                    Text(
+                                      widget.reply.location,
+                                      style: TextStyle(
+                                      color: Theme.of(context).hintColor,
+                                      fontSize: 12))
+                                  ],
+                                )
+                                
                               ],
                             ),
                           ),
@@ -320,13 +335,6 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                                             ))
                                     ])
                                   : const SizedBox(),
-                            ),
-                            Text(
-                              StringFormatUtils.timeStampToAgoDate(
-                                  widget.reply.replyTime),
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Theme.of(context).hintColor),
                             )
                           ],
                         ),
