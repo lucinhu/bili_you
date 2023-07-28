@@ -11,6 +11,7 @@ import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
 import 'package:bili_you/common/widget/icon_text_button.dart';
+import 'package:bili_you/common/widget/tag.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/add_reply_util.dart';
 import 'package:bili_you/pages/search_result/view.dart';
 import 'package:bili_you/pages/user_space/view.dart';
@@ -227,7 +228,7 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                                     if (widget.isUp)
                                       const Padding(
                                           padding: EdgeInsets.only(left: 4),
-                                          child: UpperTag())
+                                          child: TextTag(text: "UP",))
                                   ],
                                 ),
                                 Text(widget.reply.location,
@@ -397,23 +398,6 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
               ],
             )),
       ],
-    );
-  }
-}
-
-class UpperTag extends StatelessWidget {
-  const UpperTag({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.secondary,
-      child: Text(
-        '  UP主  ',
-        style: TextStyle(
-            color: Theme.of(context).colorScheme.onSecondary,
-            fontSize: 10,
-            fontWeight: FontWeight.bold),
-      ),
     );
   }
 }
