@@ -90,13 +90,13 @@ class UserMenuPage extends GetView<UserMenuController> {
                                       .colorScheme
                                       .onSurface))),
                           const SizedBox(
-                            width: 20,
+                            width: 35,
                           ),
                           Obx(() => Text(
                                 "${controller.currentExp}/${controller.level.value != 6 ? controller.nextExp : '--'}",
                                 style: TextStyle(
                                     fontSize: 10,
-                                    color: Theme.of(context).hintColor),
+                                    color: Theme.of(context).highlightColor),
                               ))
                         ],
                       ),
@@ -104,7 +104,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                           size: const Size(100, 2),
                           child: Obx(
                             () => LinearProgressIndicator(
-                              backgroundColor: Theme.of(context).highlightColor,
+                              backgroundColor: Theme.of(context).highlightColor, //TODO 颜色名称不符，但hightlight用作文字色更自然。此处UI待优化或重构
                               value: controller.nextExp.value > 0
                                   ? controller.currentExp.value /
                                       controller.nextExp.value
@@ -223,10 +223,10 @@ class UserMenuPage extends GetView<UserMenuController> {
               ),
               Divider(
                 height: 10,
-                color: Theme.of(context).dividerColor,
+                color: Theme.of(context).highlightColor, //TODO 颜色名称不符，但hightlight用作分割线更自然。此处UI待优化或重构
                 indent: 25,
                 endIndent: 25,
-                thickness: 2,
+                thickness: 1,
               ),
               UserMenuListTile(
                 icon: const Icon(Icons.history),
