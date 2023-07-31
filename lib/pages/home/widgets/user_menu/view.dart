@@ -97,7 +97,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                                 "${controller.currentExp}/${controller.level.value != 6 ? controller.nextExp : '--'}",
                                 style: TextStyle(
                                     fontSize: 10,
-                                    color: Theme.of(context).highlightColor),
+                                    color: Theme.of(context).highlightColor), //TODO 颜色名称不符，但hightlight用作分割线更自然。此处UI待优化或重构
                               ))
                         ],
                       ),
@@ -227,7 +227,7 @@ class UserMenuPage extends GetView<UserMenuController> {
               ),
               Divider(
                 height: 10,
-                color: Theme.of(context).highlightColor, //TODO 颜色名称不符，但hightlight用作分割线更自然。此处UI待优化或重构
+                color: Theme.of(context).highlightColor,
                 indent: 25,
                 endIndent: 25,
                 thickness: 1,
