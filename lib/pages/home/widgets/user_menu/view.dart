@@ -7,6 +7,7 @@ import 'package:bili_you/pages/history/history_page.dart';
 import 'package:bili_you/pages/login/qrcode_login/view.dart';
 import 'package:bili_you/pages/login/web_login/view.dart';
 import 'package:bili_you/pages/settings_page/settings_page.dart';
+import 'package:bili_you/pages/following/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -154,7 +155,10 @@ class UserMenuPage extends GetView<UserMenuController> {
                   Expanded(
                       child: Center(
                     child: MaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context)
+                            .push(GetPageRoute(page: () => FollowingPage(mid:controller.userInfo.mid)));
+                      },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
                       child: Padding(
