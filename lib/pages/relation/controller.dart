@@ -1,16 +1,19 @@
 import 'dart:developer';
 
-import 'package:bili_you/common/api/following_api.dart';
+import 'package:bili_you/common/api/realtions_api.dart';
 import 'package:bili_you/common/models/network/user_relations/user_realtion.dart';
+import 'package:bili_you/common/models/network/user_relations/user_relation_types.dart';
 import 'package:bili_you/common/values/index.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 
-class FollowingController extends GetxController {
-  FollowingController({this.mid});
-  final int? mid;
+class RealtionController extends GetxController {
+  RealtionController({required this.mid, required this.type});
+  final int mid;
+  final UserRelationType type;
+
   EasyRefreshController easyRefreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
 
@@ -24,9 +27,16 @@ class FollowingController extends GetxController {
   Future<bool> _loadList() async {
     late List<UserRelation> list;
     try {
-      list = await FollowingApi.getFollowingList(
-          vmid: this.mid, ps: this.ps, pn: this.pn);
-
+      switch (type) {
+        case UserRelationType.following:
+          list = await RelationApi.getFollowingList(
+              vmid: this.mid, ps: this.ps, pn: this.pn);
+          break;
+        case UserRelationType.follower:
+          list = await RelationApi.getFollowersList(
+              vmid: this.mid, ps: this.ps, pn: this.pn);
+      }
+      
       pn++;
     } catch (e) {
       log(e.toString());

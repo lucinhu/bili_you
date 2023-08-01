@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bili_you/common/models/network/user_relations/user_relation_types.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/pages/about/about_page.dart';
@@ -7,7 +8,7 @@ import 'package:bili_you/pages/history/history_page.dart';
 import 'package:bili_you/pages/login/qrcode_login/view.dart';
 import 'package:bili_you/pages/login/web_login/view.dart';
 import 'package:bili_you/pages/settings_page/settings_page.dart';
-import 'package:bili_you/pages/following/view.dart';
+import 'package:bili_you/pages/relation/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -157,7 +158,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                     child: MaterialButton(
                       onPressed: () {
                         Navigator.of(context)
-                            .push(GetPageRoute(page: () => FollowingPage(mid:controller.userInfo.mid)));
+                            .push(GetPageRoute(page: () => RelationPage(mid:controller.userInfo.mid,type: UserRelationType.following,)));
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
@@ -194,7 +195,10 @@ class UserMenuPage extends GetView<UserMenuController> {
                     child: MaterialButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context)
+                            .push(GetPageRoute(page: () => RelationPage(mid:controller.userInfo.mid,type: UserRelationType.follower,)));
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Column(
