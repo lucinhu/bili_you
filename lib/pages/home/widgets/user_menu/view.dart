@@ -114,7 +114,36 @@ class UserMenuPage extends GetView<UserMenuController> {
                           )),
                     ],
                   ),
-                )
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(top: 45),
+                    child: FutureBuilder(
+                        future: controller.hasLogin(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return Offstage(
+                              offstage: snapshot.data ?? false,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 25),
+                                child: IconButton(
+                                  padding: const EdgeInsets.all(8),
+                                  onPressed: () {
+                                    if (Platform.isAndroid || Platform.isIOS) {
+                                      Get.off(() => const WebLoginPage());
+                                    } else {
+                                      Get.off(() => const QrcodeLogin());
+                                    }
+                                  },
+                                  icon: const Icon(Icons.login),
+                                  tooltip: "登录",
+                                ),
+                              ),
+                            );
+                          } else {
+                            return const Spacer();
+                          }
+                        }))
               ]),
               Row(
                 children: [
@@ -288,33 +317,6 @@ class UserMenuPage extends GetView<UserMenuController> {
               const Spacer(
                 flex: 1,
               ),
-              FutureBuilder(
-                  future: controller.hasLogin(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return Offstage(
-                        offstage: snapshot.data ?? false,
-                        child: Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: TextButton(
-                            onPressed: () {
-                              if (Platform.isAndroid || Platform.isIOS) {
-                                Get.off(() => const WebLoginPage());
-                              } else {
-                                Get.off(() => const QrcodeLogin());
-                              }
-                            },
-                            child: const Text(
-                              "登录",
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return const Spacer();
-                    }
-                  })
             ],
           ),
         ],
