@@ -81,29 +81,59 @@ class _MainPageState extends State<MainPage> {
   // 主视图
   Widget _buildView() {
     return Obx(() => Scaffold(
-          extendBody: true, extendBodyBehindAppBar: true, primary: true,
-          //IndexedStack，使"首页，动态"这三个页面互相切换的时候保持状态
-          body: IndexedStack(
-            index: controller.selectedIndex.value,
-            children: controller.pages,
-          ),
-          bottomNavigationBar: NavigationBar(
-            height: 64,
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home),
-                label: "首页",
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.star_border_outlined),
-                label: "动态",
-                selectedIcon: Icon(Icons.star),
+          extendBody: true,
+          extendBodyBehindAppBar: true,
+          primary: true,
+          body: Row(
+            children: [
+              if (MediaQuery.of(context).size.width >= 640)
+                NavigationRail(
+                    extended: false,
+                    destinations: const [
+                      NavigationRailDestination(
+                        icon: Icon(Icons.home_outlined),
+                        selectedIcon: Icon(Icons.home),
+                        label: Text("首页"),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.star_border_outlined),
+                        label: Text("动态"),
+                        selectedIcon: Icon(Icons.star),
+                      ),
+                    ],
+                    selectedIndex: controller.selectedIndex.value,
+                    onDestinationSelected: (value) =>
+                        onDestinationSelected(value)),
+              Expanded(
+                child: Obx(
+                  () => IndexedStack(
+                    index: controller.selectedIndex.value,
+                    children: controller.pages,
+                  ),
+                ),
               ),
             ],
-            selectedIndex: controller.selectedIndex.value,
-            onDestinationSelected: (value) => onDestinationSelected(value),
           ),
+          bottomNavigationBar: MediaQuery.of(context).size.width < 640
+              ? NavigationBar(
+                  height: 64,
+                  destinations: const [
+                    NavigationDestination(
+                      icon: Icon(Icons.home_outlined),
+                      selectedIcon: Icon(Icons.home),
+                      label: "首页",
+                    ),
+                    NavigationDestination(
+                      icon: Icon(Icons.star_border_outlined),
+                      label: "动态",
+                      selectedIcon: Icon(Icons.star),
+                    ),
+                  ],
+                  selectedIndex: controller.selectedIndex.value,
+                  onDestinationSelected: (value) =>
+                      onDestinationSelected(value),
+                )
+              : null,
         ));
   }
 
