@@ -7,6 +7,7 @@ import 'package:bili_you/pages/history/history_page.dart';
 import 'package:bili_you/pages/login/qrcode_login/view.dart';
 import 'package:bili_you/pages/login/web_login/view.dart';
 import 'package:bili_you/pages/settings_page/settings_page.dart';
+import 'package:bili_you/pages/following/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -41,21 +42,21 @@ class UserMenuPage extends GetView<UserMenuController> {
                                 .listenable(keys: [UserStorageKeys.userFace]),
                             builder: (context, value, child) {
                               return CachedNetworkImage(
-                                cacheWidth: (80 *
+                                cacheWidth: (45 *
                                         MediaQuery.of(context).devicePixelRatio)
                                     .toInt(),
-                                cacheHeight: (80 *
+                                cacheHeight: (45 *
                                         MediaQuery.of(context).devicePixelRatio)
                                     .toInt(),
                                 //头像
                                 cacheManager: controller.cacheManager,
-                                width: 80,
-                                height: 80,
+                                width: 45,
+                                height: 45,
                                 imageUrl: value.get(UserStorageKeys.userFace,
                                     defaultValue: controller.faceUrl.value),
                                 placeholder: () => const SizedBox(
-                                  width: 80,
-                                  height: 80,
+                                  width: 45,
+                                  height: 45,
                                 ),
                               );
                             },
@@ -70,16 +71,16 @@ class UserMenuPage extends GetView<UserMenuController> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 25),
+                  padding: const EdgeInsets.only(top: 45),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Obx(() => Text(
                             controller.name.value,
-                            style: const TextStyle(fontSize: 17),
+                            style: const TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
                           )),
                       const SizedBox(
-                        height: 5,
+                        height: 2,
                       ),
                       Row(
                         children: [
@@ -90,13 +91,13 @@ class UserMenuPage extends GetView<UserMenuController> {
                                       .colorScheme
                                       .onSurface))),
                           const SizedBox(
-                            width: 20,
+                            width: 35,
                           ),
                           Obx(() => Text(
                                 "${controller.currentExp}/${controller.level.value != 6 ? controller.nextExp : '--'}",
                                 style: TextStyle(
                                     fontSize: 10,
-                                    color: Theme.of(context).hintColor),
+                                    color: Theme.of(context).highlightColor), //TODO 颜色名称不符，但hightlight用作分割线更自然。此处UI待优化或重构
                               ))
                         ],
                       ),
@@ -104,7 +105,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                           size: const Size(100, 2),
                           child: Obx(
                             () => LinearProgressIndicator(
-                              backgroundColor: Theme.of(context).highlightColor,
+                              backgroundColor: Theme.of(context).highlightColor, //TODO 颜色名称不符，但hightlight用作文字色更自然。此处UI待优化或重构
                               value: controller.nextExp.value > 0
                                   ? controller.currentExp.value /
                                       controller.nextExp.value
@@ -154,7 +155,10 @@ class UserMenuPage extends GetView<UserMenuController> {
                   Expanded(
                       child: Center(
                     child: MaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context)
+                            .push(GetPageRoute(page: () => FollowingPage(mid:controller.userInfo.mid)));
+                      },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
                       child: Padding(
@@ -223,10 +227,10 @@ class UserMenuPage extends GetView<UserMenuController> {
               ),
               Divider(
                 height: 10,
-                color: Theme.of(context).dividerColor,
+                color: Theme.of(context).highlightColor,
                 indent: 25,
                 endIndent: 25,
-                thickness: 2,
+                thickness: 1,
               ),
               UserMenuListTile(
                 icon: const Icon(Icons.history),
@@ -268,12 +272,14 @@ class UserMenuPage extends GetView<UserMenuController> {
           ),
           Row(
             children: [
-              IconButton(
-                  padding: const EdgeInsets.all(8),
-                  onPressed: () {
-                    Get.close(1);
-                  },
-                  icon: const Icon(Icons.close_rounded)),
+              Padding(
+                  padding: EdgeInsets.only(left: 8, top: 8),
+                  child: IconButton(
+                      padding: const EdgeInsets.all(8),
+                      onPressed: () {
+                        Get.close(1);
+                      },
+                      icon: const Icon(Icons.close_rounded))),
               const Spacer(
                 flex: 1,
               ),

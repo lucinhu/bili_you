@@ -11,6 +11,7 @@ import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/common/widget/foldable_text.dart';
 import 'package:bili_you/common/widget/icon_text_button.dart';
+import 'package:bili_you/common/widget/tag.dart';
 import 'package:bili_you/pages/bili_video/widgets/reply/add_reply_util.dart';
 import 'package:bili_you/pages/search_result/view.dart';
 import 'package:bili_you/pages/user_space/view.dart';
@@ -179,15 +180,7 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                     const SizedBox(
                       height: 10,
                     ),
-                    widget.isTop
-                        ? Text(
-                            "置顶",
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
-                          )
-                        : const SizedBox()
+                    const SizedBox()
                   ],
                 ),
                 Expanded(
@@ -227,13 +220,35 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                                     if (widget.isUp)
                                       const Padding(
                                           padding: EdgeInsets.only(left: 4),
-                                          child: UpperTag())
+                                          child: TextTag(
+                                            text: "UP主",
+                                          )),
+                                    if (widget.isTop)
+                                      const Padding(
+                                          padding: EdgeInsets.only(left: 4),
+                                          child: TextTag(
+                                            text: "置顶",
+                                          )),
                                   ],
                                 ),
-                                Text(widget.reply.location,
-                                    style: TextStyle(
-                                        color: Theme.of(context).hintColor,
-                                        fontSize: 12))
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Text(
+                                          StringFormatUtils.timeStampToAgoDate(
+                                              widget.reply.replyTime),
+                                          style: TextStyle(
+                                              color:
+                                                  Theme.of(context).hintColor,
+                                              fontSize: 12)),
+                                    ),
+                                    Text(widget.reply.location,
+                                        style: TextStyle(
+                                            color: Theme.of(context).hintColor,
+                                            fontSize: 12))
+                                  ],
+                                )
                               ],
                             ),
                           ),
@@ -266,72 +281,72 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
                                                 .primary),
                                       )),
                         ),
-                        Row(
-                          children: [
-                            StatefulBuilder(builder: (context, setState) {
-                              return ThumUpButton(
-                                likeNum: widget.reply.likeCount,
-                                selected: widget.reply.hasLike,
-                                onPressed: () async {
-                                  try {
-                                    var result =
-                                        await ReplyOperationApi.addLike(
-                                            type: widget.reply.type,
-                                            oid: widget.reply.oid,
-                                            rpid: widget.reply.rpid,
-                                            likeOrUnlike:
-                                                !widget.reply.hasLike);
-                                    if (result.isSuccess) {
-                                      widget.reply.hasLike =
-                                          !widget.reply.hasLike;
-                                      if (widget.reply.hasLike) {
-                                        widget.reply.likeCount++;
+                        Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 5),
+                          child: Row(
+                            children: [
+                              StatefulBuilder(builder: (context, setState) {
+                                return ThumUpButton(
+                                  likeNum: widget.reply.likeCount,
+                                  selected: widget.reply.hasLike,
+                                  onPressed: () async {
+                                    try {
+                                      var result =
+                                          await ReplyOperationApi.addLike(
+                                              type: widget.reply.type,
+                                              oid: widget.reply.oid,
+                                              rpid: widget.reply.rpid,
+                                              likeOrUnlike:
+                                                  !widget.reply.hasLike);
+                                      if (result.isSuccess) {
+                                        widget.reply.hasLike =
+                                            !widget.reply.hasLike;
+                                        if (widget.reply.hasLike) {
+                                          widget.reply.likeCount++;
+                                        } else {
+                                          widget.reply.likeCount--;
+                                        }
+                                        setState(() {});
                                       } else {
-                                        widget.reply.likeCount--;
+                                        Get.rawSnackbar(
+                                            message: '点赞失败:${result.error}');
                                       }
-                                      setState(() {});
-                                    } else {
-                                      Get.rawSnackbar(
-                                          message: '点赞失败:${result.error}');
+                                    } catch (e) {
+                                      log(e.toString());
+                                      Get.rawSnackbar(message: '$e');
                                     }
-                                  } catch (e) {
-                                    log(e.toString());
-                                    Get.rawSnackbar(message: '$e');
-                                  }
+                                  },
+                                );
+                              }),
+                              AddReplyButton(
+                                replyItem: widget.reply,
+                                updateWidget: () {
+                                  widget.reply.replyCount++;
+                                  setState(() => ());
                                 },
-                              );
-                            }),
-                            AddReplyButton(
-                              replyItem: widget.reply,
-                              updateWidget: () {
-                                widget.reply.replyCount++;
-                                setState(() => ());
-                              },
-                            ),
-                            Expanded(
-                              child: widget.reply.tags.isNotEmpty
-                                  ? Row(children: [
-                                      for (var i in widget.reply.tags)
-                                        Text("$i ", //标签,如热评,up觉得很赞
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              overflow: TextOverflow.ellipsis,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                              fontSize: 14,
-                                            ))
-                                    ])
-                                  : const SizedBox(),
-                            ),
-                            Text(
-                              StringFormatUtils.timeStampToAgoDate(
-                                  widget.reply.replyTime),
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Theme.of(context).hintColor),
-                            )
-                          ],
+                              ),
+                              Expanded(
+                                child: widget.reply.tags.isNotEmpty
+                                    ? Padding(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: Row(children: [
+                                          for (var i in widget.reply.tags)
+                                            Text("$i ", //标签,如热评,up觉得很赞
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
+                                                  fontSize: 14,
+                                                ))
+                                        ]),
+                                      )
+                                    : const SizedBox(),
+                              )
+                            ],
+                          ),
                         ),
                         if (widget.reply.replyCount != 0 &&
                             widget.showPreReply == true)
@@ -397,23 +412,6 @@ class _ReplyItemWidgetState extends State<ReplyItemWidget> {
               ],
             )),
       ],
-    );
-  }
-}
-
-class UpperTag extends StatelessWidget {
-  const UpperTag({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.secondary,
-      child: Text(
-        '  UP主  ',
-        style: TextStyle(
-            color: Theme.of(context).colorScheme.onSecondary,
-            fontSize: 10,
-            fontWeight: FontWeight.bold),
-      ),
     );
   }
 }
@@ -484,7 +482,7 @@ class AddReplyButton extends StatelessWidget {
       icon: const Padding(
         padding: EdgeInsets.all(2.0),
         child: Icon(
-          Icons.comment_rounded,
+          Icons.reply,
           size: 15,
         ),
       ),

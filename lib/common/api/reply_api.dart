@@ -114,7 +114,7 @@ class ReplyApi {
         preReplies: preReplies,
         likeCount: raw.like ?? 0,
         hasLike: raw.action == 1 ? true : false,
-        location: raw.replyControl?.location ?? "",
+        location: raw.replyControl?.location?.replaceAll("IP属地：", "") ?? "",
         content: ReplyContent(
             message: raw.content?.message ?? "",
             atMembers: atMembers,

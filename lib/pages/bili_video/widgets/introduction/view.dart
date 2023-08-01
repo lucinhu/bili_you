@@ -174,10 +174,10 @@ class UpperTile extends StatelessWidget {
       child: Row(
         children: [
           Padding(
-              padding: const EdgeInsets.only(right: 2),
+              padding: const EdgeInsets.only(right: 20),
               child: AvatarWidget(
                 avatarUrl: controller.videoInfo.ownerFace,
-                radius: 25,
+                radius: 20,
                 cacheWidthHeight: 200,
               )),
           Column(
@@ -187,7 +187,7 @@ class UpperTile extends StatelessWidget {
                 controller.videoInfo.ownerName,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold),
               ),
             ],

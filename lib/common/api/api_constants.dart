@@ -196,4 +196,7 @@ class ApiConstants {
   ///
   static const String livePlayUrl =
       "$apiLiveBase/xlive/web-room/v2/index/getRoomPlayInfo";
+
+  ///关注列表
+  static const String followingUsers = "$apiBase/x/relation/followings";
 }
