@@ -107,7 +107,8 @@ class ErrorInterceptor extends Interceptor {
   }
 
   @override
-  Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+      DioException err, ErrorInterceptorHandler handler) async {
     switch (err.type) {
       // case DioErrorType.badCertificate:
       //   Get.rawSnackbar(message: 'bad certificate');
@@ -130,7 +131,7 @@ class ErrorInterceptor extends Interceptor {
       // case DioErrorType.sendTimeout:
       //   Get.rawSnackbar(message: 'send timeout');
       //   break;
-      case DioErrorType.unknown:
+      case DioExceptionType.unknown:
         if (!await isConnected()) {
           //网络未连接
           Get.rawSnackbar(title: '网络未连接 ', message: '请检查网络状态');

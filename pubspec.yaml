@@ -26,7 +26,7 @@ dependencies:
   cookie_jar: ^4.0.2
   gt3_flutter_plugin: ^0.0.8
   flutter_cache_manager: ^3.3.0
-  protobuf: ^2.1.0
+  protobuf: ^3.0.0
   connectivity_plus: ^4.0.0
 
   # 加解密
@@ -44,17 +44,17 @@ dependencies:
       url: https://github.com/lucinhu/flutter_ns_danmaku.git
   cached_network_image: ^3.2.3
   photo_view: ^0.14.0  
-  card_swiper: ^2.0.4  
+  card_swiper: ^3.0.1  
 
   # 播放器
-  media_kit: ^0.0.11
+  media_kit: ^1.1.1
   media_kit_libs_android_video: ^1.0.6
   media_kit_libs_ios_video: ^1.0.4
   media_kit_libs_linux: ^1.0.2
   media_kit_libs_macos_video: ^1.0.5
   media_kit_libs_windows_video: ^1.0.2
   media_kit_native_event_loop: ^1.0.4
-  media_kit_video: ^0.0.12
+  media_kit_video: ^1.1.1
 
   # webview
   webview_cookie_manager: ^2.0.6
@@ -92,11 +92,11 @@ dependencies:
   # 二维码
   qr_flutter: ^4.1.0
 
-dependency_overrides:
-  cookie_jar:
-    git:
-      url: https://github.com/dkaera/cookie_jar.git
-      ref: fix/cast_exception
+# dependency_overrides:
+  # cookie_jar:
+  #   git:
+  #     url: https://github.com/dkaera/cookie_jar.git
+  #     ref: fix/cast_exception
 
 #  wakelock_windows:
 #    git:
@@ -104,38 +104,38 @@ dependency_overrides:
 #      ref: win32-v5
 #      path: wakelock_windows
 
-  media_kit:
-    git: 
-      url: https://github.com/alexmercerind/media_kit.git
-      path: media_kit
-  media_kit_libs_android_video:
-    git: 
-      url: https://github.com/alexmercerind/media_kit.git
-      path: media_kit_libs_android_video
-  media_kit_libs_ios_video: 
-    git: 
-      url: https://github.com/alexmercerind/media_kit.git
-      path: media_kit_libs_ios_video
-  media_kit_libs_linux:
-    git: 
-      url: https://github.com/alexmercerind/media_kit.git
-      path: media_kit_libs_linux
-  media_kit_libs_macos_video:
-    git: 
-      url: https://github.com/alexmercerind/media_kit.git
-      path: media_kit_libs_macos_video
-  media_kit_libs_windows_video:
-    git: 
-      url: https://github.com/alexmercerind/media_kit.git
-      path: media_kit_libs_windows_video
-  media_kit_video:
-    git: 
-      url: https://github.com/alexmercerind/media_kit.git
-      path: media_kit_video
-  media_kit_native_event_loop:
-    git: 
-      url: https://github.com/alexmercerind/media_kit.git
-      path: media_kit_native_event_loop
+  # media_kit:
+  #   git: 
+  #     url: https://github.com/alexmercerind/media_kit.git
+  #     path: media_kit
+  # media_kit_libs_android_video:
+  #   git: 
+  #     url: https://github.com/alexmercerind/media_kit.git
+  #     path: media_kit_libs_android_video
+  # media_kit_libs_ios_video: 
+  #   git: 
+  #     url: https://github.com/alexmercerind/media_kit.git
+  #     path: media_kit_libs_ios_video
+  # media_kit_libs_linux:
+  #   git: 
+  #     url: https://github.com/alexmercerind/media_kit.git
+  #     path: media_kit_libs_linux
+  # media_kit_libs_macos_video:
+  #   git: 
+  #     url: https://github.com/alexmercerind/media_kit.git
+  #     path: media_kit_libs_macos_video
+  # media_kit_libs_windows_video:
+  #   git: 
+  #     url: https://github.com/alexmercerind/media_kit.git
+  #     path: media_kit_libs_windows_video
+  # media_kit_video:
+  #   git: 
+  #     url: https://github.com/alexmercerind/media_kit.git
+  #     path: media_kit_video
+  # media_kit_native_event_loop:
+  #   git: 
+  #     url: https://github.com/alexmercerind/media_kit.git
+  #     path: media_kit_native_event_loop
 
 dev_dependencies:
   build_runner: ^2.4.4

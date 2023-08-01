@@ -73,8 +73,8 @@ class PlayersSingleton {
   StreamSubscription<Duration>? bufferListen;
   StreamSubscription? errorListen;
   StreamSubscription<Duration>? durationListen;
-  StreamSubscription<int>? widthListen;
-  StreamSubscription<int>? heightListen;
+  StreamSubscription<int?>? widthListen;
+  StreamSubscription<int?>? heightListen;
 
   Future<void> cancelSubscriptions() async {
     await bufferingListen?.cancel();
@@ -116,16 +116,16 @@ class PlayersSingleton {
   }
 
   void initSubscriptions() {
-    bufferingListen = player?.streams.buffering.listen((e) {});
-    playingListen = player?.streams.playing.listen((e) {});
-    completedListen = player?.streams.completed.listen((e) {});
-    positionListen = player?.streams.position.listen((e) {});
-    rateListen = player?.streams.rate.listen((e) {});
-    bufferListen = player?.streams.buffer.listen((e) {});
-    errorListen = player?.streams.error.listen((e) {});
-    durationListen = player?.streams.duration.listen((e) {});
-    widthListen = player?.streams.width.listen((event) {});
-    heightListen = player?.streams.height.listen((event) {});
+    bufferingListen = player?.stream.buffering.listen((e) {});
+    playingListen = player?.stream.playing.listen((e) {});
+    completedListen = player?.stream.completed.listen((e) {});
+    positionListen = player?.stream.position.listen((e) {});
+    rateListen = player?.stream.rate.listen((e) {});
+    bufferListen = player?.stream.buffer.listen((e) {});
+    errorListen = player?.stream.error.listen((e) {});
+    durationListen = player?.stream.duration.listen((e) {});
+    widthListen = player?.stream.width.listen((event) {});
+    heightListen = player?.stream.height.listen((event) {});
   }
 
   Future<void> init() async {
@@ -216,7 +216,7 @@ class VideoAudioController {
     var player = PlayersSingleton().player!;
     //设置音频源
     if (audioUrl.isNotEmpty) {
-      await (player.platform as libmpvPlayer).setProperty(
+      await (player.platform as NativePlayer).setProperty(
           'audio-files',
           Platform.isWindows
               ? audioUrl.replaceAll(';', '\\;')
@@ -301,8 +301,10 @@ class VideoAudioController {
         .durationListen!
         .onData((event) => state.duration = event);
     //宽高监听
-    PlayersSingleton().widthListen!.onData((event) => state.width = event);
-    PlayersSingleton().heightListen!.onData((event) => state.height = event);
+    PlayersSingleton().widthListen!.onData((event) => state.width = event ?? 1);
+    PlayersSingleton()
+        .heightListen!
+        .onData((event) => state.height = event ?? 1);
   }
 
   void autoWakelockCallback(VideoAudioState value) {
