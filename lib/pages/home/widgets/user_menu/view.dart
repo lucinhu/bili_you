@@ -156,9 +156,10 @@ class UserMenuPage extends GetView<UserMenuController> {
                   Expanded(
                       child: Center(
                     child: MaterialButton(
-                      onPressed: () {
-                        Navigator.of(context)
-                            .push(GetPageRoute(page: () => RelationPage(mid:controller.userInfo.mid,type: UserRelationType.following,)));
+                      onPressed: () async {
+                        if(await controller.hasLogin())
+                          Navigator.of(context)
+                              .push(GetPageRoute(page: () => RelationPage(mid:controller.userInfo.mid,type: UserRelationType.following,)));
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
@@ -195,9 +196,10 @@ class UserMenuPage extends GetView<UserMenuController> {
                     child: MaterialButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
-                      onPressed: () {
-                        Navigator.of(context)
-                            .push(GetPageRoute(page: () => RelationPage(mid:controller.userInfo.mid,type: UserRelationType.follower,)));
+                      onPressed: () async {
+                        if(await controller.hasLogin())
+                          Navigator.of(context)
+                              .push(GetPageRoute(page: () => RelationPage(mid:controller.userInfo.mid,type: UserRelationType.follower,)));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(10),
