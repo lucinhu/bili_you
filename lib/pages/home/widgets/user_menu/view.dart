@@ -53,8 +53,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                                 cacheManager: controller.cacheManager,
                                 width: 45,
                                 height: 45,
-                                imageUrl: value.get(UserStorageKeys.userFace,
-                                    defaultValue: controller.faceUrl.value),
+                                imageUrl: controller.faceUrl.value,
                                 placeholder: () => const SizedBox(
                                   width: 45,
                                   height: 45,
