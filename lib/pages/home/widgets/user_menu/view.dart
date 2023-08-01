@@ -117,13 +117,8 @@ class UserMenuPage extends GetView<UserMenuController> {
                 ),
                 Padding(
                     padding: const EdgeInsets.only(top: 45),
-                    child: FutureBuilder(
-                        future: controller.hasLogin(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            return Offstage(
-                              offstage: snapshot.data ?? false,
+                    child: Obx(() => Offstage(
+                          offstage: controller.islogin_.value,
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 25),
                                 child: IconButton(
@@ -139,11 +134,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                                   tooltip: "登录",
                                 ),
                               ),
-                            );
-                          } else {
-                            return const Spacer();
-                          }
-                        }))
+                        )))
               ]),
               Row(
                 children: [
@@ -185,9 +176,12 @@ class UserMenuPage extends GetView<UserMenuController> {
                       child: Center(
                     child: MaterialButton(
                       onPressed: () async {
-                        if(await controller.hasLogin())
-                          Navigator.of(context)
-                              .push(GetPageRoute(page: () => RelationPage(mid:controller.userInfo.mid,type: UserRelationType.following,)));
+                        if (await controller.hasLogin())
+                          Navigator.of(context).push(GetPageRoute(
+                              page: () => RelationPage(
+                                    mid: controller.userInfo.mid,
+                                    type: UserRelationType.following,
+                                  )));
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
@@ -225,9 +219,12 @@ class UserMenuPage extends GetView<UserMenuController> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
                       onPressed: () async {
-                        if(await controller.hasLogin())
-                          Navigator.of(context)
-                              .push(GetPageRoute(page: () => RelationPage(mid:controller.userInfo.mid,type: UserRelationType.follower,)));
+                        if (await controller.hasLogin())
+                          Navigator.of(context).push(GetPageRoute(
+                              page: () => RelationPage(
+                                    mid: controller.userInfo.mid,
+                                    type: UserRelationType.follower,
+                                  )));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(10),
