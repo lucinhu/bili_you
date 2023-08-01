@@ -2,35 +2,6 @@ import 'dart:convert';
 
 import 'package:bili_you/common/models/network/user/user_info.dart';
 
-class FollowingResponse {
-  int? code;
-  String? message;
-  int? ttl;
-  dynamic data;
-
-  FollowingResponse({this.code, this.message, this.ttl, this.data});
-
-  factory FollowingResponse.fromRawJson(String str) =>
-      FollowingResponse.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory FollowingResponse.fromJson(Map<String, dynamic> json) =>
-      FollowingResponse(
-        code: json["code"],
-        message: json["message"],
-        ttl: json["ttl"],
-        data: json["data"]
-      );
-
-  Map<String, dynamic> toJson() => {
-        "code": code,
-        "message": message,
-        "ttl": ttl,
-        "data": data?.tojson(),
-      };
-}
-
 class UserRelation {
   int? mid;
   int? attribute;

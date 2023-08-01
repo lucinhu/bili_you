@@ -198,5 +198,8 @@ class ApiConstants {
       "$apiLiveBase/xlive/web-room/v2/index/getRoomPlayInfo";
 
   ///关注列表
-  static const String followingUsers = "$apiBase/x/relation/followings";
+  static const String followings = "$apiBase/x/relation/followings";
+
+  ///粉丝列表
+  static const String followers = "$apiBase/x/relation/followers";
 }

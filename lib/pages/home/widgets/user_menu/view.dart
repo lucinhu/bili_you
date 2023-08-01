@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bili_you/common/models/network/user_relations/user_relation_types.dart';
 import 'package:bili_you/common/utils/bili_you_storage.dart';
 import 'package:bili_you/common/widget/cached_network_image.dart';
 import 'package:bili_you/pages/about/about_page.dart';
@@ -7,7 +8,7 @@ import 'package:bili_you/pages/history/history_page.dart';
 import 'package:bili_you/pages/login/qrcode_login/view.dart';
 import 'package:bili_you/pages/login/web_login/view.dart';
 import 'package:bili_you/pages/settings_page/settings_page.dart';
-import 'package:bili_you/pages/following/view.dart';
+import 'package:bili_you/pages/relation/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -52,8 +53,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                                 cacheManager: controller.cacheManager,
                                 width: 45,
                                 height: 45,
-                                imageUrl: value.get(UserStorageKeys.userFace,
-                                    defaultValue: controller.faceUrl.value),
+                                imageUrl: controller.faceUrl.value,
                                 placeholder: () => const SizedBox(
                                   width: 45,
                                   height: 45,
@@ -114,7 +114,27 @@ class UserMenuPage extends GetView<UserMenuController> {
                           )),
                     ],
                   ),
-                )
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(top: 45),
+                    child: Obx(() => Offstage(
+                          offstage: controller.islogin_.value,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 25),
+                                child: IconButton(
+                                  padding: const EdgeInsets.all(8),
+                                  onPressed: () {
+                                    if (Platform.isAndroid || Platform.isIOS) {
+                                      Get.off(() => const WebLoginPage());
+                                    } else {
+                                      Get.off(() => const QrcodeLogin());
+                                    }
+                                  },
+                                  icon: const Icon(Icons.login),
+                                  tooltip: "登录",
+                                ),
+                              ),
+                        )))
               ]),
               Row(
                 children: [
@@ -155,9 +175,13 @@ class UserMenuPage extends GetView<UserMenuController> {
                   Expanded(
                       child: Center(
                     child: MaterialButton(
-                      onPressed: () {
-                        Navigator.of(context)
-                            .push(GetPageRoute(page: () => FollowingPage(mid:controller.userInfo.mid)));
+                      onPressed: () async {
+                        if (await controller.hasLogin())
+                          Navigator.of(context).push(GetPageRoute(
+                              page: () => RelationPage(
+                                    mid: controller.userInfo.mid,
+                                    type: UserRelationType.following,
+                                  )));
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
@@ -194,7 +218,14 @@ class UserMenuPage extends GetView<UserMenuController> {
                     child: MaterialButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
-                      onPressed: () {},
+                      onPressed: () async {
+                        if (await controller.hasLogin())
+                          Navigator.of(context).push(GetPageRoute(
+                              page: () => RelationPage(
+                                    mid: controller.userInfo.mid,
+                                    type: UserRelationType.follower,
+                                  )));
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Column(
@@ -283,33 +314,6 @@ class UserMenuPage extends GetView<UserMenuController> {
               const Spacer(
                 flex: 1,
               ),
-              FutureBuilder(
-                  future: controller.hasLogin(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return Offstage(
-                        offstage: snapshot.data ?? false,
-                        child: Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: TextButton(
-                            onPressed: () {
-                              if (Platform.isAndroid || Platform.isIOS) {
-                                Get.off(() => const WebLoginPage());
-                              } else {
-                                Get.off(() => const QrcodeLogin());
-                              }
-                            },
-                            child: const Text(
-                              "登录",
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return const Spacer();
-                    }
-                  })
             ],
           ),
         ],

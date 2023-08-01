@@ -1,24 +1,27 @@
 import 'package:bili_you/common/models/network/user_relations/user_realtion.dart';
+import 'package:bili_you/common/models/network/user_relations/user_relation_types.dart';
 import 'package:bili_you/common/widget/avatar.dart';
 import 'package:bili_you/common/widget/simple_easy_refresher.dart';
-import 'package:bili_you/pages/following/controller.dart';
+import 'package:bili_you/pages/relation/controller.dart';
 import 'package:bili_you/pages/user_space/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class FollowingPage extends StatefulWidget {
-  const FollowingPage({super.key, this.mid});
+class RelationPage extends StatefulWidget {
+  const RelationPage({super.key, required this.mid, required this.type});
 
-  final int? mid;
+  final UserRelationType type; //指示页面是关注还是粉丝
+  final int mid;
   @override
-  State<FollowingPage> createState() => _FollowingPageState();
+  State<RelationPage> createState() => _RelationPageState();
 }
 
-class _FollowingPageState extends State<FollowingPage> {
-  late FollowingController controller;
+class _RelationPageState extends State<RelationPage> {
+  late RealtionController controller;
   @override
   void initState() {
-    controller = Get.put(FollowingController(mid: widget.mid));
+    controller =
+        Get.put(RealtionController(mid: widget.mid, type: widget.type));
     super.initState();
   }
 
@@ -30,15 +33,21 @@ class _FollowingPageState extends State<FollowingPage> {
 
   @override
   Widget build(BuildContext context) {
+    var titleText = "";
+    switch (widget.type) {
+      case UserRelationType.following:
+        titleText = "关注列表";
+        break;
+      case UserRelationType.follower:
+        titleText = "粉丝列表";
+    }
     return Scaffold(
-      appBar: AppBar(title: const Text('关注列表')),
+      appBar: AppBar(title: Text(titleText)),
       body: SimpleEasyRefresher(
         onLoad: controller.onLoad,
         onRefresh: controller.onRefresh,
         easyRefreshController: controller.easyRefreshController,
-        childBuilder: (context, physics) =>
-            //SizedBox(),
-            ListView.builder(
+        childBuilder: (context, physics) => ListView.builder(
           padding: const EdgeInsets.all(12),
           addAutomaticKeepAlives: false,
           addRepaintBoundaries: false,
