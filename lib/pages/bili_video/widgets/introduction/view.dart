@@ -187,7 +187,7 @@ class UpperTile extends StatelessWidget {
                 controller.videoInfo.ownerName,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold),
               ),
             ],

@@ -31,7 +31,7 @@ class _FollowingPageState extends State<FollowingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('关注列表')),
+      appBar: AppBar(title: const Text('关注列表')),
       body: SimpleEasyRefresher(
         onLoad: controller.onLoad,
         onRefresh: controller.onRefresh,
@@ -61,13 +61,12 @@ class RelationWidget extends StatelessWidget {
   UserRelation relation;
   @override
   Widget build(BuildContext context) {
-    return 
-    GestureDetector(
+    return GestureDetector(
       onTap: () {
         Navigator.of(context).push(GetPageRoute(
           page: () => UserSpacePage(
               key: ValueKey('UserSpacePage:${relation.mid}'),
-              mid: this.relation.mid!),
+              mid: relation.mid!),
         ));
       },
       child: Row(
@@ -86,7 +85,7 @@ class RelationWidget extends StatelessWidget {
                 relation.uname!,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold),
               ),
             ],
