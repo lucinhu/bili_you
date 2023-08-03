@@ -77,14 +77,14 @@ android {
             v1SigningEnabled true
             v2SigningEnabled true
         }
-        debug {
-            storeFile _storeFile
-            storePassword _storePassword
-            keyAlias _keyAlias
-            keyPassword _keyPassword
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
+        //debug {
+        //    storeFile _storeFile
+        //    storePassword _storePassword
+        //    keyAlias _keyAlias
+        //    keyPassword _keyPassword
+        //    v1SigningEnabled true
+        //    v2SigningEnabled true
+        //}
     }
 
     buildTypes {
@@ -94,9 +94,9 @@ android {
             }
         }
         debug {
-            if (signingConfigs.debug.storePassword != null){
-                signingConfig signingConfigs.release
-            }
+            //if (signingConfigs.debug.storePassword != null){
+            //    signingConfig signingConfigs.release
+            //}
         }
     }
 }
