@@ -18,79 +18,79 @@ dependencies:
   get: ^4.6.5
 
   # Material You 动态配色
-  dynamic_color: ^1.6.3
+  dynamic_color: '>=1.6.3<2.0.0'
 
   # 网络相关 
-  dio: ^5.1.2
-  dio_cookie_manager: ^3.0.0
-  cookie_jar: ^4.0.2
+  dio: '>=5.3.2 <6.0.0'
+  dio_cookie_manager: '>=3.1.0<4.0.0'
+  cookie_jar: '>=4.0.8<5.0.0'
   gt3_flutter_plugin: ^0.0.8
-  flutter_cache_manager: ^3.3.0
-  protobuf: ^3.0.0
-  connectivity_plus: ^4.0.0
+  flutter_cache_manager: '>=3.3.1<4.0.0'
+  protobuf: '>=3.0.0<4.0.0'
+  connectivity_plus: '>=4.0.2<5.0.0'
 
   # 加解密
-  encrypt: ^5.0.1
-  crypto: ^3.0.3
+  encrypt: '>=5.0.1<6.0.0'
+  crypto: '>=3.0.3<4.0.0'
 
   # 文件路径
-  path: ^1.8.3
-  path_provider: ^2.0.14
-  easy_refresh: ^3.3.2+1
+  path: '>=1.8.3<2.0.0'
+  path_provider: '>=2.0.14<3.0.0'
+  easy_refresh: '>=3.3.2+1<4.0.0'
   
   # 控件
   ns_danmaku:
     git: 
       url: https://github.com/lucinhu/flutter_ns_danmaku.git
-  cached_network_image: ^3.2.3
-  photo_view: ^0.14.0  
-  card_swiper: ^3.0.1  
+  cached_network_image: '>=3.2.3<4.0.0'
+  photo_view: '>=0.14.0<0.20.0'  
+  card_swiper: '>=3.0.1<4.0.0'
 
   # 播放器
-  media_kit: ^1.1.1
-  media_kit_libs_android_video: ^1.0.6
-  media_kit_libs_ios_video: ^1.0.4
-  media_kit_libs_linux: ^1.0.2
-  media_kit_libs_macos_video: ^1.0.5
-  media_kit_libs_windows_video: ^1.0.2
-  media_kit_native_event_loop: ^1.0.4
-  media_kit_video: ^1.1.1
+  media_kit: '>=1.1.1<2.0.0'
+  media_kit_libs_android_video: '>=1.3.0<2.0.0'
+  media_kit_libs_ios_video: '>=1.0.5<2.0.0'
+  media_kit_libs_linux: '>=1.0.2<2.0.0'
+  media_kit_libs_macos_video: '>=1.0.6<2.0.0'
+  media_kit_libs_windows_video: '>=1.0.5<2.0.0'
+  media_kit_native_event_loop: '>=1.0.6<2.0.0'
+  media_kit_video: '>=1.1.1<2.0.0'
 
   # webview
-  webview_cookie_manager: ^2.0.6
-  webview_flutter: ^4.0.7
+  webview_cookie_manager: '>=2.0.6<3.0.0'
+  webview_flutter: '>=4.2.2<5.0.0'
 
   # 保持常亮
-  wakelock_plus: ^1.1.1
+  wakelock_plus: '>=1.1.1<2.0.0'
 
   # 设备&包信息
-  device_info_plus: ^9.0.1
-  package_info_plus: ^4.0.1
+  device_info_plus: '>=9.0.3<10.0.0'
+  package_info_plus: '>=4.1.0<5.0.0'
 
   # url跳转
-  url_launcher: ^6.1.10
+  url_launcher: '>=6.1.12<7.0.0'
   
   # hive
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
+  hive: '>=2.2.3<3.0.0'
+  hive_flutter: '>=1.1.0<2.0.0'
 
   # 分享
-  share_plus: ^7.0.1
+  share_plus: '>=7.1.0<8.0.0'
 
   # scheme 
-  appscheme: ^1.0.8
+  appscheme: '>=1.0.8<2.0.0'
 
   # 音量控制
-  volume_controller: ^2.0.6
+  volume_controller: '>=2.0.6<3.0.0'
 
   # 亮度控制
-  screen_brightness: ^0.2.2
+  screen_brightness: '>=0.2.2<1.0.0'
 
   # 自动旋转屏幕
-  auto_orientation: ^2.3.1
+  auto_orientation: '>=2.3.1<3.0.0'
 
   # 二维码
-  qr_flutter: ^4.1.0
+  qr_flutter: '>=4.1.0<5.0.0'
 
 # dependency_overrides:
   # cookie_jar:
