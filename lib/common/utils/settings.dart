@@ -61,8 +61,8 @@ class SettingsUtil {
     if (latestVersionName == currentVersion) {
       if (showSnackBar) {
         // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("已是最新版")));
+        ScaffoldMessenger.of(context);
+        Get.rawSnackbar(message:'已是最新版');
       }
     } else {
       // ignore: use_build_context_synchronously
