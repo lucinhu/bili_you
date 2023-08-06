@@ -42,8 +42,8 @@ class AboutPage extends StatelessWidget {
           },
           onLongPress: () {
             Clipboard.setData(ClipboardData(text: authorUrl));
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text("已复制$authorUrl到剪切板")));
+            ScaffoldMessenger.of(context);
+            Get.rawSnackbar(message: '已复制$authorUrl到剪切板');
           },
         ),
         ListTile(
@@ -54,8 +54,8 @@ class AboutPage extends StatelessWidget {
           },
           onLongPress: () {
             Clipboard.setData(ClipboardData(text: projectUrl));
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text("已复制$projectUrl到剪切板")));
+            ScaffoldMessenger.of(context);
+            Get.rawSnackbar(message: '已复制$projectUrl到剪切板');
           },
         ),
         ListTile(
