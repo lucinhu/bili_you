@@ -84,9 +84,9 @@ class UiTestController extends GetxController {
       "用户投稿": const UserSpacePage(
         mid: 16752607,
       ),
-      "test cookie": Center(
+      "cookie测试": Center(
         child: MaterialButton(
-            child: const Text("print cookie"),
+            child: const Text("列印cookie"),
             onPressed: () async {
               log('cookies:');
               for (var i in (await HttpUtils.cookieManager.cookieJar
@@ -98,7 +98,7 @@ class UiTestController extends GetxController {
               }
             }),
       ),
-      'test like': Center(
+      '點贊测试': Center(
         child: Column(
           children: [
             MaterialButton(
