@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:volume_controller/volume_controller.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class BiliVideoPlayerPanel extends StatefulWidget {
   const BiliVideoPlayerPanel(this.controller, {super.key});
@@ -181,11 +182,33 @@ class _BiliVideoPlayerPanelState extends State<BiliVideoPlayerPanel> {
                 .setPlayBackSpeed(tempSpeed * 2);
             //振动
             HapticFeedback.selectionClick();
+            //顯示Toat(二倍速播放)
+            Fluttertoast.showToast(
+              msg: "正在二倍速播放",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: const Color.fromARGB(185, 0, 0, 0),
+              textColor: Colors.white,
+              fontSize: 16.0
+            );
           },
           onLongPressEnd: (details) {
             //长按结束时恢复本来的速度
             widget.controller._biliVideoPlayerController
                 .setPlayBackSpeed(tempSpeed);
+                //强制清除所有Toast
+                Fluttertoast.cancel();
+                //顯示Toast(已回到初始播放速度)
+                Fluttertoast.showToast(
+                  msg: "已回到初始播放速度",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: const Color.fromARGB(185, 0, 0, 0),
+                  textColor: Colors.white,
+                  fontSize: 16.0
+            );
           },
           onHorizontalDragStart: (details) {
             if (isInDeadZone(
