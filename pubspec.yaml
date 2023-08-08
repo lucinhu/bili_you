@@ -92,6 +92,9 @@ dependencies:
   # 二维码
   qr_flutter: ^4.1.0
 
+  #Toast
+  fluttertoast: ^8.2.2
+
 # dependency_overrides:
   # cookie_jar:
   #   git:
