@@ -1,5 +1,7 @@
 import 'package:bili_you/common/utils/cache_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -107,7 +109,25 @@ class ShowDialog {
                                               .path)
                                         ]);
                                       },
-                                    )
+                                    ),
+                                    PopupMenuItem(
+                                        child: const Text('保存到相冊'),
+                                        onTap: () async {
+                                          var cachedFile = await CacheUtils
+                                              .bigImageCacheManager
+                                              .getFileFromCache(
+                                                  urls[currentIndex]);
+                                          //保存圖片到相冊
+                                          final result =
+                                              await ImageGallerySaver.saveFile(
+                                                  cachedFile!.file.path);
+                                          //圖片保存成功
+                                          if (result['isSuccess']) {
+                                            Get.rawSnackbar(message: "保存成功");
+                                          } else{
+                                            Get.rawSnackbar(message: "保存失敗");
+                                          }
+                                        })
                                   ],
                                 )
                               ],
