@@ -5,36 +5,42 @@ import 'package:bili_you/common/utils/http_utils.dart';
 class RelationApi {
   static Future<List<UserRelation>> getFollowingList(
       {required int? vmid,
-      String? order_type,
+      String? orderType,
       required int pn,
       required int ps}) async {
-    return await _request(apiurl: ApiConstants.followings, vmid: vmid, pn: pn, ps: ps);
+    return await _request(
+        apiurl: ApiConstants.followings, vmid: vmid, pn: pn, ps: ps);
   }
 
   static Future<List<UserRelation>> getFollowersList(
       {required int? vmid,
-      String? order_type,
+      String? orderType,
       required int pn,
       required int ps}) async {
-    return await _request(apiurl: ApiConstants.followers,order_type: order_type, vmid: vmid, pn: pn, ps: ps);
+    return await _request(
+        apiurl: ApiConstants.followers,
+        orderType: orderType,
+        vmid: vmid,
+        pn: pn,
+        ps: ps);
   }
 
   static Future<List<UserRelation>> _request(
       {required String apiurl,
       required int? vmid,
-      String? order_type,
+      String? orderType,
       required int pn,
       required int ps}) async {
-    var _response = await HttpUtils().get(
+    var response0 = await HttpUtils().get(
       apiurl,
       queryParameters: {
         "vmid": vmid,
-        "order_type": order_type,
+        "order_type": orderType,
         "pn": pn,
         "ps": ps
       },
     );
-    var response = _response.data;
+    var response = response0.data;
 
     if (response["code"] != 0) {
       throw "getRelationList: code:${response["code"]}, message:${response["message"]}";

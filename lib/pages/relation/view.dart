@@ -65,9 +65,9 @@ class _RelationPageState extends State<RelationPage> {
 }
 
 class RelationWidget extends StatelessWidget {
-  RelationWidget({super.key, required this.relation});
+  const RelationWidget({super.key, required this.relation});
 
-  UserRelation relation;
+  final UserRelation relation;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

@@ -29,14 +29,12 @@ class RealtionController extends GetxController {
     try {
       switch (type) {
         case UserRelationType.following:
-          list = await RelationApi.getFollowingList(
-              vmid: this.mid, ps: this.ps, pn: this.pn);
+          list = await RelationApi.getFollowingList(vmid: mid, ps: ps, pn: pn);
           break;
         case UserRelationType.follower:
-          list = await RelationApi.getFollowersList(
-              vmid: this.mid, ps: this.ps, pn: this.pn);
+          list = await RelationApi.getFollowersList(vmid: mid, ps: ps, pn: pn);
       }
-      
+
       pn++;
     } catch (e) {
       log(e.toString());

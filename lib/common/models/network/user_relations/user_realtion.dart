@@ -8,16 +8,16 @@ class UserRelation {
   int? mtime;
   dynamic tag;
   int? special;
-  Object? contract_info;
+  Object? contractInfo;
   String? uname;
   String? face;
-  int? face_nft;
+  int? faceNft;
   String? sign;
   OfficialVerify? officialVerify;
   Vip? vip;
-  String? nft_icon;
-  String? rec_reason;
-  String? track_id;
+  String? nftIcon;
+  String? recReason;
+  String? trackId;
 
   UserRelation({
     this.mid,
@@ -25,16 +25,16 @@ class UserRelation {
     this.mtime,
     this.tag,
     this.special,
-    this.contract_info,
+    this.contractInfo,
     this.uname,
     this.face,
-    this.face_nft,
+    this.faceNft,
     this.sign,
     this.officialVerify,
     this.vip,
-    this.nft_icon,
-    this.rec_reason,
-    this.track_id,
+    this.nftIcon,
+    this.recReason,
+    this.trackId,
   });
 
   factory UserRelation.fromRawJson(String str) => json.decode(str);
@@ -44,16 +44,16 @@ class UserRelation {
       mtime: json["mtime"],
       tag: json["tag"],
       special: json["special"],
-      contract_info: json["contract_info"],
+      contractInfo: json["contract_info"],
       uname: json["uname"],
       face: json["face"],
-      face_nft: json["face_nft"],
+      faceNft: json["face_nft"],
       sign: json["sign"],
       officialVerify: OfficialVerify.fromJson(json["official_verify"]),
       vip: Vip.fromJson(json["vip"]),
-      nft_icon: json["nft_icon"],
-      rec_reason: json["rec_reason"],
-      track_id: json["track_id"]);
+      nftIcon: json["nft_icon"],
+      recReason: json["rec_reason"],
+      trackId: json["track_id"]);
 
   Map<String, dynamic> toJson() => {
         "mid": mid,
@@ -61,16 +61,16 @@ class UserRelation {
         "mtime": mtime,
         "tag": tag,
         "special": special,
-        "contract_info": contract_info,
+        "contract_info": contractInfo,
         "uname": uname,
         "face": face,
-        "face_nft": face_nft,
+        "face_nft": faceNft,
         "sign": sign,
         "official_verify": officialVerify?.toJson(),
         "vip": vip?.toJson(),
-        "nft_icon": nft_icon,
-        "rec_reason": rec_reason,
-        "track_id": track_id,
+        "nft_icon": nftIcon,
+        "rec_reason": recReason,
+        "track_id": trackId,
       };
 
   String toRawJson() => json.encode(toJson());

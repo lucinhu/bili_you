@@ -77,7 +77,8 @@ class UserMenuPage extends GetView<UserMenuController> {
                     children: [
                       Obx(() => Text(
                             controller.name.value,
-                            style: const TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
                           )),
                       const SizedBox(
                         height: 2,
@@ -97,7 +98,8 @@ class UserMenuPage extends GetView<UserMenuController> {
                                 "${controller.currentExp}/${controller.level.value != 6 ? controller.nextExp : '--'}",
                                 style: TextStyle(
                                     fontSize: 10,
-                                    color: Theme.of(context).highlightColor), //TODO 颜色名称不符，但hightlight用作分割线更自然。此处UI待优化或重构
+                                    color: Theme.of(context)
+                                        .highlightColor), //TODO 颜色名称不符，但hightlight用作分割线更自然。此处UI待优化或重构
                               ))
                         ],
                       ),
@@ -105,7 +107,8 @@ class UserMenuPage extends GetView<UserMenuController> {
                           size: const Size(100, 2),
                           child: Obx(
                             () => LinearProgressIndicator(
-                              backgroundColor: Theme.of(context).highlightColor, //TODO 颜色名称不符，但hightlight用作文字色更自然。此处UI待优化或重构
+                              backgroundColor: Theme.of(context)
+                                  .highlightColor, //TODO 颜色名称不符，但hightlight用作文字色更自然。此处UI待优化或重构
                               value: controller.nextExp.value > 0
                                   ? controller.currentExp.value /
                                       controller.nextExp.value
@@ -119,21 +122,21 @@ class UserMenuPage extends GetView<UserMenuController> {
                     padding: const EdgeInsets.only(top: 45),
                     child: Obx(() => Offstage(
                           offstage: controller.islogin_.value,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 25),
-                                child: IconButton(
-                                  padding: const EdgeInsets.all(8),
-                                  onPressed: () {
-                                    if (Platform.isAndroid || Platform.isIOS) {
-                                      Get.off(() => const WebLoginPage());
-                                    } else {
-                                      Get.off(() => const QrcodeLogin());
-                                    }
-                                  },
-                                  icon: const Icon(Icons.login),
-                                  tooltip: "登录",
-                                ),
-                              ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 25),
+                            child: IconButton(
+                              padding: const EdgeInsets.all(8),
+                              onPressed: () {
+                                if (Platform.isAndroid || Platform.isIOS) {
+                                  Get.off(() => const WebLoginPage());
+                                } else {
+                                  Get.off(() => const QrcodeLogin());
+                                }
+                              },
+                              icon: const Icon(Icons.login),
+                              tooltip: "登录",
+                            ),
+                          ),
                         )))
               ]),
               Row(
@@ -176,12 +179,13 @@ class UserMenuPage extends GetView<UserMenuController> {
                       child: Center(
                     child: MaterialButton(
                       onPressed: () async {
-                        if (await controller.hasLogin())
+                        if (await controller.hasLogin()) {
                           Navigator.of(context).push(GetPageRoute(
                               page: () => RelationPage(
                                     mid: controller.userInfo.mid,
                                     type: UserRelationType.following,
                                   )));
+                        }
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
@@ -219,12 +223,13 @@ class UserMenuPage extends GetView<UserMenuController> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
                       onPressed: () async {
-                        if (await controller.hasLogin())
+                        if (await controller.hasLogin()) {
                           Navigator.of(context).push(GetPageRoute(
                               page: () => RelationPage(
                                     mid: controller.userInfo.mid,
                                     type: UserRelationType.follower,
                                   )));
+                        }
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(10),
@@ -327,7 +332,7 @@ class UserMenuPage extends GetView<UserMenuController> {
           Row(
             children: [
               Padding(
-                  padding: EdgeInsets.only(left: 8, top: 8),
+                  padding: const EdgeInsets.only(left: 8, top: 8),
                   child: IconButton(
                       padding: const EdgeInsets.all(8),
                       onPressed: () {
