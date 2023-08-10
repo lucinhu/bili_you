@@ -112,10 +112,15 @@ class _ReplyPageState extends State<ReplyPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      floatingActionButton: FloatingActionButton.small(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: controller.showAddReplySheet,
         tooltip: '发表评论',
-        child: const Icon(Icons.add_comment_rounded),
+        label:const Row(
+          children: [
+            Icon(Icons.reply),
+            Text("   发表评论")
+          ],
+        )
       ),
       body: _buildView(controller),
     );
