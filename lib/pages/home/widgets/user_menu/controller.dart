@@ -55,10 +55,11 @@ class UserMenuController extends GetxController {
   // }
   Future<void> loadOldFace() async {
     var box = BiliYouStorage.user;
-    if(!await hasLogin())
+    if (!await hasLogin()) {
       faceUrl.value = ApiConstants.noface;
-    else
-    faceUrl.value = box.get("userFace") ?? ApiConstants.noface;
+    } else {
+      faceUrl.value = box.get("userFace") ?? ApiConstants.noface;
+    }
     return;
   }
 

@@ -52,7 +52,7 @@ class HistoryApi {
       "platform": "android",
       "csrf": await CookieUtils.getCsrf()
     });
-    var json = report_history.fromJson(response.data);
+    var json = ReportHistory.fromJson(response.data);
     if (json.code != 0) {
       throw 'report_history:code:${json.code},raw:"${response.data}"';
     }
