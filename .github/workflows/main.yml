@@ -65,7 +65,7 @@ jobs:
       # - run: appimage-builder --recipe AppImageBuilder.yml
           
       # 发布安装包
-      - name: Release Packages
+      - name: Release Packages1
         uses: ncipollo/release-action@v1
         with:
             artifacts: "build/app/outputs/flutter-apk/app-*.apk"
