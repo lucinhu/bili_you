@@ -27,6 +27,7 @@ class UserMenuPage extends GetView<UserMenuController> {
             addRepaintBoundaries: false,
             shrinkWrap: true,
             children: [
+              //用戶信息
               Row(children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 60, left: 15, bottom: 10),
@@ -70,11 +71,12 @@ class UserMenuPage extends GetView<UserMenuController> {
                     ),
                   ),
                 ),
+                //用戶名&等級
                 Padding(
                   padding: const EdgeInsets.only(top: 45),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: [//用戶名
                       Obx(() => Text(
                             controller.name.value,
                             style: const TextStyle(
@@ -84,7 +86,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                         height: 2,
                       ),
                       Row(
-                        children: [
+                        children: [//用戶等級
                           Obx(() => Text("LV${controller.level.value}",
                               style: TextStyle(
                                   fontSize: 12,
@@ -119,6 +121,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                   ),
                 ),
                 Padding(
+                  //登錄
                     padding: const EdgeInsets.only(top: 45),
                     child: Obx(() => Offstage(
                           offstage: controller.islogin_.value,
@@ -139,6 +142,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                           ),
                         )))
               ]),
+              //動態數量&關注數量&粉絲數量
               Row(
                 children: [
                   Expanded(
@@ -150,7 +154,8 @@ class UserMenuPage extends GetView<UserMenuController> {
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Column(
-                          children: [
+                          children: [ //動態
+                          //TODO: 查看用戶發過的動態
                             Obx(() => Text(
                                   controller.dynamicCount.value.toString(),
                                   style: TextStyle(
@@ -179,12 +184,14 @@ class UserMenuPage extends GetView<UserMenuController> {
                       child: Center(
                     child: MaterialButton(
                       onPressed: () async {
-                        if (await controller.hasLogin()) {
+                        if (await controller.hasLogin()) { //判斷用戶是否登錄
                           Navigator.of(context).push(GetPageRoute(
                               page: () => RelationPage(
                                     mid: controller.userInfo.mid,
                                     type: UserRelationType.following,
                                   )));
+                        }else{
+                          Get.rawSnackbar(message: '失敗: 用戶未登錄');
                         }
                       },
                       shape: RoundedRectangleBorder(
@@ -192,7 +199,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Column(
-                          children: [
+                          children: [ //關注
                             Obx(() => Text(
                                   controller.followingCount.value.toString(),
                                   style: TextStyle(
@@ -223,18 +230,20 @@ class UserMenuPage extends GetView<UserMenuController> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
                       onPressed: () async {
-                        if (await controller.hasLogin()) {
+                        if (await controller.hasLogin()) { //判斷用戶是否登錄
                           Navigator.of(context).push(GetPageRoute(
                               page: () => RelationPage(
                                     mid: controller.userInfo.mid,
                                     type: UserRelationType.follower,
                                   )));
+                        }else{
+                          Get.rawSnackbar(message: '失敗: 用戶未登錄');
                         }
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Column(
-                          children: [
+                          children: [ //粉絲
                             Obx(() => Text(
                                   controller.followerCount.value.toString(),
                                   style: TextStyle(
@@ -271,8 +280,14 @@ class UserMenuPage extends GetView<UserMenuController> {
               UserMenuListTile(
                 icon: const Icon(Icons.history),
                 title: '历史记录',
-                onTap: () => Navigator.of(context)
-                    .push(GetPageRoute(page: () => const HistoryPage())),
+                onTap: () async{ //判斷用戶是否登錄
+                  if (await controller.hasLogin()) {
+                    Navigator.of(context)
+                    .push(GetPageRoute(page: () => const HistoryPage())); //如果登錄了就跳轉到歷史記錄頁面
+                  }else{
+                    Get.rawSnackbar(message:'失敗: 用戶未登錄');
+                  }
+                }
               ),
               UserMenuListTile(
                 icon: const Icon(
@@ -297,31 +312,36 @@ class UserMenuPage extends GetView<UserMenuController> {
               UserMenuListTile(
                 icon: const Icon(Icons.logout_rounded),
                 title: "退出登录",
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("退出登录？"),
-                        content: const Text("您确定要退出登录吗？"),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(); // 关闭对话框
-                            },
-                            child: const Text("取消"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              controller.onLogout(); // 执行退出登录操作
-                              Navigator.of(context).pop(); // 关闭对话框
-                            },
-                            child: const Text("确认"),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                onTap: () async {
+                  if (await controller.hasLogin()) { //判斷用戶是否登錄
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog( //彈出對話框
+                          title: const Text("退出登录"),
+                          content: const Text("是否确定要退出登录？"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // 关闭对话框
+                              },
+                              child: const Text("取消"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                controller.onLogout(); // 执行退出登录操作
+                                Navigator.of(context).pop(); // 关闭对话框
+                                Get.rawSnackbar(message: '退出成功');
+                              },
+                              child: const Text("确定"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    Get.rawSnackbar(message: '退出失敗: 用戶未登錄');
+                  }
                 },
               ),
               const SizedBox(

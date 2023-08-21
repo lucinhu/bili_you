@@ -26,7 +26,7 @@ class UserMenuController extends GetxController {
 
   late LoginUserInfo userInfo;
   late LoginUserStat userStat;
-
+//用戶信息
   _initData() async {
     try {
       userInfo = await LoginApi.getLoginUserInfo();
@@ -79,7 +79,7 @@ class UserMenuController extends GetxController {
     super.onReady();
     _initData();
   }
-
+//登出
   onLogout() async {
     HttpUtils.cookieManager.cookieJar.deleteAll();
     resetRX();
@@ -88,7 +88,7 @@ class UserMenuController extends GetxController {
     cacheManager.emptyCache();
     islogin_.value = false;
   }
-
+//檢查用戶是否登錄
   Future<bool> hasLogin() async {
     return BiliYouStorage.user.get(UserStorageKeys.hasLogin) ?? false;
   }

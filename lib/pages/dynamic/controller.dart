@@ -22,6 +22,7 @@ class DynamicController extends GetxController {
   }
 
   Future<bool> _loadDynamicItemCards() async {
+    //動態内容卡片
     late List<DynamicItem> items;
     try {
       items = await DynamicApi.getDynamicItems(page: currentPage, mid: authorFilterMid);
@@ -37,6 +38,7 @@ class DynamicController extends GetxController {
   }
 
   Future<bool> _loadAuthorList() async {
+    //動態up主
     try {
       dynamicAuthorList = await DynamicApi.getDynamicAuthorList();
     } catch (e) {
@@ -47,6 +49,7 @@ class DynamicController extends GetxController {
   }
 
   void onLoad() async {
+    //加載更多
     if (await _loadDynamicItemCards()) {
       refreshController.finishLoad(IndicatorResult.success);
     } else {
@@ -55,6 +58,7 @@ class DynamicController extends GetxController {
   }
 
   void onRefresh() async {
+    //刷新
     dynamicItems.clear();
     currentPage = 1;
     if (authorFilterMid == -1) {
@@ -69,6 +73,7 @@ class DynamicController extends GetxController {
   }
 
   void applyAuthorFilter(mid) {
+    //up主過濾
     authorFilterMid = mid;
     refreshController.callRefresh();
   }
