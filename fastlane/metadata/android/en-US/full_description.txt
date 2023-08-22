@@ -1,0 +1,16 @@
+<b>Features</b>
+
+<ul>
+<li>View recommanded videos</li>
+<li>Search videos</li>
+<li>View comments</li>
+<li>View nested comments</li>
+<li>View pictures and notes in comments</li>
+<li>View related videos</li>
+<li>View top topics</li>
+<li>Play videos</li>
+<li>Display danmaku</li>
+<li>View user artworks</li>
+<li>Search bangumi</li>
+<li>Play bangumi</li>
+</ul>
