@@ -111,7 +111,7 @@ class ShowDialog {
                                       },
                                     ),
                                     PopupMenuItem(
-                                        child: const Text('保存到相冊'),
+                                        child: const Text('保存到相册'),
                                         onTap: () async {
                                           var cachedFile = await CacheUtils
                                               .bigImageCacheManager
