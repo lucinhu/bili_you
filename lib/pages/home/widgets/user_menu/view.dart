@@ -297,31 +297,32 @@ class UserMenuPage extends GetView<UserMenuController> {
               UserMenuListTile(
                 icon: const Icon(Icons.logout_rounded),
                 title: "退出登录",
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("退出登录？"),
-                        content: const Text("您确定要退出登录吗？"),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(); // 关闭对话框
-                            },
-                            child: const Text("取消"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              controller.onLogout(); // 执行退出登录操作
-                              Navigator.of(context).pop(); // 关闭对话框
-                            },
-                            child: const Text("确认"),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                onTap: () async {
+                  if (await controller.hasLogin())
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("退出登录"),
+                          content: const Text("是否确定要退出登录？"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // 关闭对话框
+                              },
+                              child: const Text("取消"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                controller.onLogout(); // 执行退出登录操作
+                                Navigator.of(context).pop(); // 关闭对话框
+                              },
+                              child: const Text("确定"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                 },
               ),
               const SizedBox(
