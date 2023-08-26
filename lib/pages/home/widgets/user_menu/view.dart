@@ -313,19 +313,11 @@ class UserMenuPage extends GetView<UserMenuController> {
                 icon: const Icon(Icons.logout_rounded),
                 title: "退出登录",
                 onTap: () async {
-
                   if (await controller.hasLogin()) { //判斷用戶是否登錄
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog( //彈出對話框
-
-                  if (await controller.hasLogin())
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-
                           title: const Text("退出登录"),
                           content: const Text("是否确定要退出登录？"),
                           actions: [
@@ -339,10 +331,7 @@ class UserMenuPage extends GetView<UserMenuController> {
                               onPressed: () {
                                 controller.onLogout(); // 执行退出登录操作
                                 Navigator.of(context).pop(); // 关闭对话框
-
                                 Get.rawSnackbar(message: '退出成功');
-
-
                               },
                               child: const Text("确定"),
                             ),
@@ -350,11 +339,9 @@ class UserMenuPage extends GetView<UserMenuController> {
                         );
                       },
                     );
-
                   } else {
                     Get.rawSnackbar(message: '退出失敗: 用戶未登錄');
                   }
-
                 },
               ),
               const SizedBox(
