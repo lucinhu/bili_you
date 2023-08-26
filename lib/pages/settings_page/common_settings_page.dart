@@ -81,7 +81,7 @@ class CommonSettingsPage extends StatelessWidget {
               settingsKey: SettingsStorageKeys.rememberDanmakuSettings,
               defualtValue: true),
           SettingsSliderTile(
-            title: '字体大小',
+            title: '默认字体大小',
             subTitle: '弹幕字体大小缩放',
             settingsKey: SettingsStorageKeys.defaultDanmakuScale,
             defualtValue: 1.0,
@@ -92,7 +92,7 @@ class CommonSettingsPage extends StatelessWidget {
                 "${selectingValue.toStringAsFixed(2)}X",
           ),
           SettingsSliderTile(
-            title: '不透明度',
+            title: '默认不透明度',
             subTitle: '弹幕字体不透明度',
             settingsKey: SettingsStorageKeys.defaultDanmakuOpacity,
             defualtValue: 0.6,
@@ -103,8 +103,8 @@ class CommonSettingsPage extends StatelessWidget {
                 "${(selectingValue * 100).toStringAsFixed(0)}%",
           ),
           SettingsSliderTile(
-            title: '播放速度',
-            subTitle: '弹幕播放速度',
+            title: '默认滚动速度',
+            subTitle: '弹幕滚动速度',
             settingsKey: SettingsStorageKeys.defaultDanmakuSpeed,
             defualtValue: 1.0,
             min: 0.25,
@@ -160,7 +160,11 @@ class CommonSettingsPage extends StatelessWidget {
             buildTrailingText: () => SettingsUtil.getValue(
                 SettingsStorageKeys.preferVideoCodec,
                 defaultValue: 'hev'),
-            itemNameValue: const {'hev': 'hev', 'avc': 'avc', 'av01': 'av01'},
+            itemNameValue: const {
+              'hev(h265)': 'hev',
+              'avc(h264)': 'avc',
+              'av1': 'av01'
+            },
             buildGroupValue: () => SettingsUtil.getValue(
                 SettingsStorageKeys.preferVideoCodec,
                 defaultValue: 'hev'),
