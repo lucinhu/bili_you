@@ -40,11 +40,13 @@ class _DynamicPageState extends State<DynamicPage> {
             controller: controller.scrollController,
             physics: physics,
             slivers: [
+              //up主面板
               DynamicAuthorFilter(
                 authors: controller.dynamicAuthorList,
                 onAuthorFilterApplied: controller.applyAuthorFilter,
               ),
               const HeaderLocator.sliver(),
+              //動態内容卡片
               SliverList.builder(
                 itemCount: controller.dynamicItems.length,
                 itemBuilder: (context, index) =>

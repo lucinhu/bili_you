@@ -31,8 +31,8 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('历史记录')),
       body: SimpleEasyRefresher(
-        onLoad: controller.onLoad,
-        onRefresh: controller.onRefresh,
+        onLoad: controller.onLoad, //加載更多
+        onRefresh: controller.onRefresh, //刷新
         easyRefreshController: controller.easyRefreshController,
         childBuilder: (context, physics) => ListView.builder(
           padding: const EdgeInsets.all(12),

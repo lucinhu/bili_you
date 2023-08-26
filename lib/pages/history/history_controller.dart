@@ -37,7 +37,6 @@ class HistoryController extends GetxController {
     videoViewHistoryItems.addAll(list);
     return true;
   }
-
   Future<void> onLoad() async {
     if (await _loadVideoViewHistoryItemList()) {
       easyRefreshController.finishLoad(IndicatorResult.success);
